@@ -1,0 +1,5 @@
+Flask
+Flask_Cors
+Flask_RESTful
+python-decouple
+python-dotenv

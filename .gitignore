@@ -1,5 +1,22 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE related folders
+.vscode/*
+
 # dependencies
 theserviceman/node_modules
 theserviceman/.pnp
