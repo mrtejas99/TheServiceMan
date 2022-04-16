@@ -18,23 +18,23 @@ venv.bak/
 .vscode/*
 
 # dependencies
-theserviceman/node_modules
-theserviceman/.pnp
-theserviceman/.pnp.js
+frontend/.pnp
+frontend/.pnp.js
+frontend/node_modules/
 
 # testing
-theserviceman/coverage
+frontend/coverage
 
 # production
-theserviceman/build
+frontend/build
 
 # misc
-theserviceman/.DS_Store
-theserviceman/.env.local
-theserviceman/.env.development.local
-theserviceman/.env.test.local
-theserviceman/.env.production.local
+frontend/.DS_Store
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
 
-theserviceman/npm-debug.log*
-theserviceman/yarn-debug.log*
-theserviceman/yarn-error.log*
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
