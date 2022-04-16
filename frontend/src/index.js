@@ -9,6 +9,9 @@ import { Login } from './Components/Login'
 import { Register } from './Components/Register'
 import { Error } from './Components/Error'
 import { Forgotpass } from "./Components/Forgotpass";
+import { Userprofile } from "./Components/Userprofile";
+import { Adview } from './Components/Adview';
+
 import "./index.css";
 
 import reportWebVitals from './reportWebVitals';
@@ -24,6 +27,8 @@ root.render(
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
         <Route path="/forgotpass" element={<Forgotpass/>} />
+        <Route path="/Userprofile" element={<Userprofile/>} />
+        <Route path="/Adview" element={<Adview/>} />
         <Route path="*" element={<Error/>} />
       </Routes>
     </BrowserRouter>
