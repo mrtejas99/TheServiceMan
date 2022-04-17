@@ -11,7 +11,9 @@ import { Error } from './Components/Error'
 import { Forgotpass } from "./Components/Forgotpass";
 import { Userprofile } from "./Components/Userprofile";
 import { Adview } from './Components/Adview';
-
+import {Customerfeedback} from './Components/Customerfeedback'
+import {Servicefeedback} from './Components/Servicefeedback'
+import { Adcreate } from "./Components/Adcreate";
 import "./index.css";
 
 import reportWebVitals from './reportWebVitals';
@@ -29,6 +31,9 @@ root.render(
         <Route path="/forgotpass" element={<Forgotpass/>} />
         <Route path="/Userprofile" element={<Userprofile/>} />
         <Route path="/Adview" element={<Adview/>} />
+        <Route path="/Customerfeedback" element={<Customerfeedback />} />
+        <Route path="/Servicefeedback" element={<Servicefeedback />} />
+        <Route path="/Adcreate" element={<Adcreate />} />
         <Route path="*" element={<Error/>} />
       </Routes>
     </BrowserRouter>

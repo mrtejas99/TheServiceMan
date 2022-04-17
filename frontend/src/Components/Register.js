@@ -31,7 +31,7 @@ function Register(){
             </Form.Group>
 
             <div className='text-center'>
-                <Button variant="primary" >
+                <Button variant="primary" type='submit' >
                     Register
                 </Button>
                 <div className='my-3'>Already a member? <a href="/login" >Sign in</a> now!</div>

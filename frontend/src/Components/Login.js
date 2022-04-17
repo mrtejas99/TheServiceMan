@@ -21,7 +21,7 @@ function Login(){
             </Form.Group>
 
             <div className='text-center'>
-                <Button variant="primary" >
+                <Button variant="primary" type='submit'>
                     Submit
                 </Button>
                 <div className='my-3'>Not a member? <a href="/register" >Sign up</a> now!</div>
