@@ -14,13 +14,22 @@ import { Adview } from './Components/Adview';
 import {Customerfeedback} from './Components/Customerfeedback'
 import {Servicefeedback} from './Components/Servicefeedback'
 import { Adcreate } from "./Components/Adcreate";
+import { Sellers } from "./Components/Sellers"
+import { Customers } from "./Components/Customers"
 import "./index.css";
 
 import reportWebVitals from './reportWebVitals';
+import {I18nextProvider} from "react-i18next";
+import i18next from "i18next";
 
+
+i18next.init({
+  interpolation: { escapeValue: false },  // React already does escaping
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <I18nextProvider i18n={i18next}>
   <div>
     <Navigation />  
     <BrowserRouter>
@@ -34,11 +43,14 @@ root.render(
         <Route path="/Customerfeedback" element={<Customerfeedback />} />
         <Route path="/Servicefeedback" element={<Servicefeedback />} />
         <Route path="/Adcreate" element={<Adcreate />} />
+        <Route path="/Sellers" element={<Sellers />} />
+        <Route path="/Customers" element={<Customers />} />        
         <Route path="*" element={<Error/>} />
       </Routes>
     </BrowserRouter>
     <Footer />
   </div>
+  </I18nextProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

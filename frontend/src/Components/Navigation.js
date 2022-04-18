@@ -3,6 +3,19 @@ import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from "
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+function getPosition(options) {
+    return new Promise((resolve, reject) => 
+        navigator.geolocation.getCurrentPosition(resolve, reject, options)
+    );
+}
+
+function onFilterUserLocation() {
+    getPosition()
+    .then(data => {
+        console.log(data.coords);
+    });
+}
+
 function Navigation(){
     return(
         <Navbar collapseOnSelect expand="lg">
@@ -14,7 +27,7 @@ function Navigation(){
             {/* <Nav.Link href="#features">Features</Nav.Link>
             <Nav.Link href="#pricing">Pricing</Nav.Link> */}
             <NavDropdown title="Locations" id="collasible-nav-dropdown" className='me-3'>
-                <NavDropdown.Item href="#action/3.4">Get current location</NavDropdown.Item>
+                <NavDropdown.Item onClick={onFilterUserLocation}>Get current location</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="#action/3.1">Panaji</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">Mapusa</NavDropdown.Item>
