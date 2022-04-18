@@ -9,11 +9,14 @@ from decouple import config as deconfig, Csv
 
 from .log import init_logger
 from .config import config_dict
+from .dbaccess import init_db
 
-root_logger = init_logger()
+LOG_LEVEL = deconfig('LOG_LEVEL', 'INFO')
 
 API_BASE = deconfig('API_BASE')
 API_ENABLED = deconfig('API_ENABLED', default='', cast=Csv(post_process=list))
+
+root_logger = init_logger(LOG_LEVEL)
 
 def getConfigObject(app : flask.Flask):
     flask_env : str = app.config.get('ENV')
@@ -25,12 +28,15 @@ def getConfigObject(app : flask.Flask):
 def create_app():
     app = flask.Flask(__name__)
     app.config.from_object(getConfigObject(app))
-    root_logger.info("APP starting in %s environment" % app.config.get('ENV'))
+    root_logger.info("APP starting in '%s' environment" % app.config.get('ENV'))
 
     #Initialize APIs
     api = RestfulAPI(app)
     #Cross-origin requests are allowed
     CORS(app, resources = {(API_BASE + '/*'): {"origins": "*"}}, send_wildcard = True)
+
+    #Initialize database
+    init_db(app)
 
     #Load API endpoints
     for api_name in API_ENABLED:

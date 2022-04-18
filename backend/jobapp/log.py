@@ -2,7 +2,6 @@ import logging
 import os
 from decouple import config
 
-LOG_LEVEL = config('LOG_LEVEL', 'INFO')
 LOG_GOOD_FORMAT = "[%(levelname)s] [%(name)s] (%(filename)s:%(lineno)d) %(message)s"
 
 def ensure_log_path(path):
@@ -59,9 +58,9 @@ class ColoredFormatter(logging.Formatter):
             setattr(record, 'ansi_end', '')
         return logging.Formatter.format(self, record)
 
-def init_logger():
+def init_logger(log_level = 'INFO'):
     _root = logging.getLogger()
-    _root.setLevel(LOG_LEVEL)
+    _root.setLevel(log_level)
     _log_stdout = logging.StreamHandler()
     _log_stdout.setFormatter(ColoredFormatter())
     _log_stdout.setLevel(logging.INFO)
