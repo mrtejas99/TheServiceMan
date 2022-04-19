@@ -3,13 +3,15 @@ import flask
 from flask_restful import Api as RestfulAPI
 from flask_cors import CORS
 
-import importlib
-
 from decouple import config as deconfig, Csv
 
-from .log import init_logger
 from .config import config_dict
+
+import importlib
+
+from .log import init_logger
 from .dbaccess import init_db
+from .login import init_login
 
 LOG_LEVEL = deconfig('LOG_LEVEL', 'INFO')
 
@@ -31,12 +33,15 @@ def create_app():
     root_logger.info("APP starting in '%s' environment" % app.config.get('ENV'))
 
     #Initialize APIs
-    api = RestfulAPI(app)
+    api = RestfulAPI(app, prefix=API_BASE)
     #Cross-origin requests are allowed
     CORS(app, resources = {(API_BASE + '/*'): {"origins": "*"}}, send_wildcard = True)
 
     #Initialize database
     init_db(app)
+
+    #Initialize Login manager
+    init_login(app)
 
     #Load API endpoints
     for api_name in API_ENABLED:
