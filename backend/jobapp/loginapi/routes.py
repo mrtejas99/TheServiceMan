@@ -4,3 +4,4 @@ from .resources import *
 
 def init_api(api : Api):
     api.add_resource(LoginHandler, '/user/login')
+    api.add_resource(UserRegistrationHandler, '/user/register')
