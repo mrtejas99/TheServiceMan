@@ -1,5 +1,9 @@
 Flask
 Flask_Cors
+Flask_Login
 Flask_RESTful
+Flask_SQLAlchemy
+PyJWT
 python-decouple
 python-dotenv
+Werkzeug
