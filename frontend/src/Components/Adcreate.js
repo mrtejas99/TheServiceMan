@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
+import { auth, db, logout } from "../firebase";
+import { query, collection, getDocs, where } from "firebase/firestore";
 import { Container,  Col, Row, Button, Form, Dropdown } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 function Adcreate(){
+    const [user, loading, error] = useAuthState(auth);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (loading) return;
+        if (!user) return navigate("/Login");
+      }, [user, loading]);
+
     return(
         <Container className="py-3"> 
             <Form className='my-5 px-3' >    

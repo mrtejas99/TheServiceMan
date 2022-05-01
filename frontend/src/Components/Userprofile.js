@@ -34,7 +34,10 @@ function Userprofile(){
       }, [user, loading]);
     return(
             <Container className="py-3">
-                <h3>Welcome, {fname}</h3>
+                <div className='d-flex justify-content-between py-3'>
+                    <h3>Welcome, {fname}</h3>
+                    <Button variant="warning" onClick={logout}>Logout</Button>
+                </div>
                 <Row> 
                     <Col>
                         <h5>Profile</h5>
@@ -49,7 +52,6 @@ function Userprofile(){
                         </Form>
                     </Col>
                     <Col>
-                        <Button variant="warning" onClick={logout}>Logout</Button>
                         <Button variant="info" href="/adcreate">Advertise on platform</Button><br />
                         <Button variant="info" href="/sellers" className='my-3'>Switch to Professional profile</Button>
                     </Col>
