@@ -1,12 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
+import { auth, db, logout } from "../firebase";
+import { query, collection, getDocs, where } from "firebase/firestore";
 import { Container, Button, Form, Col, Row, Card } from "react-bootstrap";
-//align-items-center
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 function Userprofile(){
-    const username = 'Bob';
+    const [user, loading, error] = useAuthState(auth);
+    const [fname, setFname] = useState("");
+    const [lname, setLname] = useState("");
+    const navigate = useNavigate();
+    const fetchUserName = async () => {
+        try {
+          const q = query(collection(db, "users"), where("uid", "==", user.uid));
+          const doc = await getDocs(q);
+          const data = doc.docs[0].data();
+          console.log(data);
+          setFname(data.fname);
+          setLname(data.lname);
+        } catch (err) {
+          console.error(err);
+          alert("An error occured while fetching user data");
+        }
+    };
+
+    useEffect(() => {
+        if (loading) return;
+        if (!user) return navigate("/Login");
+        // eslint-disable-next-line
+        fetchUserName();
+        // eslint-disable-next-line
+      }, [user, loading]);
     return(
             <Container className="py-3">
-                <h3>Welcome, {username}</h3>
+                <h3>Welcome, {fname}</h3>
                 <Row> 
                     <Col>
                         <h5>Profile</h5>
@@ -21,7 +49,8 @@ function Userprofile(){
                         </Form>
                     </Col>
                     <Col>
-                        <Button variant="info" href="/createad">Advertise on platform</Button><br />
+                        <Button variant="warning" onClick={logout}>Logout</Button>
+                        <Button variant="info" href="/adcreate">Advertise on platform</Button><br />
                         <Button variant="info" href="/sellers" className='my-3'>Switch to Professional profile</Button>
                     </Col>
                 </Row>
