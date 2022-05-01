@@ -1,6 +1,13 @@
 Flask
 Flask_Cors
+Flask_Login
 Flask_RESTful
+Flask_SQLAlchemy
+PyJWT
 python-decouple
 python-dotenv
+<<<<<<< HEAD
 flask-login
+=======
+Werkzeug
+>>>>>>> 33f53e25d7fb7b072d7829f8e5ecdafd7a2f7ee0
