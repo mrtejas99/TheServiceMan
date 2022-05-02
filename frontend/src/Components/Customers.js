@@ -1,9 +1,13 @@
 import React from 'react';
 import { Container, Button, Form, Col, Row, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+
 //align-items-center
 import 'bootstrap/dist/css/bootstrap.min.css';
 function Customers(){
     const username = 'Bob';
+    const navigate = useNavigate();
+
     return(
             <Container className="py-3">
                 <h3>Welcome, {username}</h3>
@@ -19,7 +23,7 @@ function Customers(){
                                 Some quick example text to build on the card title and make up the bulk of
                                 the card's content.
                                 </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
+                                <Button variant="primary" onClick={() => navigate("/Adview")}>View Ad</Button>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -32,7 +36,7 @@ function Customers(){
                                 Some quick example text to build on the card title and make up the bulk of
                                 the card's content.
                                 </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
+                                <Button variant="primary" onClick={() => navigate("/Adview")}>View Ad</Button>
                             </Card.Body>
                         </Card>
 
@@ -44,7 +48,7 @@ function Customers(){
                                 Some quick example text to build on the card title and make up the bulk of
                                 the card's content.
                                 </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
+                                <Button variant="primary" onClick={() => navigate("/Adview")}>View Ad</Button>
                             </Card.Body>
                         </Card>
                     </Col>

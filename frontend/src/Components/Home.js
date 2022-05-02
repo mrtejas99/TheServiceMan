@@ -1,9 +1,39 @@
 import React from 'react';
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+
+// Import Firestore database
+import { db } from "../firebase";
+import { query, collection, getDocs, where } from "firebase/firestore";
+
 import { Container, Button, Col, Row, Card, Dropdown } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 function Home(){
+    const [info , setInfo] = useState([]);
+    // Start the fetch operation as soon as
+    // the page loads
+    window.addEventListener('load', () => {
+        Fetchdata();
+    });
+
+    const navigate = useNavigate();
+
+    const Fetchdata = async ()=>{
+        try {
+            const q = query(collection(db, "serviceads"));
+            const doc = await getDocs(q);
+            doc.forEach(element => {
+                var data = element.data();
+                setInfo(arr => [...arr , data]);
+            });
+        } catch (err) {
+            console.error(err);
+            alert("An error occured while fetching ads");
+        }
+    }
+
     return(
-        <Container fluidclassName="py-3">
+        <Container fluidclass Name="py-3">
             <span><b className='me-3'>Popular searches</b>{' '}
             <a href="#">Cook</a> {' '}
             <a href="#">Electrician</a>{' '}
@@ -43,66 +73,19 @@ function Home(){
                             <Dropdown.Item href="#/action-3">Price &darr;	</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Row xs={1} md={2} lg={4} className="g-4">
-                        <Card style={{ width: '15rem' }} className='me-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
-                            <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
-                            </Card.Body>
-                        </Card>
-
-                        <Card style={{ width: '15rem' }} className='me-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
-                            <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
-                            </Card.Body>
-                        </Card>
-
-                        <Card style={{ width: '15rem' }} className='me-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
-                            <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
-                            </Card.Body>
-                        </Card>
-                    
-                        <Card style={{ width: '15rem' }} className='me-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
-                            <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
-                            </Card.Body>
-                        </Card>
-
-                        <Card style={{ width: '15rem' }} className='me-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
-                            <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
-                            </Card.Body>
-                        </Card>
+                    <Row xs={1} md={2} lg={4} className="g-4">               
+                        {
+                        info.map((data) => (
+                            <Card style={{ width: '15rem' }} className='me-3'>
+                                <Card.Img variant="top" src={data.banner_url} />
+                                <Card.Body>
+                                    <Card.Title>{data.title}</Card.Title>
+                                    <Card.Text>{data.description}</Card.Text>
+                                    <Button variant="primary" onClick={() => navigate("/Adview", {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.loaction}})}>View Ad</Button>
+                                </Card.Body>
+                            </Card>
+                        ))
+                        }
                     </Row>
                 </Col>
             </Row>
@@ -111,4 +94,5 @@ function Home(){
 
     );
 }
+
 export { Home };

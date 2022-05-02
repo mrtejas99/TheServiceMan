@@ -32,7 +32,7 @@ function Login() {
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)}  value={password} />
-                <Form.Text className="text-muted"><a href="/forgotpass">Forgot password?</a></Form.Text>
+                <Form.Text className="text-muted"><Link to="/forgotpass">Forgot password?</Link></Form.Text>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicCheckbox" >

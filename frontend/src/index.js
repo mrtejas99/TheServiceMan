@@ -16,6 +16,7 @@ import {Servicefeedback} from './Components/Servicefeedback'
 import { Adcreate } from "./Components/Adcreate";
 import { Sellers } from "./Components/Sellers"
 import { Customers } from "./Components/Customers"
+import { Fetch } from "./Components/temp"
 import "./index.css";
 
 
@@ -48,6 +49,7 @@ root.render(
         <Route path="/Adcreate" element={<Adcreate />} />
         <Route path="/Sellers" element={<Sellers />} />
         <Route path="/Customers" element={<Customers />} />        
+        <Route path="/fetch" element={<Fetch />} />        
         <Route path="*" element={<Error/>} />
       </Routes>
     </BrowserRouter>

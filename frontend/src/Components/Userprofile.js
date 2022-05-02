@@ -52,8 +52,8 @@ function Userprofile(){
                         </Form>
                     </Col>
                     <Col>
-                        <Button variant="info" href="/adcreate">Advertise on platform</Button><br />
-                        <Button variant="info" href="/sellers" className='my-3'>Switch to Professional profile</Button>
+                        <Button variant="info" onClick={() => navigate("/Adcreate")}>Advertise on platform</Button><br />
+                        <Button variant="info" onClick={() => navigate("/Sellers")} className='my-3'>Switch to Professional profile</Button>
                     </Col>
                 </Row>
                 
@@ -68,7 +68,7 @@ function Userprofile(){
                                 Some quick example text to build on the card title and make up the bulk of
                                 the card's content.
                                 </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
+                                <Button variant="primary" onClick={() => navigate("/Adview")} >View Ad</Button>
                             </Card.Body>
                         </Card>
 
@@ -80,7 +80,7 @@ function Userprofile(){
                                 Some quick example text to build on the card title and make up the bulk of
                                 the card's content.
                                 </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
+                                <Button variant="primary" onClick={() => navigate("/Adview")}>View Ad</Button>
                             </Card.Body>
                         </Card>
 
@@ -92,7 +92,7 @@ function Userprofile(){
                                 Some quick example text to build on the card title and make up the bulk of
                                 the card's content.
                                 </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
+                                <Button variant="primary" onClick={() => navigate("/Adview")}>View Ad</Button>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -107,7 +107,7 @@ function Userprofile(){
                                 Some quick example text to build on the card title and make up the bulk of
                                 the card's content.
                                 </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
+                                <Button variant="primary" onClick={() => navigate("/Adview")}>View Ad</Button>
                             </Card.Body>
                         </Card>
 
@@ -119,7 +119,7 @@ function Userprofile(){
                                 Some quick example text to build on the card title and make up the bulk of
                                 the card's content.
                                 </Card.Text>
-                                <Button variant="primary" href="/Adview">View Ad</Button>
+                                <Button variant="primary" onClick={() => navigate("/Adview")}>View Ad</Button>
                             </Card.Body>
                         </Card>
                     </Col>
