@@ -19,6 +19,7 @@ import {
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -98,12 +99,45 @@ const logInWithEmailAndPassword = async (email, password) => {
     signOut(auth);
   };
 
+  const saveAdData = async (
+      user,
+      title, 
+      banner,
+      description, 
+      experience, 
+      skills,
+      location,
+      language,
+      category) => {
+        try {
+          const docRef = await addDoc(collection(db, "serviceads"), {
+            posted_by: user,
+            title: title,
+            banner_url:banner,
+            description: description,
+            experience: experience,
+            skills: skills,
+            location: location,
+            language: language,
+            category: category,
+            posted_date: Date.now()
+          });
+          alert("Document written with ID: ", docRef.id);
+        } catch (e) {
+          alert("Error adding document: ", e);
+        }
+      };
+
+  const storage = getStorage(app);
+
   export {
     auth,
     db,
+    storage,
     signInWithGoogle,
     logInWithEmailAndPassword,
     registerWithEmailAndPassword,
     sendPasswordReset,
     logout,
+    saveAdData,
   };
