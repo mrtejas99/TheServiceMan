@@ -6,7 +6,6 @@ import logo from '../profile.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
 function Adview(){
     const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778
-    console.log(location.state.title+" "+location.state.banner_url+" "+location.state.description+" "+location.state.experience);
 
     const logoStyle={
         resizeMode: "cover",
@@ -26,7 +25,6 @@ function Adview(){
                 <Row className='py-5'>
                     <Col>
                         <h5>{location.state.title}</h5>
-                        
                         <Image styel={{resizeMode: "cover"}} src={location.state.banner_url}/>
                         <h5 >Description</h5>
                         <p>{location.state.description}</p>
@@ -85,7 +83,7 @@ function Adview(){
                                 </Col>
                             </Row>
                         </Card>
-                        <Link to="/Sellers">View more</Link>
+                        <Link to="/Sellers" state={{posted_by:location.state.posted_by}}>View more</Link>
                     </Col>
                 </Row>
 

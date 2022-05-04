@@ -36,7 +36,6 @@ function Userprofile(){
             <Container className="py-3">
                 <div className='d-flex justify-content-between py-3'>
                     <h3>Welcome, {fname}</h3>
-                    <Button variant="warning" onClick={logout}>Logout</Button>
                 </div>
                 <Row> 
                     <Col>

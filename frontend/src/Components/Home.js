@@ -1,6 +1,5 @@
-import React from 'react';
-import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Import Firestore database
 import { db } from "../firebase";
@@ -12,12 +11,9 @@ function Home(){
     const [info , setInfo] = useState([]);
     // Start the fetch operation as soon as
     // the page loads
-    window.addEventListener('load', () => {
-        Fetchdata();
-    });
 
     const navigate = useNavigate();
-
+    const location = useLocation(); 
     const Fetchdata = async ()=>{
         try {
             const q = query(collection(db, "serviceads"));
@@ -32,6 +28,10 @@ function Home(){
         }
     }
 
+    useEffect(() => {
+        Fetchdata();
+    }, [location]);
+    
     return(
         <Container fluidclass Name="py-3">
             <span><b className='me-3'>Popular searches</b>{' '}
@@ -80,8 +80,8 @@ function Home(){
                                 <Card.Img variant="top" src={data.banner_url} />
                                 <Card.Body>
                                     <Card.Title>{data.title}</Card.Title>
-                                    <Card.Text>{data.description}</Card.Text>
-                                    <Button variant="primary" onClick={() => navigate("/Adview", {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.loaction}})}>View Ad</Button>
+                                    <Card.Text>{data.location}</Card.Text>
+                                    <Button variant="primary" onClick={() => navigate("/Adview", {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.location, posted_by: data.posted_by}})}>View Ad</Button>
                                 </Card.Body>
                             </Card>
                         ))

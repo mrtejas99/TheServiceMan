@@ -20,7 +20,7 @@ function Register(){
     const register = () => {
       if (!fname || !lname) alert("Please enter name");
       if(password != confirmpassword) alert("confirm password should match");
-      registerWithEmailAndPassword(fname, lname, email, password);
+      else registerWithEmailAndPassword(fname, lname, email, password);
     };
     const navigate = useNavigate();
     useEffect(() => {
@@ -28,7 +28,6 @@ function Register(){
       if (user) navigate("/Userprofile");
       // eslint-disable-next-line
     }, [user, loading]);
-
 
     return(
         <Form className='w-50 mx-auto my-5 px-3'>

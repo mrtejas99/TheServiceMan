@@ -1,7 +1,8 @@
 import React  from 'react';
 import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from "react-bootstrap";
-
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { LogInOutButton } from "./LogInOutButton";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
 
 function getPosition(options) {
     return new Promise((resolve, reject) => 
@@ -23,7 +24,7 @@ function Navigation(){
         <Navbar.Brand href="/">TheServiceMan</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto w-75">
+            <Nav className=" w-75 me-auto">
             {/* <Nav.Link href="#features">Features</Nav.Link>
             <Nav.Link href="#pricing">Pricing</Nav.Link> */}
             <NavDropdown title="Locations" id="collasible-nav-dropdown" className='me-3'>
@@ -43,8 +44,8 @@ function Navigation(){
             </Form>
             </Nav>
             <Nav>
-            <Nav.Link href="translate">Translate</Nav.Link>
-            <Nav.Link href="/login" >Login</Nav.Link>
+                <Nav.Link href="translate">Translate</Nav.Link>
+                <LogInOutButton />
             </Nav>
         </Navbar.Collapse>
         </Container>
