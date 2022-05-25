@@ -6,7 +6,7 @@ import { db } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 
 import { Container, Button, Col, Row, Card, Dropdown } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 function Home(){
     const [info , setInfo] = useState([]);
     // Start the fetch operation as soon as

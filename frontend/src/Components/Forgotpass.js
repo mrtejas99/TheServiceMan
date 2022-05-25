@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Button } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 function Forgotpass(){
     return(
         <Form className='w-50 mx-auto my-5 '>

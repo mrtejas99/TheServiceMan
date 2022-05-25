@@ -3,7 +3,7 @@ import { Container, Button, Col, Row, Card, Breadcrumb, Table, Image, Badge } fr
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import logo from '../profile.png'
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 function Adview(){
     const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778
 
@@ -91,5 +91,5 @@ function Adview(){
 
     );
 }
-export { Adview };
 
+export { Adview };

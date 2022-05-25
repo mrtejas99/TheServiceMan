@@ -4,7 +4,7 @@ import { LogInOutButton } from "./LogInOutButton";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 
-function LoggedIn(){
+function LoggedIn() {
     return(
         <NavDropdown align="end" title={<FontAwesomeIcon icon={faUser} />} id="collasible-nav-dropdown" className='me-3'>
             <NavDropdown.Item href="/Userprofile">Profile</NavDropdown.Item>
@@ -14,5 +14,4 @@ function LoggedIn(){
     );
 }
 
-export {LoggedIn};
-
+export { LoggedIn };

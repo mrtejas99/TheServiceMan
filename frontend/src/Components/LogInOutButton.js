@@ -6,7 +6,6 @@ import { auth, db, logout } from "../firebase";
 import { LoggedIn } from './LoggedIn';
 import { LoggedOut } from './LoggedOut';
 
-
 function LogInOutButton(){
     const [user] = useAuthState(auth);
     if (!user)
@@ -15,4 +14,4 @@ function LogInOutButton(){
         return <LoggedIn />
 }
 
-export {LogInOutButton};
+export { LogInOutButton };

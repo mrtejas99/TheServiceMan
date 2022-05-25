@@ -3,7 +3,7 @@ import { Container, Button, Form, Col, Row, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 //align-items-center
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 function Customers(){
     const username = 'Bob';
     const navigate = useNavigate();
@@ -88,4 +88,5 @@ function Customers(){
 
     );
 }
+
 export { Customers };

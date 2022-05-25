@@ -4,8 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth, logInWithEmailAndPassword, signInWithGoogle } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Form, Button } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -53,4 +51,5 @@ function Login() {
         </Form>
     );
 }
+
 export { Login };

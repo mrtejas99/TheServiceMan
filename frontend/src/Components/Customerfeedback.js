@@ -5,7 +5,6 @@ import { auth, db, logout } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { Form, Button } from "react-bootstrap";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 function Customerfeedback(){
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
@@ -31,4 +30,5 @@ function Customerfeedback(){
         </Form>
     );
 }
+
 export { Customerfeedback };

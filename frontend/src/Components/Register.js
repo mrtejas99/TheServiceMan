@@ -6,10 +6,10 @@ import {
   registerWithEmailAndPassword,
   signInWithGoogle,
 } from "../firebase";
-import { Form, Button } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Register(){
+import { Form, Button } from "react-bootstrap";
+
+function Register() {
     const [fname, setFname] = useState('');
     const [lname, setLname] = useState('');
     const [email, setEmail] = useState('');
@@ -72,4 +72,5 @@ function Register(){
         </Form>
     );
 }
+
 export { Register };

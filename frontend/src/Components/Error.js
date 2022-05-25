@@ -1,5 +1,5 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 function Error(){
     return(
         <div className="page-wrap d-flex flex-row align-items-center">
@@ -16,4 +16,5 @@ function Error(){
 
     );
 }
+
 export { Error };

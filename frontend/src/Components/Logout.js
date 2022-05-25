@@ -5,8 +5,6 @@ import { auth, logInWithEmailAndPassword, signInWithGoogle } from "../firebase";
 import { Form, Button } from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { db, logout } from "../firebase";
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 
 function Logout() {
     const [email, setEmail] = useState('');
@@ -31,4 +29,4 @@ function Logout() {
     return;
 }
 
-export {Logout};
+export { Logout };

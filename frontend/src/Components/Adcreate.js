@@ -5,7 +5,7 @@ import { auth, db, logout, saveAdData, storage  } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { Container,  Col, Row, Button, Form, Dropdown } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 function Adcreate(){
     const [title, setTitle] = useState('');
     const [banner, setBanner] = useState(null);
@@ -15,7 +15,6 @@ function Adcreate(){
     const [location, setLocation] = useState('');
     const [language, setLanguage] = useState('');
     const [category, setCategory] = useState('');
-
 
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
@@ -121,5 +120,5 @@ function Adcreate(){
 
     );
 }
-export { Adcreate };
 
+export { Adcreate };

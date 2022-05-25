@@ -1,8 +1,11 @@
-import React  from 'react';
+import React from 'react';
+
 import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from "react-bootstrap";
 import { LogInOutButton } from "./LogInOutButton";
+import { DarkToggle } from "./DarkMode";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { isDarkTheme } from './DarkMode'
 
 function getPosition(options) {
     return new Promise((resolve, reject) => 
@@ -17,9 +20,12 @@ function onFilterUserLocation() {
     });
 }
 
-function Navigation(){
-    return(
-        <Navbar collapseOnSelect expand="lg">
+function Navigation() {
+	const isDarkMode = isDarkTheme();
+	const navVariant = isDarkMode ? 'dark' : 'light';
+   
+	return (
+        <Navbar collapseOnSelect expand="lg" bg={navVariant} variant={navVariant}>
         <Container fluid>
         <Navbar.Brand href="/">TheServiceMan</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -44,6 +50,7 @@ function Navigation(){
             </Form>
             </Nav>
             <Nav>
+                <DarkToggle />
                 <Nav.Link href="translate">Translate</Nav.Link>
                 <LogInOutButton />
             </Nav>

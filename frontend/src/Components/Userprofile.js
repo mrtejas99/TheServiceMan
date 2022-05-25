@@ -4,9 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { auth, db, logout } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { Container, Button, Form, Col, Row, Card } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Userprofile(){
+function Userprofile() {
     const [user, loading, error] = useAuthState(auth);
     const [fname, setFname] = useState("");
     const [lname, setLname] = useState("");
@@ -128,4 +127,5 @@ function Userprofile(){
 
     );
 }
+
 export { Userprofile };

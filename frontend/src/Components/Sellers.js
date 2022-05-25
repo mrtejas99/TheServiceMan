@@ -7,8 +7,8 @@ import { db } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 
 //align-items-center
-import 'bootstrap/dist/css/bootstrap.min.css';
-function Sellers(){
+
+function Sellers() {
     const navigate = useNavigate();
     const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778
 
@@ -111,4 +111,5 @@ function Sellers(){
 
     );
 }
+
 export { Sellers };
