@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useContext } from "react";
 import { Helmet } from 'react-helmet';
 
-import { isDarkTheme } from './DarkMode'
+import { useDarkMode } from './DarkMode'
 
 /* List of themes from Bootswatch */
 const BootswatchTheme = {
@@ -35,7 +35,7 @@ const BootswatchTheme = {
 
 /* Bootswatch theme component */
 function BoostrapTheme(props) {
-	const darkMode = isDarkTheme();
+	const [ darkMode ] = useDarkMode();
 	const lightTheme = props.lightModeTheme || BootswatchTheme.FLATLY;
 	const darkTheme = props.darkModeTheme || BootswatchTheme.DARKLY;
 	const BSThemeCSS = props.bootswatchCDN + (darkMode ? darkTheme : lightTheme) + '/bootstrap.min.css';

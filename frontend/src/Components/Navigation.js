@@ -5,7 +5,7 @@ import { LogInOutButton } from "./LogInOutButton";
 import { DarkToggle } from "./DarkMode";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { isDarkTheme } from './DarkMode'
+import { useDarkMode } from './DarkMode'
 
 function getPosition(options) {
     return new Promise((resolve, reject) => 
@@ -21,7 +21,7 @@ function onFilterUserLocation() {
 }
 
 function Navigation() {
-	const isDarkMode = isDarkTheme();
+	const [ isDarkMode ] = useDarkMode();
 	const navVariant = isDarkMode ? 'dark' : 'light';
    
 	return (

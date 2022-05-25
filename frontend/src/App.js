@@ -32,7 +32,6 @@ function App() {
 	return (
 		<div className='app' >
 			<ClientSettingsProvider>
-				/* Choose themes to use in Light and Dark modes */
 				<BoostrapTheme lightModeTheme={BootswatchTheme.FLATLY} darkModeTheme={BootswatchTheme.DARKLY} />
 				<Navigation />
 				<BrowserRouter>

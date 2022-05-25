@@ -8,14 +8,13 @@ import { ClientSettingsContext } from "./ClientSettings";
 /* Dark mode user-settings hook */
 function useDarkMode() {
 	const [cs, updateCS] = useContext(ClientSettingsContext);
-	const [isDarkMode, setIsDarkMode] = useState(cs.darkMode || false);
-	useEffect(() => updateCS({"darkMode": isDarkMode}), [isDarkMode]);
+	const setIsDarkMode = (dark_mode) => updateCS({"darkMode": dark_mode});
+	let isDarkMode;
+	if (cs === undefined || cs.darkMode === undefined)
+		setIsDarkMode((isDarkMode = false));
+	else
+		isDarkMode = cs.darkMode;
 	return [isDarkMode, setIsDarkMode];
-}
-
-function isDarkTheme() {
-	const [ { darkMode } ] = useContext(ClientSettingsContext);
-	return darkMode;
 }
 
 /* Dark mode switch UI component */
@@ -33,4 +32,4 @@ function DarkToggle() {
 	);
 }
 
-export { useDarkMode, isDarkTheme, DarkToggle };
+export { useDarkMode, DarkToggle };
