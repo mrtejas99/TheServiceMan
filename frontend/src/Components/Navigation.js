@@ -70,7 +70,7 @@ function Navigation() {
                 <NavDropdown title={t('translate')} id="collasible-nav-dropdown" onSelect={handleTranslate} value={localStorage.getItem("i18nextLng")}>
                     <NavDropdown.Item eventKey="en">English</NavDropdown.Item>
                     <NavDropdown.Item eventKey="bn">বাংলা</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="gu">ગુજરાતી</NavDropdown.Item>
+                    <NavDropdown.Item eventKey="guj">ગુજરાતી</NavDropdown.Item>
                     <NavDropdown.Item eventKey="hi">हिन्दी</NavDropdown.Item>
                     <NavDropdown.Item eventKey="kn">ಕನ್ನಡ</NavDropdown.Item>
                     <NavDropdown.Item eventKey="kok">कोंकणी</NavDropdown.Item>
