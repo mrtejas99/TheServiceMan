@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { Suspense} from 'react';	//for i18n
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -28,8 +28,10 @@ import { Customers } from "./Components/Customers";
 import { Fetch } from "./Components/temp";
 import { Logout } from "./Components/Logout";
 
+
 function App() {
 	return (
+		<Suspense fallback = {"loading.."}>
 		<div className='app' >
 			<ClientSettingsProvider>
 				<BoostrapTheme lightModeTheme={BootswatchTheme.FLATLY} darkModeTheme={BootswatchTheme.DARKLY} />
@@ -55,6 +57,7 @@ function App() {
 				<Footer />
 			</ClientSettingsProvider>
 		</div>
+		</Suspense>	
 	);
 }
 

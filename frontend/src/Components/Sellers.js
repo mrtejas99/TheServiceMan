@@ -6,9 +6,11 @@ import { Container, Button, Form, Col, Row, Card } from "react-bootstrap";
 import { db } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 
-//align-items-center
-
+//translate
+import { useTranslation } from "react-i18next";
 function Sellers() {
+    const {t} = useTranslation("common");
+
     const navigate = useNavigate();
     const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778
 
@@ -22,7 +24,6 @@ function Sellers() {
     //    Fetchdata();
     //});
 
-    
 
     const Fetchdata = async ()=>{
         try {
@@ -53,12 +54,12 @@ function Sellers() {
 
     return(
             <Container className="py-3">
-                <h3>Welcome, {fname} {lname}</h3>
+                <h3>{t('welcome')}, {fname} {lname}</h3>
                 
-                <p>Cumulative rating: <span>★★★☆☆</span></p>
+                <p>{t('cumulativerating')} <span>★★★☆☆</span></p>
                 <Row> 
                     <Col >
-                        <h5>Posted Ads</h5>
+                        <h5>{t('postedads')}</h5>
 
                         <Row xs={1} md={2} lg={4} className="g-4">               
                         {
@@ -68,7 +69,7 @@ function Sellers() {
                                 <Card.Body>
                                     <Card.Title>{data.title}</Card.Title>
                                     <Card.Text>{data.location}</Card.Text>
-                                    <Button variant="primary" onClick={() => navigate("/Adview", {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.location, posted_by: data.posted_by}})}>View Ad</Button>
+                                    <Button variant="primary" onClick={() => navigate("/Adview", {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.location, posted_by: data.posted_by}})}>{t('viewad')}</Button>
                                 </Card.Body>
                             </Card>
                         ))
@@ -77,7 +78,7 @@ function Sellers() {
                     </Col>
                     
                     <Col>
-                        <h5>Feedback</h5>
+                        <h5>{t('feedback')}</h5>
                         <Card style={{ width: '25rem'}}>
                             <Row>
                                 <Col>

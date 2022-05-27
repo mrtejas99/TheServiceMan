@@ -5,9 +5,13 @@ import { auth, db, logout } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { Form, Button } from "react-bootstrap";
 
+//translate
+import { useTranslation } from "react-i18next";
 function Customerfeedback(){
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
+    const {t} = useTranslation("common");
+
 
     useEffect(() => {
         if (loading) return;
@@ -16,14 +20,14 @@ function Customerfeedback(){
 
     return(
         <Form className='w-50 mx-auto my-5 '>
-            <h2 className="text-center">Customer feedback </h2>            
+            <h2 className="text-center">{t('customerfeedback')}</h2>            
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>How was your experience with the customer?</Form.Label>
+                <Form.Label>{t('cfeedbacklabel')}</Form.Label>
                 <Form.Control as="textarea" rows={3} />
             </Form.Group>
             <div className='text-center'>
                 <Button variant="primary" >
-                    Submit
+                {t('submit')}
                 </Button>
             </div>
             
