@@ -28,8 +28,8 @@ import { Customers } from "./Components/Customers";
 import { Fetch } from "./Components/temp";
 import { Logout } from "./Components/Logout";
 
-import { Admin } from 'react-admin';
-import AdminResources from './AdminPanel';
+//Admin dashboard
+import AdminPanel from './AdminPanel';
 
 /**
  * Main Application
@@ -56,14 +56,6 @@ function TheServiceManApp() {
 			</Routes>
 			<Footer />
 		</div>
-	);
-}
-
-function AdminPanel() {
-	return (
-		<Admin basename="/admin">
-			<AdminResources />
-		</Admin>
 	);
 }
 
