@@ -53,6 +53,7 @@ function TheServiceManApp() {
 				<Route path="/Customers" element={<Customers />} />
 				<Route path="/fetch" element={<Fetch />} />
 				<Route path="/Logout" element={<Logout />} />
+				<Route path="*" element={<Error/>} />
 			</Routes>
 			<Footer />
 		</div>
@@ -68,9 +69,8 @@ function App() {
 			<ClientSettingsProvider>
 				<BrowserRouter>
 					<Routes>
-						<Route path="/admin/*" element={<AdminPanel />} />
 						<Route path="/*" element={<TheServiceManApp />} />
-						<Route path="*" element={<Error/>} />
+						<Route path="/admin/*" element={<AdminPanel />} />
 					</Routes>
 				</BrowserRouter>
 			</ClientSettingsProvider>
