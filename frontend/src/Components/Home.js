@@ -14,6 +14,10 @@ function Home(){
     const [info , setInfo] = useState([]);
     const [sortCriteria, setSortCriteria] = useState('posted_date');
     const [filterCriteria, setFilterCriteria] = useState('');
+    const [filterGeo, setFilterGeo] = useState('');
+    const [filterStar, setFilterStar] = useState('');
+    const [filterLang, setFilterLang] = useState('');
+
     // Start the fetch operation as soon as
     // the page loads
 
@@ -26,11 +30,17 @@ function Home(){
             if(filterCriteria=='')
                 q = query(collection(db, "serviceads"), orderBy(sortCriteria, 'asc'));
                //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
-            else
-               q = query(collection(db, "serviceads"), where('category', "==", filterCriteria), orderBy(sortCriteria, 'asc'));
+            else if(filterCriteria!="")
+                q = query(collection(db, "serviceads"), where('category', "==", filterCriteria), orderBy(sortCriteria, 'asc'));
+            else if(filterGeo!='')
+                q = query(collection(db, "serviceads"), where('location', "==", filterGeo), orderBy(sortCriteria, 'asc'));
+            else if(filterLang!='')
+                q = query(collection(db, "serviceads"), where('language', "==", filterLang), orderBy(sortCriteria, 'asc'));
+            else if(filterStar!='')
+                q = query(collection(db, "serviceads"), where('rating', "==", filterStar), orderBy(sortCriteria, 'asc'));
             
             const doc = await getDocs(q);
-            setInfo([]);    //
+            setInfo([]);    //clear results of previous filter
             doc.forEach(element => {
                 var data = element.data();
                 setInfo(arr => [...arr , data]);
@@ -44,13 +54,12 @@ function Home(){
     const filterCategory = (e)=> {
         e.preventDefault();
         let category = e.target.id;
-        console.log(category);
         setFilterCriteria(category);
     }
 
     useEffect(() => {
         Fetchdata();
-    }, [location, sortCriteria, filterCriteria]);
+    }, [location, sortCriteria, filterCriteria, filterGeo, filterLang]);
     
     return(
         <Container fluid className="py-3">
@@ -74,10 +83,27 @@ function Home(){
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('location')}</h6>
-                        <a href="#">{t('panaji')}</a><br />
-                        <a href="#">{t('mapusa')}</a><br />
-                        <a href="#">{t('margao')}</a><br />
-                        <a href="#">{t('ponda')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();console.log(filterGeo);setFilterGeo('')}} href="#">{t('clearfilter')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();setFilterGeo("Panaji")}} href="#">{t('panaji')}</a><br />
+                        <a onClick={()=>setFilterGeo("Mapusa")} href="#">{t('mapusa')}</a><br />
+                        <a onClick={()=>setFilterGeo("Margao")} href="#">{t('margao')}</a><br />
+                        <a onClick={()=>setFilterGeo("Ponda")}  href="#">{t('ponda')}</a><br />
+                    </div>
+                    <div className='my-3 mx-3'>
+                        <h6>{t('rating')}</h6>
+                        <a onClick={(e)=>{e.preventDefault();console.log(filterStar);setFilterStar('')}} href="#">{t('clearfilter')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();setFilterStar("5")}} href="#">{t('five')}</a><br />
+                        <a onClick={()=>setFilterStar("4")} href="#">{t('four')}</a><br />
+                        <a onClick={()=>setFilterStar("3")} href="#">{t('three')}</a><br />
+                        <a onClick={()=>setFilterStar("2")}  href="#">{t('two')}</a><br />
+                    </div>
+                    <div className='my-3 mx-3'>
+                        <h6>{t('language')}</h6>
+                        <a onClick={(e)=>{e.preventDefault();console.log(filterLang);setFilterGeo('')}} href="#">{t('clearfilter')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();setFilterLang("English")}} href="#">{t('english')}</a><br />
+                        <a onClick={()=>setFilterLang("Marathi")} href="#">{t('marathi')}</a><br />
+                        <a onClick={()=>setFilterLang("Hindi")} href="#">{t('hindi')}</a><br />
+                        <a onClick={()=>setFilterLang("Gujarati")}  href="#">{t('gujarati')}</a><br />
                     </div>
 
                 </Col>
