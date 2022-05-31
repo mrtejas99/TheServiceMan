@@ -3,8 +3,7 @@ import React, {  useEffect } from "react";
 import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from "react-bootstrap";
 import { LogInOutButton } from "./LogInOutButton";
 import { DarkToggle } from "./DarkMode";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+
 import { useDarkMode } from './DarkMode'
 
 //translate

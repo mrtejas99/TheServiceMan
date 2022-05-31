@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Import Firestore database
 import { db } from "../firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { query, collection, getDocs, where, orderBy } from "firebase/firestore";
 
 import { Container, Button, Col, Row, Card, Dropdown } from "react-bootstrap";
 
@@ -12,6 +12,8 @@ import { useTranslation } from "react-i18next";
 
 function Home(){
     const [info , setInfo] = useState([]);
+    const [sortCriteria, setSortCriteria] = useState('posted_date');
+    const [filterCriteria, setFilterCriteria] = useState('');
     // Start the fetch operation as soon as
     // the page loads
 
@@ -19,9 +21,16 @@ function Home(){
     const navigate = useNavigate();
     const location = useLocation(); 
     const Fetchdata = async ()=>{
+        let doc = '';
         try {
             const q = query(collection(db, "serviceads"));
-            const doc = await getDocs(q);
+            doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
+            
+            //if(filterCriteria=='')
+            //    doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
+            //else
+            //    doc = await getDocs(q, where('category', "==", filterCriteria), orderBy(sortCriteria, 'asc'));
+
             doc.forEach(element => {
                 var data = element.data();
                 setInfo(arr => [...arr , data]);
@@ -30,6 +39,13 @@ function Home(){
             console.error(err);
             alert("An error occured while fetching ads");
         }
+    }
+
+    const filterCategory = (e)=> {
+        e.preventDefault();
+        let category = e.target.id;
+        console.log(category);
+        setFilterCriteria(category);
     }
 
     useEffect(() => {
@@ -50,10 +66,10 @@ function Home(){
                     <h5>{t('filter')}</h5>
                     <div className='my-3 mx-3'>
                         <h6>{t('category')}</h6>
-                        <a href="#">{t('cook')}</a><br />
-                        <a href="#">{t('electrician')}</a><br />
-                        <a href="#">{t('plumber')}</a><br />
-                        <a href="#">{t('beautician')}</a><br />
+                        <a onClick={filterCategory} id="Cook" >{t('cook')}</a><br />
+                        <a onClick={filterCategory} id="Electrician" >{t('electrician')}</a><br />
+                        <a onClick={filterCategory} id="Plumber" >{t('plumber')}</a><br />
+                        <a onClick={filterCategory} id="Beautician" >{t('beautician')}</a><br />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('location')}</h6>
@@ -66,13 +82,14 @@ function Home(){
                 </Col>
 
                 <Col className="mx-3">
-                    <Dropdown className="my-3">
-                        <Dropdown.Toggle variant="secondary" id="dropdown-basic" >
-                        {t('sort')}
+                    <Dropdown className="my-3" onSelect={(e) =>setSortCriteria(e)} value={sortCriteria}>
+                        <Dropdown.Toggle variant="secondary" id="dropdown-basic" >{t('sort')}
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            <Dropdown.Item href="#/action-1">{t('rating')}</Dropdown.Item>
+                            <Dropdown.Item eventKey='posted_date'>{t('date')}</Dropdown.Item>
+                            <Dropdown.Item eventKey='rating'>{t('rating')}</Dropdown.Item>
+                            <Dropdown.Item eventKey='title'>{t('title')}</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                     <Row xs={2} sm={3} md={4} lg={6} className="g-4">               
