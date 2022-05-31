@@ -131,6 +131,7 @@ const logInWithEmailAndPassword = async (email, password) => {
   const storage = getStorage(app);
 
   export {
+    firebaseConfig,
     auth,
     db,
     storage,

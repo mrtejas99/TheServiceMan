@@ -2,7 +2,7 @@
 //Default theme
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import React, { useContext } from "react";
+import React from "react";
 import { Helmet } from 'react-helmet';
 
 import { useDarkMode } from './DarkMode'
