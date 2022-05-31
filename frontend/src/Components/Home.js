@@ -24,12 +24,13 @@ function Home(){
         let q = '';
         try {
             if(filterCriteria=='')
-                q = query(collection(db, "serviceads"), orderBy(sortCriteria, 'desc'));
+                q = query(collection(db, "serviceads"), orderBy(sortCriteria, 'asc'));
                //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
             else
                q = query(collection(db, "serviceads"), where('category', "==", filterCriteria), orderBy(sortCriteria, 'asc'));
             
             const doc = await getDocs(q);
+            setInfo([]);    //
             doc.forEach(element => {
                 var data = element.data();
                 setInfo(arr => [...arr , data]);
@@ -65,6 +66,7 @@ function Home(){
                     <h5>{t('filter')}</h5>
                     <div className='my-3 mx-3'>
                         <h6>{t('category')}</h6>
+                        <a href="#" onClick={filterCategory} id="">{t('clearfilter')}</a><br />
                         <a href="#" onClick={filterCategory} id="Cook" >{t('cook')}</a><br />
                         <a href="#" onClick={filterCategory} id="Electrician" >{t('electrician')}</a><br />
                         <a href="#" onClick={filterCategory} id="Plumber" >{t('plumber')}</a><br />
@@ -81,7 +83,7 @@ function Home(){
                 </Col>
 
                 <Col className="mx-3">
-                    <Dropdown className="my-3" onSelect={(e) =>setSortCriteria(e)} value={sortCriteria}>
+                    <Dropdown className="my-3" onSelect={(e) =>{console.log(e);setSortCriteria(e)}} value={sortCriteria}>
                         <Dropdown.Toggle variant="secondary" id="dropdown-basic" >{t('sort')}
                         </Dropdown.Toggle>
 
