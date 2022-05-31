@@ -21,16 +21,15 @@ function Home(){
     const navigate = useNavigate();
     const location = useLocation(); 
     const Fetchdata = async ()=>{
-        let doc = '';
+        let q = '';
         try {
-            const q = query(collection(db, "serviceads"));
-            doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
+            if(filterCriteria=='')
+                q = query(collection(db, "serviceads"), orderBy(sortCriteria, 'desc'));
+               //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
+            else
+               q = query(collection(db, "serviceads"), where('category', "==", filterCriteria), orderBy(sortCriteria, 'asc'));
             
-            //if(filterCriteria=='')
-            //    doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
-            //else
-            //    doc = await getDocs(q, where('category', "==", filterCriteria), orderBy(sortCriteria, 'asc'));
-
+            const doc = await getDocs(q);
             doc.forEach(element => {
                 var data = element.data();
                 setInfo(arr => [...arr , data]);
@@ -50,7 +49,7 @@ function Home(){
 
     useEffect(() => {
         Fetchdata();
-    }, [location]);
+    }, [location, sortCriteria, filterCriteria]);
     
     return(
         <Container fluid className="py-3">
@@ -66,10 +65,10 @@ function Home(){
                     <h5>{t('filter')}</h5>
                     <div className='my-3 mx-3'>
                         <h6>{t('category')}</h6>
-                        <a onClick={filterCategory} id="Cook" >{t('cook')}</a><br />
-                        <a onClick={filterCategory} id="Electrician" >{t('electrician')}</a><br />
-                        <a onClick={filterCategory} id="Plumber" >{t('plumber')}</a><br />
-                        <a onClick={filterCategory} id="Beautician" >{t('beautician')}</a><br />
+                        <a href="#" onClick={filterCategory} id="Cook" >{t('cook')}</a><br />
+                        <a href="#" onClick={filterCategory} id="Electrician" >{t('electrician')}</a><br />
+                        <a href="#" onClick={filterCategory} id="Plumber" >{t('plumber')}</a><br />
+                        <a href="#" onClick={filterCategory} id="Beautician" >{t('beautician')}</a><br />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('location')}</h6>

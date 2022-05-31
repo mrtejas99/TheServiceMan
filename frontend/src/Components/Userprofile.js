@@ -11,6 +11,7 @@ function Userprofile() {
     const [user, loading, error] = useAuthState(auth);
     const [fname, setFname] = useState("");
     const [lname, setLname] = useState("");
+    const [info , setInfo] = useState([]);
     const navigate = useNavigate();
     const {t} = useTranslation("common");
 
@@ -28,11 +29,28 @@ function Userprofile() {
         }
     };
 
+    const fetchUserAds = async () => {
+        try{
+            const q = query(collection(db, "serviceads"), where("posted_by", "==", user.uid));
+            const doc = await getDocs(q);
+            doc.forEach(element => {
+                var data = element.data();
+                console.log(data);
+                setInfo(arr => [...arr , data]);
+            });
+            
+        } catch (err) {
+            console.error(err);
+            alert("An error occured while fetching user ads");
+        }
+    }
+
     useEffect(() => {
         if (loading) return;
         if (!user) return navigate("/Login");
         // eslint-disable-next-line
         fetchUserName();
+        fetchUserAds();
         // eslint-disable-next-line
       }, [user, loading]);
     return(
@@ -58,73 +76,21 @@ function Userprofile() {
                         <Button variant="info" onClick={() => navigate("/Sellers")} className='my-3'>{t('switch')}</Button>
                     </Col>
                 </Row>
-                
-                <Row className='py-5'>
-                    <Col>
-                        <h5>{t('yourads')}</h5>
-                        <Card style={{ width: '18rem' }} className='my-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
+                <br/>   
+                <h4>{t('yourads')}</h4> 
+                <Row xs={2} sm={3} md={4} lg={6} className="g-4">          
+                    {
+                    info.map((data) => (
+                        <Card style={{ width: '15rem' }} className='me-3'>
+                            <Card.Img variant="top" src={data.banner_url} />
                             <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => navigate("/Adview")} >{t('viewad')}</Button>
+                                <Card.Title>{data.title}</Card.Title>
+                                <Card.Text>{data.location}</Card.Text>
+                                <Button variant="primary" onClick={() => navigate("/Adview", {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.location, posted_by: data.posted_by}})}>{t('viewad')}</Button>
                             </Card.Body>
                         </Card>
-
-                        <Card style={{ width: '18rem' }} className='my-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
-                            <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => navigate("/Adview")}>{t('viewad')}</Button>
-                            </Card.Body>
-                        </Card>
-
-                        <Card style={{ width: '18rem' }} className='my-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
-                            <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => navigate("/Adview")}>{t('viewad')}</Button>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-
-                    <Col>
-                        <h5>{t('lastviewedads')}</h5>
-                        <Card style={{ width: '18rem' }} className='my-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
-                            <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => navigate("/Adview")}>{t('viewad')}</Button>
-                            </Card.Body>
-                        </Card>
-
-                        <Card style={{ width: '18rem' }} className='my-3'>
-                            <Card.Img variant="top" src="https://picsum.photos/200/100" />
-                            <Card.Body>
-                                <Card.Title>Card Title</Card.Title>
-                                <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
-                                </Card.Text>
-                                <Button variant="primary" onClick={() => navigate("/Adview")}>{t('viewad')}</Button>
-                            </Card.Body>
-                        </Card>
-                    </Col>
+                    ))
+                    }
                 </Row>
 
             </Container>
