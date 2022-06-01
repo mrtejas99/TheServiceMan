@@ -11,6 +11,7 @@ import AdminLoginPage from './Admin/AdminLoginPage';
 import * as User from './Admin/ResourceUsers';
 import * as Ad from './Admin/ResourceAds';
 import * as Cat from './Admin/ResourceCategories';
+import * as Loc from './Admin/ResourceLocations';
 
 function AdminPanel() {
 	return (
@@ -21,6 +22,7 @@ function AdminPanel() {
 			<Resource name="users" list={User.UserList} show={User.UserShow} edit={User.UserEdit} />
 			<Resource name="serviceads" list={Ad.AdList} show={Ad.AdShow} edit={Ad.AdEdit} />
 			<Resource name="adcategories" list={Cat.CatList} show={Cat.CatShow} edit={Cat.CatEdit} />
+			<Resource name="locations" list={Loc.LocList} show={Loc.LocShow} edit={Loc.LocEdit} />
 		</Admin>
 	);
 }

@@ -42,13 +42,15 @@ function FilterGroup(props) {
 
 function Home() {
     const [info , setInfo] = useState([]);
-    const [catMaster, setCatMaster] = useState([]);
     const [sortCriteria, setSortCriteria] = useState('posted_date');
     const [filterCriteriaCategory, setFilterCriteriaCategory] = useState('');
     const [filterCriteriaGeo, setFilterCriteriaGeo] = useState('');
     const [filterStar, setFilterCriteriaStar] = useState('');
     const [filterCriteriaLang, setFilterCriteriaLang] = useState('');
 
+    const [catMaster, setCatMaster] = useState([]);
+    const [geoMaster, setGeoMaster] = useState([]);
+    
     // Start the fetch operation as soon as
     // the page loads
 
@@ -102,7 +104,7 @@ function Home() {
             orderBy(name_field, 'asc')
         ))
         .then(data => data.docs.map(element => element.data()))
-        .then(data => data.map(elem => ({"name": elem[name_field]})))
+        .then(data => data.map(elem => ({"name": elem[name_field], "popularity": elem.popularity})))
     );
 
     //When home page is mounted
@@ -110,9 +112,11 @@ function Home() {
         //Fetch master data
         getFilterMasterData("adcategories", "category_name")
         .then(categories => setCatMaster(categories));
+        //getFilterMasterData("locations", "geohash")
+        //.then(locat => setGeoMaster(locat));
     });
 
-    return(
+    return (
         <Container fluid className="py-3">
             <span><b className='me-3'>{t('popularsearches')}</b>{' '}
             <a href="#">{t('cook')}</a> {' '}
@@ -131,11 +135,7 @@ function Home() {
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('location')}</h6>
-                        <a onClick={(e)=>{e.preventDefault();console.log(filterCriteriaGeo);setFilterCriteriaGeo('')}} href="#">{t('clearfilter')}</a><br />
-                        <a onClick={(e)=>{e.preventDefault();setFilterCriteriaGeo("Panaji")}} href="#">{t('panaji')}</a><br />
-                        <a onClick={()=>setFilterCriteriaGeo("Mapusa")} href="#">{t('mapusa')}</a><br />
-                        <a onClick={()=>setFilterCriteriaGeo("Margao")} href="#">{t('margao')}</a><br />
-                        <a onClick={()=>setFilterCriteriaGeo("Ponda")}  href="#">{t('ponda')}</a><br />
+                        <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('rating')}</h6>
