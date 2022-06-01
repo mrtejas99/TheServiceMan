@@ -8,20 +8,23 @@ import {FaStar} from "react-icons/fa";
 // Import Firestore database
 import { db } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
- 
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+
 function Adview(){
+    const [user, loading, error] = useAuthState(auth);
+    
     const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778
     const navigate = useNavigate();
     console.log(location.state.posted_date);
     const [info , setInfo] = useState([]);
 
-    // const [fname, setFname] = useState('');
-    // const [lname, setLname] = useState('');
-    // const [fuid, setFuid] = useState('');
-
-
     const [fnames, setFnames] = useState([]);
     const [lnames, setLnames] = useState([]);
+
+    const [posterFname, setPosterFname] = useState('');
+    const [posterLname, setPosterLname] = useState('');
+
 
     const logoStyle={
         resizeMode: "cover",
@@ -41,6 +44,17 @@ function Adview(){
             console.error(err);
             alert("An error occured while fetching feedbacks");
         }
+
+        try{
+            const q = query(collection(db, "users"),where("uid", "==",location.state.posted_by) );
+            const doc = await getDocs(q);
+            const data = doc.docs[0].data();
+            setPosterFname(data.fname);
+            setPosterLname(data.lname);
+        } catch (err) {
+            console.error(err);
+            alert("An error occured while fetching names of Ad poster");
+        }
     }
 
     const FetchNames = async ()=>{
@@ -50,7 +64,6 @@ function Adview(){
                 const q = query(collection(db, "users"), where("uid", "==", d.posted_by));
                 const doc = await getDocs(q);
                 const data = doc.docs[0].data();
-                console.log(data.fname);
                 setFnames(fnames => [...fnames, data.fname]);
                 setLnames(lnames => [...lnames, data.lname]);
             });
@@ -73,50 +86,54 @@ function Adview(){
             <Container className="py-3">
                 <Breadcrumb>
                     <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                    <Breadcrumb.Item href="#">Cook</Breadcrumb.Item>
+                    <Breadcrumb.Item href="#">{location.state.category}</Breadcrumb.Item>
                     <Breadcrumb.Item href="#">Goa</Breadcrumb.Item>
-                    <Breadcrumb.Item active>Panaji</Breadcrumb.Item>
+                    <Breadcrumb.Item active>{location.state.location}</Breadcrumb.Item>
                 </Breadcrumb>
                 
                 <Row className='py-5'>
                     <Col>
-                        <h5>{location.state.title}</h5>
-                        <Image styel={{resizeMode: "cover"}} src={location.state.banner_url}/>
-                        <h5 >Description</h5>
+                        <h3>{location.state.title}</h3>
+                        <Image style={{resizeMode: "cover"}} src={location.state.banner_url}/>
+                        <h4 >Description</h4>
                         <p>{location.state.description}</p>
 
-                        <h5>Experience</h5>
+                        <h4>Experience</h4>
                         <p>{location.state.experience}</p>
                     </Col>
                    
                     <Col >
-                        <h5>Skills</h5>
+                        <h4>Skills</h4>
                         <div className='py-3'>
                             { 
                                 location.state.skills.split(",").map((e) => <Badge  className="m-1" bg="secondary">{e}</Badge>)
                             }
                         </div>
-                        <h5>User description</h5>
+                        <h4>User description</h4>
 
                         <Card style={{ width: '25rem'}} className="my-3">
                             <Row>
-                                <Col><Card.Img className='px-3 py-3'variant="top" src={logo} style={logoStyle} /></Col>
-                                <Col>
+                                <Col className="w-25"><Card.Img className='px-2 py-2'variant="top" src={logo} style={logoStyle} /></Col>
+                                <Col className="w-75">
                                 <Card.Body>
-                                    <Card.Title>{location.state.fname} {location.state.lname}</Card.Title>
+                                    <Card.Title>{posterFname} {posterLname}</Card.Title>
                                     <br/>
-                                    <Button variant="primary" className="btn-sm" onClick={() => navigate("/customerfeedback",{state:{posted_by:location.state.posted_by,posted_date:location.state.posted_date}})} >Feedback</Button>
-                                    <br/>
-                                    <Button variant="primary" className="btn-sm" onClick={() => navigate("/chat",{state:{posted_by:location.state.posted_by}})} >Chat</Button>
+                                    <Button variant="primary" className="btn-sm my-0 me-3" onClick={() => {
+                                        if(user.uid!=location.state.posted_by) 
+                                            navigate("/customerfeedback",{state:{posted_by:location.state.posted_by,posted_date:location.state.posted_date}})
+                                        else 
+                                            alert("You cannot give feedback to your Ad");}}>Feedback
+                                        </Button>
+                                    <Button variant="primary" className="btn-sm my-0" onClick={() => navigate("/chat",{state:{posted_by:location.state.posted_by}})} >Chat</Button>
                                 </Card.Body>
                                 </Col>
                             </Row>
                         </Card>
 
-                        <h5>Feedback</h5>                                     
+                        <h4>Feedback</h4>                                     
                         {
                         info.map((data,index) => (
-                            <Card style={{ width: '25rem'}}>
+                            <Card style={{ height: '8rem'}}>
                             <Row>
                                 <Col>
                                     <Card.Body>
@@ -138,7 +155,7 @@ function Adview(){
                             </Card>
                         ))
                         }
-                        <Link to="/Sellers" state={{posted_by:location.state.posted_by}}>View more</Link>
+                        <Link className="my-3" to="/Sellers" state={{posted_by:location.state.posted_by}}>View more</Link>
                     </Col>
                 </Row>
 
