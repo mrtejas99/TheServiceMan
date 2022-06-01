@@ -45,7 +45,8 @@ function TheServiceManApp() {
 				<Route path="/register" element={<Register/>} />
 				<Route path="/forgotpass" element={<Forgotpass/>} />
 				<Route path="/Userprofile" element={<Userprofile/>} />
-				<Route path="/Adview" element={<Adview/>} />
+				<Route exact path="/Adview" element={<Adview/>} />
+				<Route path="/Adview/:id" element={<Adview/>} />
 				<Route path="/Customerfeedback" element={<Customerfeedback />} />
 				<Route path="/Servicefeedback" element={<Servicefeedback />} />
 				<Route path="/Adcreate" element={<Adcreate />} />

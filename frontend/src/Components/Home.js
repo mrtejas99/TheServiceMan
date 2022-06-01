@@ -23,7 +23,6 @@ function Home(){
 
     const {t} = useTranslation("common");
     const navigate = useNavigate();
-    const location = useLocation(); 
     const Fetchdata = async ()=>{
         let q = '';
         try {
@@ -52,7 +51,7 @@ function Home(){
 
     useEffect(() => {
         Fetchdata();
-    }, [location, sortCriteria, filterCategory, filterGeo, filterLang ,filterStar]);
+    }, [sortCriteria, filterCategory, filterGeo, filterLang ,filterStar]);
     
     return(
         <Container fluid className="py-3">
@@ -115,16 +114,12 @@ function Home(){
                     <Row xs={2} sm={3} md={4} lg={6} className="g-4">               
                         {
                         info.map((data) => (
-                            <Card style={{ width: '15rem', }} className='me-3'>
+                            <Card style={{ width: '15rem' }} className='me-3'>
                                 <Card.Img variant="top" src={data.banner_url} />
-                                <Card.Body style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-                                    <div>
-                                        <Card.Title>{data.title}</Card.Title>
-                                        <Card.Text>{data.location}</Card.Text>
-                                    </div>
-                                    <div>
-                                        <Button variant="primary" onClick={() => navigate("/Adview", {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.location, posted_by: data.posted_by, posted_date:data.posted_date}})}>{t('viewad')}</Button>
-                                    </div>
+                                <Card.Body>
+                                    <Card.Title>{data.title}</Card.Title>
+                                    <Card.Text>{data.location}</Card.Text>
+                                    <Button variant="primary" onClick={() => navigate(`/Adview/${data.posted_date}`)}>{t('viewad')}</Button>
                                 </Card.Body>
                             </Card>
                         ))

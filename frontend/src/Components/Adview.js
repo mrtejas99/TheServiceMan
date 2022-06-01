@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Button, Col, Row, Card, Breadcrumb, Table, Image, Badge } from "react-bootstrap";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import logo from '../profile.png'
 import {FaStar} from "react-icons/fa";
 
@@ -13,11 +13,13 @@ import { auth } from "../firebase";
 
 function Adview(){
     const [user, loading, error] = useAuthState(auth);
+    const { id } = useParams(); //the ad id
     
-    const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778
+    //const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778        
+
     const navigate = useNavigate();
-    console.log(location.state.posted_date);
-    const [info , setInfo] = useState([]);
+    const [ad, setAd] = useState
+    const [feedbacks , setFeedbacks] = useState([]);
 
     const [fnames, setFnames] = useState([]);
     const [lnames, setLnames] = useState([]);
@@ -31,22 +33,34 @@ function Adview(){
         maxHeight: '8rem',
         maxWidth: '8rem'
     }
-    const Fetchdata = async ()=>{
-        try {
-            const q = query(collection(db, "feedback"),where("adid", "==",location.state.posted_date) );
-            const doc = await getDocs(q);
-            doc.forEach(element => {
-                var data = element.data();
-                setInfo(arr => [...arr , data]);
-            });
 
+    const FetchAd = async ()=>{
+        try {
+            const q = query(collection(db, "serviceads"), where('posted_date', "==", id));
+            const doc = await getDocs(q);
+            const data = doc.docs[0].data();    //only one matching ad for each id
+            setAd(data);
+        } catch (err) {
+            console.error(err);
+            alert("An error occured while fetching ads");
+        }
+    }
+
+    const FetchFeedbacks = async ()=>{
+        try {
+            const q = query(collection(db, "feedback"), where("adid", "==", id) );
+            const doc = await getDocs(q);
+            doc.forEach(element => {    //multiple feedback for one id
+                var data = element.data();
+                setFeedbacks(arr => [...arr , data]);
+            });
         } catch (err) {
             console.error(err);
             alert("An error occured while fetching feedbacks");
         }
 
         try{
-            const q = query(collection(db, "users"),where("uid", "==",location.state.posted_by) );
+            const q = query(collection(db, "users"),where("uid", "==",ad.posted_by) );
             const doc = await getDocs(q);
             const data = doc.docs[0].data();
             setPosterFname(data.fname);
@@ -59,9 +73,8 @@ function Adview(){
 
     const FetchNames = async ()=>{
         try{
-            console.log(info.keys());
-            info.map( async d =>{
-                const q = query(collection(db, "users"), where("uid", "==", d.posted_by));
+            feedbacks.map( async d =>{
+                const q = query(collection(db, "users"), where("uid", "==", ad.posted_by));
                 const doc = await getDocs(q);
                 const data = doc.docs[0].data();
                 setFnames(fnames => [...fnames, data.fname]);
@@ -75,38 +88,42 @@ function Adview(){
     }
 
     useEffect(() => {
-        Fetchdata();
-    }, []);
+        FetchAd();
+    }, [id]);
+
+    useEffect(() => {
+        FetchFeedbacks();
+    }, [ad]);
 
     useEffect(() => {
         FetchNames();
-    }, [info]);
+    }, [feedbacks]);
 
     return(
             <Container className="py-3">
                 <Breadcrumb>
                     <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                    <Breadcrumb.Item href="#">{location.state.category}</Breadcrumb.Item>
+                    <Breadcrumb.Item href="#">{ad.category}</Breadcrumb.Item>
                     <Breadcrumb.Item href="#">Goa</Breadcrumb.Item>
-                    <Breadcrumb.Item active>{location.state.location}</Breadcrumb.Item>
+                    <Breadcrumb.Item active>{ad.location}</Breadcrumb.Item>
                 </Breadcrumb>
                 
                 <Row className='py-5'>
                     <Col>
-                        <h3>{location.state.title}</h3>
-                        <Image style={{resizeMode: "cover"}} src={location.state.banner_url}/>
+                        <h3>{ad.title}</h3>
+                        <Image style={{resizeMode: "cover"}} src={ad.banner_url}/>
                         <h4 >Description</h4>
-                        <p>{location.state.description}</p>
+                        <p>{ad.description}</p>
 
                         <h4>Experience</h4>
-                        <p>{location.state.experience}</p>
+                        <p>{ad.experience}</p>
                     </Col>
                    
                     <Col >
                         <h4>Skills</h4>
                         <div className='py-3'>
                             { 
-                                location.state.skills.split(",").map((e) => <Badge  className="m-1" bg="secondary">{e}</Badge>)
+                                ad.skills.split(",").map((e) => <Badge  className="m-1" bg="secondary">{e}</Badge>)
                             }
                         </div>
                         <h4>User description</h4>
@@ -119,12 +136,12 @@ function Adview(){
                                     <Card.Title>{posterFname} {posterLname}</Card.Title>
                                     <br/>
                                     <Button variant="primary" className="btn-sm my-0 me-3" onClick={() => {
-                                        if(user.uid!=location.state.posted_by) 
-                                            navigate("/customerfeedback",{state:{posted_by:location.state.posted_by,posted_date:location.state.posted_date}})
+                                        if(user.uid!=ad.posted_by) 
+                                            navigate("/customerfeedback/",{state:{posted_by:ad.posted_by,posted_date:ad.posted_date}})
                                         else 
                                             alert("You cannot give feedback to your Ad");}}>Feedback
                                         </Button>
-                                    <Button variant="primary" className="btn-sm my-0" onClick={() => navigate("/chat",{state:{posted_by:location.state.posted_by}})} >Chat</Button>
+                                    <Button variant="primary" className="btn-sm my-0" onClick={() => navigate("/chat",{state:{posted_by:ad.posted_by}})} >Chat</Button>
                                 </Card.Body>
                                 </Col>
                             </Row>
@@ -132,7 +149,7 @@ function Adview(){
 
                         <h4>Feedback</h4>                                     
                         {
-                        info.map((data,index) => (
+                        feedbacks.map((data,index) => (
                             <Card style={{ height: '8rem'}}>
                             <Row>
                                 <Col>
@@ -155,7 +172,7 @@ function Adview(){
                             </Card>
                         ))
                         }
-                        <Link className="my-3" to="/Sellers" state={{posted_by:location.state.posted_by}}>View more</Link>
+                        <Link className="my-3" to="/Sellers" state={{posted_by:ad.posted_by}}>View more</Link>
                     </Col>
                 </Row>
 
