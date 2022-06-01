@@ -5,18 +5,49 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { db } from "../firebase";
 import { query, collection, getDocs, where, orderBy } from "firebase/firestore";
 
-import { Container, Button, Col, Row, Card, Dropdown } from "react-bootstrap";
+import { Container, Button, Col, Row, Card, Dropdown, ListGroup } from "react-bootstrap";
 
 //translate
 import { useTranslation } from "react-i18next";
 
-function Home(){
+//Font-awesome
+import { RiFilterOffFill } from "react-icons/ri";
+
+function FilterGroup(props) {
+    const [filterItems, setFilterItems] = useState([]);
+    const onFilterSelect = props.onFilterSelect;
+    const setFilter = (ev) => {
+        ev.preventDefault();
+        const filterValue = ev.target.dataset.filter;
+        onFilterSelect(filterValue);
+    };
+
+    const fData = props.filterData;
+
+    useEffect(() => {
+        setFilterItems(<>{fData.map(elem => (
+            <li key={elem.name}>
+                <a href="#" data-filter={elem.name} onClick={setFilter}>{elem.name}</a>
+            </li>
+        ))}</>);
+    }, [fData])
+
+    return (
+        <ul className="list-unstyled">
+            <li><a href="#" onClick={setFilter} data-filter=""><RiFilterOffFill />{'Clear Filter'}</a></li>
+            { filterItems }
+        </ul>
+    );
+}
+
+function Home() {
     const [info , setInfo] = useState([]);
+    const [catMaster, setCatMaster] = useState([]);
     const [sortCriteria, setSortCriteria] = useState('posted_date');
-    const [filterCriteria, setFilterCriteria] = useState('');
-    const [filterGeo, setFilterGeo] = useState('');
-    const [filterStar, setFilterStar] = useState('');
-    const [filterLang, setFilterLang] = useState('');
+    const [filterCriteriaCategory, setFilterCriteriaCategory] = useState('');
+    const [filterCriteriaGeo, setFilterCriteriaGeo] = useState('');
+    const [filterStar, setFilterCriteriaStar] = useState('');
+    const [filterCriteriaLang, setFilterCriteriaLang] = useState('');
 
     // Start the fetch operation as soon as
     // the page loads
@@ -24,43 +55,63 @@ function Home(){
     const {t} = useTranslation("common");
     const navigate = useNavigate();
     const location = useLocation(); 
-    const Fetchdata = async ()=>{
+    const fetchFilteredAdData = () => new Promise((resolve, reject) => {
         let q = '';
-        try {
-            if(filterCriteria=='')
-                q = query(collection(db, "serviceads"), orderBy(sortCriteria, 'asc'));
-               //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
-            else if(filterCriteria!="")
-                q = query(collection(db, "serviceads"), where('category', "==", filterCriteria), orderBy(sortCriteria, 'asc'));
-            else if(filterGeo!='')
-                q = query(collection(db, "serviceads"), where('location', "==", filterGeo), orderBy(sortCriteria, 'asc'));
-            else if(filterLang!='')
-                q = query(collection(db, "serviceads"), where('language', "==", filterLang), orderBy(sortCriteria, 'asc'));
-            else if(filterStar!='')
-                q = query(collection(db, "serviceads"), where('rating', "==", filterStar), orderBy(sortCriteria, 'asc'));
-            
-            const doc = await getDocs(q);
-            setInfo([]);    //clear results of previous filter
-            doc.forEach(element => {
-                var data = element.data();
-                setInfo(arr => [...arr , data]);
+
+        //Form the ads fetch query with filters
+
+        if(filterCriteriaCategory=='')
+            q = query(collection(db, "serviceads"), orderBy(sortCriteria, 'asc'));
+            //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
+        else if(filterCriteriaCategory!="")
+            q = query(collection(db, "serviceads"), where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'));
+        else if(filterCriteriaGeo!='')
+            q = query(collection(db, "serviceads"), where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'));
+        else if(filterCriteriaLang!='')
+            q = query(collection(db, "serviceads"), where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'));
+        else if(filterStar!='')
+            q = query(collection(db, "serviceads"), where('rating', "==", filterStar), orderBy(sortCriteria, 'asc'));
+        
+        getDocs(q)
+        .then(data => resolve(data))
+        .catch(error => reject(error));
+    });
+
+    useEffect(
+        () => {
+            fetchFilteredAdData()
+            .then(data => {
+                setInfo([]);    //clear results of previous filter
+                data.forEach(element => {
+                    var data = element.data();
+                    setInfo(arr => [...arr , data]);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                alert("An error occured while fetching ads");
             });
-        } catch (err) {
-            console.error(err);
-            alert("An error occured while fetching ads");
-        }
-    }
+        },
+        [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang]
+    );
 
-    const filterCategory = (e)=> {
-        e.preventDefault();
-        let category = e.target.id;
-        setFilterCriteria(category);
-    }
+    const getFilterMasterData = (colle, name_field) => (
+        getDocs(query(
+            collection(db, colle),
+            orderBy("popularity", 'desc'),
+            orderBy(name_field, 'asc')
+        ))
+        .then(data => data.docs.map(element => element.data()))
+        .then(data => data.map(elem => ({"name": elem[name_field]})))
+    );
 
+    //When home page is mounted
     useEffect(() => {
-        Fetchdata();
-    }, [location, sortCriteria, filterCriteria, filterGeo, filterLang]);
-    
+        //Fetch master data
+        getFilterMasterData("adcategories", "category_name")
+        .then(categories => setCatMaster(categories));
+    });
+
     return(
         <Container fluid className="py-3">
             <span><b className='me-3'>{t('popularsearches')}</b>{' '}
@@ -73,37 +124,34 @@ function Home(){
             <Row className='py-5'>
                 <Col sm={2} >
                     <h5>{t('filter')}</h5>
+                    
                     <div className='my-3 mx-3'>
                         <h6>{t('category')}</h6>
-                        <a href="#" onClick={filterCategory} id="">{t('clearfilter')}</a><br />
-                        <a href="#" onClick={filterCategory} id="Cook" >{t('cook')}</a><br />
-                        <a href="#" onClick={filterCategory} id="Electrician" >{t('electrician')}</a><br />
-                        <a href="#" onClick={filterCategory} id="Plumber" >{t('plumber')}</a><br />
-                        <a href="#" onClick={filterCategory} id="Beautician" >{t('beautician')}</a><br />
+                        <FilterGroup filterData={catMaster} onFilterSelect={setFilterCriteriaCategory} />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('location')}</h6>
-                        <a onClick={(e)=>{e.preventDefault();console.log(filterGeo);setFilterGeo('')}} href="#">{t('clearfilter')}</a><br />
-                        <a onClick={(e)=>{e.preventDefault();setFilterGeo("Panaji")}} href="#">{t('panaji')}</a><br />
-                        <a onClick={()=>setFilterGeo("Mapusa")} href="#">{t('mapusa')}</a><br />
-                        <a onClick={()=>setFilterGeo("Margao")} href="#">{t('margao')}</a><br />
-                        <a onClick={()=>setFilterGeo("Ponda")}  href="#">{t('ponda')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();console.log(filterCriteriaGeo);setFilterCriteriaGeo('')}} href="#">{t('clearfilter')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();setFilterCriteriaGeo("Panaji")}} href="#">{t('panaji')}</a><br />
+                        <a onClick={()=>setFilterCriteriaGeo("Mapusa")} href="#">{t('mapusa')}</a><br />
+                        <a onClick={()=>setFilterCriteriaGeo("Margao")} href="#">{t('margao')}</a><br />
+                        <a onClick={()=>setFilterCriteriaGeo("Ponda")}  href="#">{t('ponda')}</a><br />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('rating')}</h6>
-                        <a onClick={(e)=>{e.preventDefault();console.log(filterStar);setFilterStar('')}} href="#">{t('clearfilter')}</a><br />
-                        <a onClick={(e)=>{e.preventDefault();setFilterStar("5")}} href="#">{t('five')}</a><br />
-                        <a onClick={()=>setFilterStar("4")} href="#">{t('four')}</a><br />
-                        <a onClick={()=>setFilterStar("3")} href="#">{t('three')}</a><br />
-                        <a onClick={()=>setFilterStar("2")}  href="#">{t('two')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();console.log(filterStar);setFilterCriteriaStar('')}} href="#">{t('clearfilter')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();setFilterCriteriaStar("5")}} href="#">{t('five')}</a><br />
+                        <a onClick={()=>setFilterCriteriaStar("4")} href="#">{t('four')}</a><br />
+                        <a onClick={()=>setFilterCriteriaStar("3")} href="#">{t('three')}</a><br />
+                        <a onClick={()=>setFilterCriteriaStar("2")}  href="#">{t('two')}</a><br />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('language')}</h6>
-                        <a onClick={(e)=>{e.preventDefault();console.log(filterLang);setFilterGeo('')}} href="#">{t('clearfilter')}</a><br />
-                        <a onClick={(e)=>{e.preventDefault();setFilterLang("English")}} href="#">{t('english')}</a><br />
-                        <a onClick={()=>setFilterLang("Marathi")} href="#">{t('marathi')}</a><br />
-                        <a onClick={()=>setFilterLang("Hindi")} href="#">{t('hindi')}</a><br />
-                        <a onClick={()=>setFilterLang("Gujarati")}  href="#">{t('gujarati')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();console.log(filterCriteriaLang);setFilterCriteriaGeo('')}} href="#">{t('clearfilter')}</a><br />
+                        <a onClick={(e)=>{e.preventDefault();setFilterCriteriaLang("English")}} href="#">{t('english')}</a><br />
+                        <a onClick={()=>setFilterCriteriaLang("Marathi")} href="#">{t('marathi')}</a><br />
+                        <a onClick={()=>setFilterCriteriaLang("Hindi")} href="#">{t('hindi')}</a><br />
+                        <a onClick={()=>setFilterCriteriaLang("Gujarati")}  href="#">{t('gujarati')}</a><br />
                     </div>
 
                 </Col>
