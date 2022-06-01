@@ -4,7 +4,7 @@ import {
     FirebaseDataProvider
 } from 'react-admin-firebase';
 
-import { firebaseConfig } from '../firebase';
+import { firebaseConfig } from '../config';
 
 const options = {};
 

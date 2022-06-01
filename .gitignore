@@ -41,4 +41,6 @@ yarn-error.log*
 
 # databases
 *.db
-src/firebase.js
+
+#firebase config
+src/config.js

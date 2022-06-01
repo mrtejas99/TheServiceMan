@@ -23,15 +23,7 @@ import { getStorage } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBP2VPdcstFYifT4Sop53h54BMbX4Ym-jk",
-  authDomain: "theserviceman-5d308.firebaseapp.com",
-  projectId: "theserviceman-5d308",
-  storageBucket: "theserviceman-5d308.appspot.com",
-  messagingSenderId: "979792316792",
-  appId: "1:979792316792:web:7f7f7a0d522b2a865c608d"
-};
+import { firebaseConfig } from "./config";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
