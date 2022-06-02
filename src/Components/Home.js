@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 //Font-awesome
 import { RiFilterOffFill } from "react-icons/ri";
 
-function FilterGroup(props) {
+function FilterGroup(props) {   //component for filter
     const [filterItems, setFilterItems] = useState([]);
     const onFilterSelect = props.onFilterSelect;
     const setFilter = (ev) => {

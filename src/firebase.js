@@ -1,6 +1,7 @@
 import { 
     GoogleAuthProvider, 
     getAuth, 
+    connectAuthEmulator,
     signInWithPopup, 
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword, 
@@ -10,6 +11,7 @@ import {
 
 import { 
     getFirestore, 
+    connectFirestoreEmulator,
     query, 
     getDocs, 
     collection, 
@@ -19,7 +21,7 @@ import {
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
+import { getStorage, connectStorageEmulator } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -27,8 +29,15 @@ import { firebaseConfig } from "./config";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
+
+//to use the emulator
+connectAuthEmulator(auth, "http://localhost:9099");
+connectFirestoreEmulator(db,"localhost", 8080);
+connectStorageEmulator(storage, "localhost", 9199);
 
 const googleProvider = new GoogleAuthProvider();
 const signInWithGoogle = async () => {
@@ -58,69 +67,68 @@ const logInWithEmailAndPassword = async (email, password) => {
       console.error(err);
       alert(err.message);
     }
-  };
+};
 
-  const registerWithEmailAndPassword = async (fname, lname, email, password) => {
-    try {
-      const res = await createUserWithEmailAndPassword(auth, email, password);
-      const user = res.user;
-      await addDoc(collection(db, "users"), {
-        uid: user.uid,
-        fname,
-        lname,
-        authProvider: "local",
-        email,
-      });
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
+const registerWithEmailAndPassword = async (fname, lname, email, password) => {
+  try {
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+    const user = res.user;
+    await addDoc(collection(db, "users"), {
+      uid: user.uid,
+      fname,
+      lname,
+      authProvider: "local",
+      email,
+    });
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+};
 
-  const sendPasswordReset = async (email) => {
-    try {
-      await sendPasswordResetEmail(auth, email);
-      alert("Password reset link sent!");
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
+const sendPasswordReset = async (email) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset link sent!");
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  }
+};
 
-  const logout = () => {
-    signOut(auth);
-  };
+const logout = () => {
+  signOut(auth);
+};
 
-  const saveAdData = async (
-      user,
-      title, 
-      banner,
-      description, 
-      experience, 
-      skills,
-      location,
-      language,
-      category) => {
-        try {
-          const docRef = await addDoc(collection(db, "serviceads"), {
-            posted_by: user,
-            title: title,
-            banner_url:banner,
-            description: description,
-            experience: experience,
-            skills: skills,
-            location: location,
-            language: language,
-            category: category,
-            posted_date: Date.now()
-          });
-          alert("Document written with ID: ", docRef.id);
-        } catch (e) {
-          alert("Error adding document: ", e);
-        }
-      };
+const saveAdData = async (
+    user,
+    title, 
+    banner,
+    description, 
+    experience, 
+    skills,
+    location,
+    language,
+    category) => {
+      try {
+        const docRef = await addDoc(collection(db, "serviceads"), {
+          posted_by: user,
+          title: title,
+          banner_url:banner,
+          description: description,
+          experience: experience,
+          skills: skills,
+          location: location,
+          language: language,
+          category: category,
+          posted_date: Date.now()
+        });
+        alert("Document written with ID: ", docRef.id);
+      } catch (e) {
+        alert("Error adding document: ", e);
+      }
+};
 
-  const storage = getStorage(app);
 
   export {
     firebaseConfig,

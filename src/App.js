@@ -40,12 +40,11 @@ function TheServiceManApp() {
 			<BoostrapTheme lightModeTheme={BootswatchTheme.FLATLY} darkModeTheme={BootswatchTheme.DARKLY} />
 			<Navigation />
 			<Routes>
-				<Route path='/' element={<Home/>} />
+				<Route exact path='/' element={<Home/>} />
 				<Route path="/login" element={<Login/>} />
 				<Route path="/register" element={<Register/>} />
 				<Route path="/forgotpass" element={<Forgotpass/>} />
 				<Route path="/Userprofile" element={<Userprofile/>} />
-				<Route exact path="/Adview" element={<Adview/>} />
 				<Route path="/Adview/:id" element={<Adview/>} />
 				<Route path="/Customerfeedback" element={<Customerfeedback />} />
 				<Route path="/Servicefeedback" element={<Servicefeedback />} />

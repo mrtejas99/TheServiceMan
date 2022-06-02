@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Container, Button, Col, Row, Card, Breadcrumb, Table, Image, Badge } from "react-bootstrap";
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import logo from '../profile.png'
@@ -12,13 +12,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 
 function Adview(){
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading, error] = useAuthState(auth);  //needed to check for feedback
     const { id } = useParams(); //the ad id
-    
+    console.log(id);
     //const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778        
 
     const navigate = useNavigate();
-    const [ad, setAd] = useState
+    const [ad, setAd] = useState({skills:"none"});   //since it is an document
     const [feedbacks , setFeedbacks] = useState([]);
 
     const [fnames, setFnames] = useState([]);
@@ -36,13 +36,14 @@ function Adview(){
 
     const FetchAd = async ()=>{
         try {
+            if (!id) {alert("fetching before id value found");return;} 
             const q = query(collection(db, "serviceads"), where('posted_date', "==", id));
             const doc = await getDocs(q);
             const data = doc.docs[0].data();    //only one matching ad for each id
             setAd(data);
         } catch (err) {
             console.error(err);
-            alert("An error occured while fetching ads");
+            alert("An error occured while fetching ad data");
         }
     }
 
@@ -80,7 +81,7 @@ function Adview(){
                 setFnames(fnames => [...fnames, data.fname]);
                 setLnames(lnames => [...lnames, data.lname]);
             });
-            console.log(fnames)
+            //console.log(fnames)
         } catch (err) {
             console.error(err);
             alert("An error occured while fetching names of feedbackers");
@@ -100,6 +101,7 @@ function Adview(){
     }, [feedbacks]);
 
     return(
+        <Suspense fallback={"Loading..."}>
             <Container className="py-3">
                 <Breadcrumb>
                     <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
@@ -177,7 +179,7 @@ function Adview(){
                 </Row>
 
             </Container>
-
+        </Suspense>
     );
 }
 
