@@ -10,19 +10,21 @@ import { db } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
+import { number } from "react-admin";
 
 function Adview(){
     const [user, loading, error] = useAuthState(auth);  //needed to check for feedback
-    const { id } = useParams(); //the ad id
-    console.log(id);
+    let { id } = useParams(); //the ad id
+    id =Number(id);//since firebase checks datatype
+    //console.log(id);
     //const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778        
 
     const navigate = useNavigate();
     const [ad, setAd] = useState({skills:"none"});   //since it is an document
     const [feedbacks , setFeedbacks] = useState([]);
 
-    const [fnames, setFnames] = useState([]);
-    const [lnames, setLnames] = useState([]);
+    const [fnames, setFnames] = useState(['']);
+    const [lnames, setLnames] = useState(['']);
 
     const [posterFname, setPosterFname] = useState('');
     const [posterLname, setPosterLname] = useState('');
@@ -36,11 +38,14 @@ function Adview(){
 
     const FetchAd = async ()=>{
         try {
-            if (!id) {alert("fetching before id value found");return;} 
-            const q = query(collection(db, "serviceads"), where('posted_date', "==", id));
+            if (!id) return; 
+            console.log(ad);
+            const q = query(collection(db, "serviceads"), where("posted_date", "==", id));
             const doc = await getDocs(q);
+            console.log(doc.docs);
             const data = doc.docs[0].data();    //only one matching ad for each id
             setAd(data);
+            console.log(ad);
         } catch (err) {
             console.error(err);
             alert("An error occured while fetching ad data");
@@ -49,7 +54,7 @@ function Adview(){
 
     const FetchFeedbacks = async ()=>{
         try {
-            const q = query(collection(db, "feedback"), where("adid", "==", id) );
+            const q = query(collection(db, "feedback"), where("adid", "==", id));
             const doc = await getDocs(q);
             doc.forEach(element => {    //multiple feedback for one id
                 var data = element.data();
@@ -61,7 +66,8 @@ function Adview(){
         }
 
         try{
-            const q = query(collection(db, "users"),where("uid", "==",ad.posted_by) );
+            if(!ad.posted_by) return;
+            const q = query(collection(db, "users"),where("uid", "==",ad.posted_by));
             const doc = await getDocs(q);
             const data = doc.docs[0].data();
             setPosterFname(data.fname);
@@ -75,7 +81,8 @@ function Adview(){
     const FetchNames = async ()=>{
         try{
             feedbacks.map( async d =>{
-                const q = query(collection(db, "users"), where("uid", "==", ad.posted_by));
+                if(!d.posted_by) return;
+                const q = query(collection(db, "users"), where("uid", "==", d.posted_by));
                 const doc = await getDocs(q);
                 const data = doc.docs[0].data();
                 setFnames(fnames => [...fnames, data.fname]);
