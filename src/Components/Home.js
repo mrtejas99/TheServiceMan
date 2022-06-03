@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Import Firestore database
 import { db } from "../firebase";
-import { query, collection, getDocs, where, orderBy } from "firebase/firestore";
+import { query, collection, getDocs, where, orderBy, limit } from "firebase/firestore";
 
 import { Container, Button, Col, Row, Card, Dropdown, ListGroup } from "react-bootstrap";
 
@@ -57,13 +57,11 @@ function Home() {
     const {t} = useTranslation("common");
     const navigate = useNavigate();
     const location = useLocation(); 
+
     const fetchFilteredAdData = () => new Promise((resolve, reject) => {
         let q = '';
-
-        //Form the ads fetch query with filters
-
         if(filterCriteriaCategory=='')
-            q = query(collection(db, "serviceads"), orderBy(sortCriteria, 'asc'));
+            q = query(collection(db, "serviceads"), orderBy(sortCriteria, 'asc'), limit(6));
             //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
         else if(filterCriteriaCategory!="")
             q = query(collection(db, "serviceads"), where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'));
@@ -169,8 +167,8 @@ function Home() {
                     </Dropdown>
                     <Row xs={2} sm={3} md={4} lg={6} className="g-4">               
                         {
-                        info.map((data) => (
-                            <Card style={{ width: '15rem' }} className='me-3'>
+                        info.map((data, idx) => (
+                            <Card key={idx} style={{ width: '15rem' }} className='me-3'>
                                 <Card.Img variant="top" src={data.banner_url} />
                                 <Card.Body>
                                     <Card.Title>{data.title}</Card.Title>
