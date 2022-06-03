@@ -112,7 +112,7 @@ function Home() {
         .then(categories => setCatMaster(categories));
         //getFilterMasterData("locations", "geohash")
         //.then(locat => setGeoMaster(locat));
-    });
+    }, []);
 
     return (
         <Container fluid className="py-3">
