@@ -55,7 +55,7 @@ function FilterGroup(props) {
 
     return (
         <ul className="list-unstyled">
-            <li><a href="#" onClick={setFilter} data-filter=""><RiFilterOffFill />{'Clear Filter'}</a></li>
+            <li><a href="#" onClick={setFilter} data-filter=""><RiFilterOffFill />&nbsp;{'Clear Filter'}</a></li>
             { filterItems }
         </ul>
     );
