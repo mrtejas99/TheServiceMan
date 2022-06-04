@@ -13,6 +13,8 @@ import {
 	SimpleForm,
 	ReferenceField,
 	ReferenceInput,
+	NumberField,
+	NumberInput,
 	TextField,
 	TextInput,
 	ShowButton,
@@ -25,7 +27,7 @@ import {
 	DateField
 } from "react-admin";
 
-//import RichTextInput from "ra-input-rich-text";
+import { RichTextInput } from "ra-input-rich-text";
 
 function AdFilter(props) {
 	return (
@@ -45,8 +47,8 @@ function AdList(props) {
 				<TextField label="Title" source="title" />
 				<TextField label="Category" source="category" />
 				<TextField label="Location" source="location" />
-				<TextField label="Latitude" source="latitude" />
-				<TextField label="Longitude" source="longitude" />
+				<NumberField label="Latitude" source="latitude" />
+				<NumberField label="Longitude" source="longitude" />
 				<TextField label="Geohash" source="geohash" />
 				<DateField label="Posted" source="posted_date" />
 				<EditButton label="" />
@@ -64,8 +66,8 @@ function AdShow(props) {
 				<TextField label="Title" source="title" />
 				<TextField label="Category" source="category" />
 				<TextField label="Location" source="location" />
-				<TextField label="Latitude" source="latitude" />
-				<TextField label="Longitude" source="longitude" />
+				<NumberField label="Latitude" source="latitude" />
+				<NumberField label="Longitude" source="longitude" />
 				<TextField label="Geohash" source="geohash" />
 				<DateField label="Posted" source="posted_date" />
 				<RichTextField label="Description" source="description" />
@@ -80,9 +82,10 @@ function AdEdit(props) {
 		<Edit {...props}>
 			<SimpleForm>
 				<TextInput label="Title" source="title" />
+				<RichTextInput label="Description" source="description" />
 				<TextInput label="Location" source="location" />
-				<TextInput label="Latitude" source="latitude" />
-				<TextInput label="Longitude" source="longitude" />
+				<NumberInput label="Latitude" source="latitude" />
+				<NumberInput label="Longitude" source="longitude" />
 				<TextInput label="Geohash" source="geohash" />
 			</SimpleForm>
 		</Edit>
@@ -94,10 +97,12 @@ function AdCreate(props) {
 		<Create {...props}>
 			<SimpleForm>
 				<TextInput label="Title" source="title" />
+				<RichTextInput label="Description" source="description" />
 				<TextInput label="Location" source="location" />
-				<TextInput label="Latitude" source="latitude" />
-				<TextInput label="Longitude" source="longitude" />
+				<NumberInput label="Latitude" source="latitude" />
+				<NumberInput label="Longitude" source="longitude" />
 				<TextInput label="Geohash" source="geohash" />
+				<TextInput label="Language" source="language" />
 			</SimpleForm>
 		</Create>
 	);

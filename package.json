@@ -11,6 +11,7 @@
     "i18next": "^21.8.4",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.1",
+    "ra-input-rich-text": "^4.1.2",
     "react": "^18.0.0",
     "react-admin": "^4.1.1",
     "react-admin-firebase": "^4.0.2",
