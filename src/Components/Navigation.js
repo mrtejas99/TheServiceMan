@@ -1,10 +1,10 @@
 import React, {  useEffect } from "react";
 
 import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from "react-bootstrap";
-import { LogInOutButton } from "./LogInOutButton";
-import { DarkToggle } from "./DarkMode";
+import { DarkToggle, useDarkMode } from "./DarkMode";
 
-import { useDarkMode } from './DarkMode'
+import { LogInOutButton } from "./LogInOutButton";
+import { SearchAdsBar } from './SearchAds';
 
 //translate
 import { useTranslation } from "react-i18next";
@@ -24,8 +24,8 @@ function onFilterUserLocation() {
 }
 
 function Navigation() {
-	const [ isDarkMode ] = useDarkMode();
-	const navVariant = isDarkMode ? 'dark' : 'light';
+    const [ isDarkMode ] = useDarkMode();
+    const navVariant = isDarkMode ? 'dark' : 'light';
    
     const {i18n, t} = useTranslation("common");
 
@@ -40,7 +40,7 @@ function Navigation() {
          }
      },[]);
 
-	return (
+    return (
         <Navbar collapseOnSelect expand="lg" bg={navVariant} variant={navVariant} className="sticky-top">
         <Container fluid>
         <Navbar.Brand href="/">{t('theserviceman')}</Navbar.Brand>
@@ -55,17 +55,12 @@ function Navigation() {
                     <NavDropdown.Item href="#action/3.3">{t('ponda')}</NavDropdown.Item>
                     <NavDropdown.Item href="#action/3.3">{t('margao')}</NavDropdown.Item>
                 </NavDropdown>
-                <Form className="d-flex w-100 px-5">
-                    <FormControl
-                        type="search"
-                        placeholder="Search"
-                        className="me-2"
-                    />
-                    <Button variant="outline-success">{t('search')}</Button>
-                </Form>
+                <SearchAdsBar />
             </Nav>
             <Nav className='mx-3'>
-                <DarkToggle />
+                <Nav.Item className="d-flex align-items-center">
+                    <DarkToggle />
+                </Nav.Item>
                 <NavDropdown title={t('translate')} id="collasible-nav-dropdown" onSelect={handleTranslate} value={localStorage.getItem("i18nextLng")}>
                     <NavDropdown.Item eventKey="en">English</NavDropdown.Item>
                     <NavDropdown.Item eventKey="bn">বাংলা</NavDropdown.Item>
