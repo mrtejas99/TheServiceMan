@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Import Firestore database
 import { db } from "../firebase";
-import { query, collection, getDocs, where, orderBy, limit } from "firebase/firestore";
+import { query, collection, getDocs, where, orderBy, limit, startAfter } from "firebase/firestore";
 
 import { Container, Button, Col, Row, Card, Dropdown, ListGroup } from "react-bootstrap";
 
@@ -50,7 +50,10 @@ function Home() {
 
     const [catMaster, setCatMaster] = useState([]);
     const [geoMaster, setGeoMaster] = useState([]);
-    
+
+    const [lastDoc, setLastDoc] = useState();   //store the last ad for pagination
+    const [loading, setLoading] = useState(true);  //hourglass
+    const [isEmpty, setIsEmpty] = useState(false);  //showmore
     // Start the fetch operation as soon as
     // the page loads
 
@@ -58,19 +61,37 @@ function Home() {
     const navigate = useNavigate();
     const location = useLocation(); 
 
+    const adsRef = collection(db, "serviceads");
+
+    const updateState = (doc) =>{
+        const isCollectionEmpty = doc.size == 0;
+        if(!isCollectionEmpty){
+            doc.forEach(element => {    
+                var data = element.data();
+                setInfo(arr => [...arr , data]);
+            });
+
+            const lastDoc = doc.docs[doc.docs.length-1];  //the last doc for current fetch
+            setLastDoc(lastDoc);
+        }
+        else
+            setIsEmpty(true);
+        setLoading(false);  //hide hourglass
+    }
+
     const fetchFilteredAdData = () => new Promise((resolve, reject) => {
         let q = '';
         if(filterCriteriaCategory=='')
-            q = query(collection(db, "serviceads"), orderBy(sortCriteria, 'asc'), limit(6));
+            q = query(adsRef, orderBy(sortCriteria, 'asc'), limit(3));
             //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
         else if(filterCriteriaCategory!="")
-            q = query(collection(db, "serviceads"), where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'));
+            q = query(adsRef, where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'), limit(3));
         else if(filterCriteriaGeo!='')
-            q = query(collection(db, "serviceads"), where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'));
+            q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), limit(3));
         else if(filterCriteriaLang!='')
-            q = query(collection(db, "serviceads"), where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'));
+            q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), limit(3));
         else if(filterStar!='')
-            q = query(collection(db, "serviceads"), where('rating', "==", filterStar), orderBy(sortCriteria, 'asc'));
+            q = query(adsRef, where('rating', "==", filterStar), orderBy(sortCriteria, 'asc'), limit(3));
         
         getDocs(q)
         .then(data => resolve(data))
@@ -82,10 +103,7 @@ function Home() {
             fetchFilteredAdData()
             .then(data => {
                 setInfo([]);    //clear results of previous filter
-                data.forEach(element => {
-                    var data = element.data();
-                    setInfo(arr => [...arr , data]);
-                });
+                updateState(data);   
             })
             .catch(err => {
                 console.error(err);
@@ -94,6 +112,29 @@ function Home() {
         },
         [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang]
     );
+
+    const fetchMore = async () =>{
+        setLoading(true);   //show hourglass
+        let q = '';
+        try{
+            if(filterCriteriaCategory=='')
+                q = query(adsRef, orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+            else if(filterCriteriaCategory!="")
+                q = query(adsRef, where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+            else if(filterCriteriaGeo!='')
+                q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+            else if(filterCriteriaLang!='')
+                q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+            else if(filterStar!='')
+                q = query(adsRef, where('rating', "==", filterStar), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+            const doc = await getDocs(q);
+            updateState(doc);
+        }
+        catch (err){
+            console.error(err);
+            alert("An error occured while fetching paginated ads");
+        }
+    }
 
     const getFilterMasterData = (colle, name_field) => (
         getDocs(query(
@@ -179,6 +220,11 @@ function Home() {
                         ))
                         }
                     </Row>
+                    <div className="text-center">
+                    {loading && <h1>⌛</h1>}
+                    {!loading && !isEmpty && <Button className="my-3 w-50" onClick={fetchMore} variant="warning">{t('viewmore')}</Button>}
+                    </div>
+                    
                 </Col>
             </Row>
 

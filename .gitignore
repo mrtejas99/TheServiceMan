@@ -45,3 +45,4 @@ yarn-error.log*
 #firebase config
 src/config.js
 firebase-debug.log
+firestore-debug.log

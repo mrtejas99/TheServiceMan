@@ -86,7 +86,7 @@ function Userprofile() {
                             <Card.Body>
                                 <Card.Title>{data.title}</Card.Title>
                                 <Card.Text>{data.location}</Card.Text>
-                                <Button variant="primary" onClick={() => navigate("/Adview", {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.location, posted_by: data.posted_by}})}>{t('viewad')}</Button>
+                                <Button variant="primary" onClick={() => navigate(`/Adview/${data.posted_date}`, {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.location, posted_by: data.posted_by}})}>{t('viewad')}</Button>
                             </Card.Body>
                         </Card>
                     ))
