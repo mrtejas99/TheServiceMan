@@ -156,7 +156,7 @@ function Home() {
         }
     }
 	
-	const updateFilterMasterProps = (data, name_field) => data.map(elem => Object.assign(elem, {"name": elem[name_field]}));
+	//const updateFilterMasterProps = (data, name_field) => data.map(elem => Object.assign(elem, {"name": elem[name_field]}));
 
     const getFilterMasterData = (colle, name_field) => (
         getDocs(query(
@@ -226,12 +226,11 @@ function Home() {
                     <Row xs={2} sm={3} md={4} lg={6} className="g-4">               
                         {
                         info.map((data, idx) => (
-                            <Card key={idx} style={{ width: '15rem' }} className='me-3'>
+                            <Card className="highlight me-3" role="button" key={idx} style={{ width: '15rem' }} onClick={() => navigate(`/Adview/${data.posted_date}`)}>
                                 <Card.Img variant="top" src={data.banner_url} />
-                                <Card.Body>
+                                <Card.Body className="zoomtext">
                                     <Card.Title>{data.title}</Card.Title>
                                     <Card.Text>{data.location}</Card.Text>
-                                    <Button variant="primary" onClick={() => navigate(`/Adview/${data.posted_date}`)}>{t('viewad')}</Button>
                                 </Card.Body>
                             </Card>
                         ))
