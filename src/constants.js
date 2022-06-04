@@ -25,7 +25,33 @@ const RATING_MASTER = [
 ];
 const LANGUAGE_MASTER = [
 	{
-		"language_name": "English"
+		"language_name": "English",
+		"value": "english"
+	},{
+		"language_name": "Hindi",
+		"value":"hindi"
+	},{
+		"language_name": "Gujarati",
+		"value":"gujarati"
+	},{
+		"language_name": "Marathi",
+		"value":"marathi"
+	},{
+		"language_name": "Bengali",
+		"value":"bengali"
+	},{
+		"language_name": "Tamil",
+		"value":"tamil"
+	},{
+		"language_name": "Odia",
+		"value":"odia"
+	},
+	{
+		"language_name": "Konkani",
+		"value":"konkani"
+	},{
+		"language_name": "Telugu",
+		"value":"telugu"
 	}
 ];
 

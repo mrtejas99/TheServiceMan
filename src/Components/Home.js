@@ -101,17 +101,17 @@ function Home() {
 
     const fetchFilteredAdData = () => new Promise((resolve, reject) => {
         let q = '';
-        if(filterCriteriaCategory=='')
-            q = query(adsRef, orderBy(sortCriteria, 'asc'), limit(3));
             //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
-        else if(filterCriteriaCategory!="")
-            q = query(adsRef, where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'), limit(3));
-        else if(filterCriteriaGeo!='')
-            q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), limit(3));
-        else if(filterCriteriaLang!='')
-            q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), limit(3));
-        else if(filterCriteriaStar!='')
-            q = query(adsRef, where('rating', "==", filterCriteriaStar), orderBy(sortCriteria, 'asc'), limit(3));
+        if(filterCriteriaCategory!="")
+            q = query(adsRef, where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'), limit(5));
+        if(filterCriteriaGeo!='')
+            q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), limit(5));
+        if(filterCriteriaLang!='')
+            q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), limit(5));
+        if(filterCriteriaStar!='')
+            q = query(adsRef, where('rating', "==", filterCriteriaStar), orderBy(sortCriteria, 'asc'), limit(5));
+        if(filterCriteriaCategory=='' && filterCriteriaGeo=='' && filterCriteriaLang=='' && filterCriteriaStar=='') //initially no filters
+             q = query(adsRef, orderBy(sortCriteria, 'asc'), limit(5));
         
         getDocs(q)
         .then(data => resolve(data))
@@ -138,15 +138,15 @@ function Home() {
         let q = '';
         try{
             if(filterCriteriaCategory=='')
-                q = query(adsRef, orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+                q = query(adsRef, orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
             else if(filterCriteriaCategory!="")
-                q = query(adsRef, where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+                q = query(adsRef, where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
             else if(filterCriteriaGeo!='')
-                q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+                q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
             else if(filterCriteriaLang!='')
-                q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+                q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
             else if(filterCriteriaStar!='')
-                q = query(adsRef, where('rating', "==", filterCriteriaStar), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+                q = query(adsRef, where('rating', "==", filterCriteriaStar), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
             const doc = await getDocs(q);
             updateState(doc);
         }
@@ -208,7 +208,7 @@ function Home() {
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('language')}</h6>
-						<FilterGroup filterData={langMaster} onFilterSelect={setFilterCriteriaLang} currentSelectedFilter={filterCriteriaLang} filterDisplayField="language_name" />
+						<FilterGroup filterData={langMaster} onFilterSelect={setFilterCriteriaLang} currentSelectedFilter={filterCriteriaLang} filterDisplayField="language_name" filterByProp="value"/>
                     </div>
                 </Col>
 
