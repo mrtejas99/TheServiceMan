@@ -33,7 +33,6 @@ function AdFilter(props) {
 			<TextInput label="Title" source="title" alwaysOn />
 			<TextInput label="Category" source="category" alwaysOn />
 			<TextInput label="Language" source="language" />
-			
 		</Filter>
 	);
 }
@@ -46,6 +45,9 @@ function AdList(props) {
 				<TextField label="Title" source="title" />
 				<TextField label="Category" source="category" />
 				<TextField label="Location" source="location" />
+				<TextField label="Latitude" source="latitude" />
+				<TextField label="Longitude" source="longitude" />
+				<TextField label="Geohash" source="geohash" />
 				<DateField label="Posted" source="posted_date" />
 				<EditButton label="" />
 				<DeleteButton label="" redirect={false} />
@@ -62,6 +64,9 @@ function AdShow(props) {
 				<TextField label="Title" source="title" />
 				<TextField label="Category" source="category" />
 				<TextField label="Location" source="location" />
+				<TextField label="Latitude" source="latitude" />
+				<TextField label="Longitude" source="longitude" />
+				<TextField label="Geohash" source="geohash" />
 				<DateField label="Posted" source="posted_date" />
 				<RichTextField label="Description" source="description" />
 				<TextField label="Language" source="language" />
@@ -76,9 +81,26 @@ function AdEdit(props) {
 			<SimpleForm>
 				<TextInput label="Title" source="title" />
 				<TextInput label="Location" source="location" />
+				<TextInput label="Latitude" source="latitude" />
+				<TextInput label="Longitude" source="longitude" />
+				<TextInput label="Geohash" source="geohash" />
 			</SimpleForm>
 		</Edit>
 	);
 }
 
-export { AdList, AdShow, AdEdit };
+function AdCreate(props) {
+	return (
+		<Create {...props}>
+			<SimpleForm>
+				<TextInput label="Title" source="title" />
+				<TextInput label="Location" source="location" />
+				<TextInput label="Latitude" source="latitude" />
+				<TextInput label="Longitude" source="longitude" />
+				<TextInput label="Geohash" source="geohash" />
+			</SimpleForm>
+		</Create>
+	);
+}
+
+export { AdList, AdShow, AdEdit, AdCreate };

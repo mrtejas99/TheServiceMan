@@ -15,7 +15,9 @@ import { RiFilterOffFill } from "react-icons/ri";
 
 function FilterGroup(props) {   //component for filter
     const [filterItems, setFilterItems] = useState([]);
-    const onFilterSelect = props.onFilterSelect;
+    const filterState = props.currentSelectedFilter;
+	const onFilterSelect = props.onFilterSelect;
+
     const setFilter = (ev) => {
         ev.preventDefault();
         const filterValue = ev.target.dataset.filter;
@@ -24,13 +26,20 @@ function FilterGroup(props) {   //component for filter
 
     const fData = props.filterData;
 
+    //Map each filter property with an item element
     useEffect(() => {
-        setFilterItems(<>{fData.map(elem => (
-            <li key={elem.name}>
-                <a href="#" data-filter={elem.name} onClick={setFilter}>{elem.name}</a>
-            </li>
-        ))}</>);
-    }, [fData])
+        setFilterItems(
+			<>
+				{
+					fData.map(elem => (
+						<li key={elem.name}>
+							<a href={filterState == elem.name ? "" : "#"} className={ filterState == elem.name ? "font-weight-bold" : "font-weight-normal" } data-filter={elem.name} onClick={setFilter}>{elem.name}</a>
+						</li>
+					))
+				}
+			</>
+		);
+    }, [fData]);
 
     return (
         <ul className="list-unstyled">
@@ -111,9 +120,11 @@ function Home() {
     useEffect(() => {
         //Fetch master data
         getFilterMasterData("adcategories", "category_name")
-        .then(categories => setCatMaster(categories));
-        //getFilterMasterData("locations", "geohash")
-        //.then(locat => setGeoMaster(locat));
+        .then(categories => setCatMaster(categories))
+        .catch(err => console.error(err));
+        getFilterMasterData("locations", "geohash")
+        .then(locat => setGeoMaster(locat))
+        .catch(err => console.error(err));
     }, []);
 
     return (
@@ -131,11 +142,11 @@ function Home() {
                     
                     <div className='my-3 mx-3'>
                         <h6>{t('category')}</h6>
-                        <FilterGroup filterData={catMaster} onFilterSelect={setFilterCriteriaCategory} />
+                        <FilterGroup filterData={catMaster} onFilterSelect={setFilterCriteriaCategory} currentSelectedFilter={filterCriteriaCategory} />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('location')}</h6>
-                        <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} />
+                        <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('rating')}</h6>

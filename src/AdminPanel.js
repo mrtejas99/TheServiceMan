@@ -20,9 +20,9 @@ function AdminPanel() {
 				authProvider={authProvider}
 				loginPage={AdminLoginPage} >
 			<Resource name="users" list={User.UserList} show={User.UserShow} edit={User.UserEdit} />
-			<Resource name="serviceads" list={Ad.AdList} show={Ad.AdShow} edit={Ad.AdEdit} />
-			<Resource name="adcategories" list={Cat.CatList} show={Cat.CatShow} edit={Cat.CatEdit} />
-			<Resource name="locations" list={Loc.LocList} show={Loc.LocShow} edit={Loc.LocEdit} />
+			<Resource name="serviceads" list={Ad.AdList} show={Ad.AdShow} edit={Ad.AdEdit} create={Ad.AdCreate} />
+			<Resource name="adcategories" list={Cat.CatList} show={Cat.CatShow} edit={Cat.CatEdit} create={Cat.CatCreate} />
+			<Resource name="locations" list={Loc.LocList} show={Loc.LocShow} edit={Loc.LocEdit} create={Loc.LocCreate} />
 		</Admin>
 	);
 }
