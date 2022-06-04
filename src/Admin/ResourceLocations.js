@@ -78,4 +78,16 @@ function LocEdit(props) {
 	);
 }
 
-export { LocList, LocShow, LocEdit };
+function LocCreate(props) {
+	return (
+		<Create {...props} >
+			<SimpleForm>
+				<NumberInput label="Latitude" source="latitude" alwaysOn />
+				<NumberInput label="Longitude" source="longitude" alwaysOn />
+				<TextInput label="Geohash" source="geohash" alwaysOn />
+			</SimpleForm>
+		</Create>
+	);
+}
+
+export { LocList, LocShow, LocEdit, LocCreate };
