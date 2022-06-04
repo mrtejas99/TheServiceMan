@@ -44,5 +44,11 @@ yarn-error.log*
 
 #firebase config
 src/config.js
+
+# firebase logs
 firebase-debug.log
 firestore-debug.log
+<<<<<<< HEAD
+=======
+ui-debug.log
+>>>>>>> cf5c2fcbca5bbbc831cf9b71b73c0b455a68fbb9
