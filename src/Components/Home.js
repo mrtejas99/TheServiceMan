@@ -13,33 +13,42 @@ import { useTranslation } from "react-i18next";
 //Font-awesome
 import { RiFilterOffFill } from "react-icons/ri";
 
+//Constants
+import { RATING_MASTER, LANGUAGE_MASTER } from "../constants";
+
 function FilterGroup(props) {   //component for filter
     const [filterItems, setFilterItems] = useState([]);
     const filterState = props.currentSelectedFilter;
+	const filterDisplayField = props.filterDisplayField || "name";
+	const filterByProp = props.filterByProp || props.filterDisplayField || "name";
 	const onFilterSelect = props.onFilterSelect;
-
+    const filterData = props.filterData;
     const setFilter = (ev) => {
         ev.preventDefault();
         const filterValue = ev.target.dataset.filter;
         onFilterSelect(filterValue);
     };
 
-    const fData = props.filterData;
-
     //Map each filter property with an item element
     useEffect(() => {
         setFilterItems(
 			<>
 				{
-					fData.map(elem => (
-						<li key={elem.name}>
-							<a href={filterState == elem.name ? "" : "#"} className={ filterState == elem.name ? "font-weight-bold" : "font-weight-normal" } data-filter={elem.name} onClick={setFilter}>{elem.name}</a>
+					filterData.map(elem => (
+						<li key={elem[filterByProp]}>
+                            {
+                                filterState == elem[filterByProp] ? (
+                                    <span className="font-weight-bold">{elem[filterDisplayField]}</span>
+                                ) : (
+                                    <a href="#" className="font-weight-normal" data-filter={elem[filterByProp]} onClick={setFilter}>{elem[filterDisplayField]}</a>
+                                )
+                            }
 						</li>
 					))
 				}
 			</>
 		);
-    }, [fData]);
+    }, [filterData, filterState]);
 
     return (
         <ul className="list-unstyled">
@@ -54,11 +63,13 @@ function Home() {
     const [sortCriteria, setSortCriteria] = useState('posted_date');
     const [filterCriteriaCategory, setFilterCriteriaCategory] = useState('');
     const [filterCriteriaGeo, setFilterCriteriaGeo] = useState('');
-    const [filterStar, setFilterCriteriaStar] = useState('');
+    const [filterCriteriaStar, setFilterCriteriaStar] = useState('');
     const [filterCriteriaLang, setFilterCriteriaLang] = useState('');
 
     const [catMaster, setCatMaster] = useState([]);
     const [geoMaster, setGeoMaster] = useState([]);
+    const [ratingMaster, setRatingMaster] = useState([]);
+    const [langMaster, setLangMaster] = useState([]);
 
     const [lastDoc, setLastDoc] = useState();   //store the last ad for pagination
     const [loading, setLoading] = useState(true);  //hourglass
@@ -99,8 +110,8 @@ function Home() {
             q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), limit(3));
         else if(filterCriteriaLang!='')
             q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), limit(3));
-        else if(filterStar!='')
-            q = query(adsRef, where('rating', "==", filterStar), orderBy(sortCriteria, 'asc'), limit(3));
+        else if(filterCriteriaStar!='')
+            q = query(adsRef, where('rating', "==", filterCriteriaStar), orderBy(sortCriteria, 'asc'), limit(3));
         
         getDocs(q)
         .then(data => resolve(data))
@@ -134,8 +145,8 @@ function Home() {
                 q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
             else if(filterCriteriaLang!='')
                 q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
-            else if(filterStar!='')
-                q = query(adsRef, where('rating', "==", filterStar), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
+            else if(filterCriteriaStar!='')
+                q = query(adsRef, where('rating', "==", filterCriteriaStar), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(3));
             const doc = await getDocs(q);
             updateState(doc);
         }
@@ -144,6 +155,8 @@ function Home() {
             alert("An error occured while fetching paginated ads");
         }
     }
+	
+	const updateFilterMasterProps = (data, name_field) => data.map(elem => Object.assign(elem, {"name": elem[name_field]}));
 
     const getFilterMasterData = (colle, name_field) => (
         getDocs(query(
@@ -152,7 +165,6 @@ function Home() {
             orderBy(name_field, 'asc')
         ))
         .then(data => data.docs.map(element => element.data()))
-        .then(data => data.map(elem => ({"name": elem[name_field], "popularity": elem.popularity})))
     );
 
     //When home page is mounted
@@ -161,9 +173,12 @@ function Home() {
         getFilterMasterData("adcategories", "category_name")
         .then(categories => setCatMaster(categories))
         .catch(err => console.error(err));
-        getFilterMasterData("locations", "geohash")
+        getFilterMasterData("locations", "city_name")
         .then(locat => setGeoMaster(locat))
         .catch(err => console.error(err));
+        //Hard-coded for now
+		setRatingMaster(RATING_MASTER);
+		setLangMaster(LANGUAGE_MASTER);
     }, []);
 
     return (
@@ -174,36 +189,27 @@ function Home() {
             <a href="#">{t('plumber')}</a>{' '}
             <a href="#">{t('beautician')}</a>{' '}
             </span>
-            
+
             <Row className='py-5'>
                 <Col sm={2} >
                     <h5>{t('filter')}</h5>
                     
                     <div className='my-3 mx-3'>
                         <h6>{t('category')}</h6>
-                        <FilterGroup filterData={catMaster} onFilterSelect={setFilterCriteriaCategory} currentSelectedFilter={filterCriteriaCategory} />
+                        <FilterGroup filterData={catMaster} onFilterSelect={setFilterCriteriaCategory} currentSelectedFilter={filterCriteriaCategory} filterDisplayField="category_name" />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('location')}</h6>
-                        <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} />
+                        <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} filterDisplayField="city_name" />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('rating')}</h6>
-                        <a onClick={(e)=>{e.preventDefault();console.log(filterStar);setFilterCriteriaStar('')}} href="#">{t('clearfilter')}</a><br />
-                        <a onClick={(e)=>{e.preventDefault();setFilterCriteriaStar("5")}} href="#">{t('five')}</a><br />
-                        <a onClick={()=>setFilterCriteriaStar("4")} href="#">{t('four')}</a><br />
-                        <a onClick={()=>setFilterCriteriaStar("3")} href="#">{t('three')}</a><br />
-                        <a onClick={()=>setFilterCriteriaStar("2")}  href="#">{t('two')}</a><br />
+                        <FilterGroup filterData={ratingMaster} onFilterSelect={setFilterCriteriaStar} currentSelectedFilter={filterCriteriaStar} filterDisplayField="rating_name" filterByProp="value" />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('language')}</h6>
-                        <a onClick={(e)=>{e.preventDefault();console.log(filterCriteriaLang);setFilterCriteriaGeo('')}} href="#">{t('clearfilter')}</a><br />
-                        <a onClick={(e)=>{e.preventDefault();setFilterCriteriaLang("English")}} href="#">{t('english')}</a><br />
-                        <a onClick={()=>setFilterCriteriaLang("Marathi")} href="#">{t('marathi')}</a><br />
-                        <a onClick={()=>setFilterCriteriaLang("Hindi")} href="#">{t('hindi')}</a><br />
-                        <a onClick={()=>setFilterCriteriaLang("Gujarati")}  href="#">{t('gujarati')}</a><br />
+						<FilterGroup filterData={langMaster} onFilterSelect={setFilterCriteriaLang} currentSelectedFilter={filterCriteriaLang} filterDisplayField="language_name" />
                     </div>
-
                 </Col>
 
                 <Col className="mx-3">

@@ -24,10 +24,16 @@ import {
 	SelectInput,
 	FileField,
 	FileInput,
-	DateField
+	DateField,
+	DateInput
 } from "react-admin";
 
 import { RichTextInput } from "ra-input-rich-text";
+
+import { RATING_MASTER, LANGUAGE_MASTER } from "../constants";
+
+const ALL_RATINGS = RATING_MASTER.map(elem => ({"name": elem.rating_name, "id": elem.value}));
+const ALL_LANGS = LANGUAGE_MASTER.map(elem => ({"name": elem.language_name, "id": elem.language_name}));
 
 function AdFilter(props) {
 	return (
@@ -45,12 +51,12 @@ function AdList(props) {
 			<Datagrid>
 				<ShowButton label="View" />
 				<TextField label="Title" source="title" />
+				<ReferenceField label="Posted by" source="email" reference="users">
+					<TextField label="Posted by" source="email" />
+				</ReferenceField>
+				<DateField label="Posted on" source="posted_date" />
 				<TextField label="Category" source="category" />
 				<TextField label="Location" source="location" />
-				<NumberField label="Latitude" source="latitude" />
-				<NumberField label="Longitude" source="longitude" />
-				<TextField label="Geohash" source="geohash" />
-				<DateField label="Posted" source="posted_date" />
 				<EditButton label="" />
 				<DeleteButton label="" redirect={false} />
 			</Datagrid>
@@ -64,12 +70,15 @@ function AdShow(props) {
 			<SimpleShowLayout>
 				<TextField source="id" />
 				<TextField label="Title" source="title" />
+				<ReferenceField label="Posted by" source="email" reference="users">
+					<TextField label="Posted by" source="email" />
+				</ReferenceField>
 				<TextField label="Category" source="category" />
 				<TextField label="Location" source="location" />
 				<NumberField label="Latitude" source="latitude" />
 				<NumberField label="Longitude" source="longitude" />
 				<TextField label="Geohash" source="geohash" />
-				<DateField label="Posted" source="posted_date" />
+				<DateField label="Posted on" source="posted_date" />
 				<RichTextField label="Description" source="description" />
 				<TextField label="Language" source="language" />
 			</SimpleShowLayout>
@@ -87,6 +96,15 @@ function AdEdit(props) {
 				<NumberInput label="Latitude" source="latitude" />
 				<NumberInput label="Longitude" source="longitude" />
 				<TextInput label="Geohash" source="geohash" />
+				<SelectInput label="Language" source="language" choices={ALL_LANGS} />
+				<SelectInput label="Rating" source="rating" choices={ALL_RATINGS} />
+				<ReferenceInput
+					label="Posted by"
+					source="email"
+					reference="users">
+					<SelectInput label="Posted by" optionText="email" />
+				</ReferenceInput>
+				<DateInput source="posted_date" parse={val => new Date(val)} />
 			</SimpleForm>
 		</Edit>
 	);
@@ -102,7 +120,15 @@ function AdCreate(props) {
 				<NumberInput label="Latitude" source="latitude" />
 				<NumberInput label="Longitude" source="longitude" />
 				<TextInput label="Geohash" source="geohash" />
-				<TextInput label="Language" source="language" />
+				<SelectInput label="Language" source="language" choices={ALL_LANGS} />
+				<SelectInput label="Rating" source="rating" choices={ALL_RATINGS} />
+				<ReferenceInput
+					label="Posted by"
+					source="email"
+					reference="users">
+					<SelectInput label="Posted by" optionText="email" />
+				</ReferenceInput>
+				<DateInput source="posted_date" parse={val => new Date(val)} />
 			</SimpleForm>
 		</Create>
 	);
