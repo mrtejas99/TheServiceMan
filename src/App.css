@@ -1,0 +1,8 @@
+.zoomtext:hover {
+    transition: transform 0.2s ease-in;
+    transform: scale(1.2) !important;
+}
+.highlight:hover{
+    border: 3px solid rgb(233, 233, 36);
+    box-sizing: border-box;
+}
