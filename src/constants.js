@@ -1,6 +1,9 @@
 
 /* Some constants to use in the application */
 
+//How many items to load at once on home page
+const RESULTS_PER_PAGE = 5;
+
 const RATING_MASTER = [
     {
         "rating_name": "1 star",
@@ -67,6 +70,8 @@ const LANGUAGE_MASTER = [
     }
 ];
 
-const RESULTS_PER_PAGE = 5;
-
-export { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER };
+export {
+    RESULTS_PER_PAGE,
+    RATING_MASTER,
+    LANGUAGE_MASTER
+};

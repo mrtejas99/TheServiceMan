@@ -8,6 +8,9 @@ const firebaseConfig = {
     messagingSenderId: "<Sender ID>"
 };
 
+//Note: Set this to false when ready to use the online version!
+const enableLocalEmulator = true;
+
 //See firebase.json and the emulator console for the port numbers
 const firebaseEmulatorConfig = {
     "auth": {
@@ -23,4 +26,4 @@ const firebaseEmulatorConfig = {
     }
 };
 
-export { firebaseConfig, firebaseEmulatorConfig };
+export { firebaseConfig, enableLocalEmulator, firebaseEmulatorConfig };
