@@ -95,7 +95,7 @@ function Home() {
             doc.forEach(async element => {    
                 var data = element.data();
                 let rating = await FetchFeedbacks(data.posted_date);   //fetch feedback for each ad
-                console.log(`id ${data.posted_date} rating ${rating}`); //array containing feedbacks of current ad being processed
+                console.log(`id ${data.posted_date} rating ${rating} typeof rating: ${typeof rating}`); //array containing feedbacks of current ad being processed
                 data.rating = rating;
                 //console.log(data);
                 setInfo(arr => [...arr , data]);

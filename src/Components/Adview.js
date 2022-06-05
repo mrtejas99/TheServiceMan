@@ -3,32 +3,32 @@ import { Container, Button, Col, Row, Card, Breadcrumb, Table, Image, Badge } fr
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import logo from '../profile.png'
 import {FaStar} from "react-icons/fa";
+import { auth, db } from "../firebase";
+import { useTranslation } from "react-i18next";
 
 
 // Import Firestore database
-import { db } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase";
-import { number } from "react-admin";
 
 function Adview(){
     const [user, loading, error] = useAuthState(auth);  //needed to check for feedback
     let { id } = useParams(); //the ad id
-    id =Number(id);//since firebase checks datatype
+    id = Number(id);//since firebase checks datatype
     //console.log(id);
     //const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778        
 
     const navigate = useNavigate();
     const [ad, setAd] = useState({skills:"none"});   //since it is an document
     const [feedbacks , setFeedbacks] = useState([]);
+    const {t} = useTranslation("common");
+
 
     const [fnames, setFnames] = useState(['']);
     const [lnames, setLnames] = useState(['']);
 
     const [posterFname, setPosterFname] = useState('');
     const [posterLname, setPosterLname] = useState('');
-
 
     const logoStyle={
         resizeMode: "cover",
@@ -95,6 +95,10 @@ function Adview(){
         }
     }
 
+    const deleteAd = ()=>{
+        alert("Ad deleted");
+    }
+
     useEffect(() => {
         FetchAd();
     }, [id]);
@@ -116,6 +120,12 @@ function Adview(){
                     <Breadcrumb.Item href="#">Goa</Breadcrumb.Item>
                     <Breadcrumb.Item active>{ad.location}</Breadcrumb.Item>
                 </Breadcrumb>
+                {
+                    user && <div className="float-end">
+                    <Button variant="info"  className="me-3" onClick={() => navigate(`/Adcreate/${id}`)}>{t('edit')}</Button>
+                    <Button variant="danger" onClick={deleteAd}>{t('delete')}</Button>
+                    </div>
+                }
                 
                 <Row className='py-5'>
                     <Col>
