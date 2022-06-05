@@ -79,48 +79,32 @@ function Adcreate(){
                         <Form.Control as="textarea" rows={3} value={skills} onChange={(e) => setSkills(e.target.value)}/>
                     </Form.Group>
 
-                    <Dropdown className="my-3" onSelect={(e) =>setLocation(e)}>
-                        <Dropdown.Toggle variant="secondary" id="dropdown-loc" >
-                        {t('location')}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item eventKey='Panaji'>{t('panaji')}</Dropdown.Item>
-                            <Dropdown.Item eventKey='Margao'>{t('margao')}</Dropdown.Item>
-                            <Dropdown.Item eventKey='Mapusa'>{t('mapusa')}</Dropdown.Item>
-                            <Dropdown.Item eventKey='Ponda'>{t('ponda')}</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <select className="my-3 form-select w-50" value={location} onChange={(e) =>setLocation(e.target.value)}>
+                        <option eventKey='Panaji'>{t('panaji')}</option>
+                        <option eventKey='Margao'>{t('margao')}</option>
+                        <option eventKey='Mapusa'>{t('mapusa')}</option>
+                        <option eventKey='Ponda'>{t('ponda')}</option>
+                    </select>
 
-                    <Dropdown className="my-3" onSelect={(e) =>setLanguage(e)}>
-                        <Dropdown.Toggle variant="secondary" id="dropdown-lang" >
-                        {t('language')}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item eventKey='english'>English</Dropdown.Item>
-                            <Dropdown.Item eventKey='bengali'>বাংলা</Dropdown.Item>
-                            <Dropdown.Item eventKey='gujarati'>ગુજરાતી</Dropdown.Item>
-                            <Dropdown.Item eventKey='hindi'>हिन्दी</Dropdown.Item>
-                            <Dropdown.Item eventKey='kannada'>ಕನ್ನಡ</Dropdown.Item>
-                            <Dropdown.Item eventKey='konkani'>कोंकणी</Dropdown.Item>
-                            <Dropdown.Item eventKey='marathi'>मराठी</Dropdown.Item>
-                            <Dropdown.Item eventKey='odia'>ଓଡିଆ</Dropdown.Item>
-                            <Dropdown.Item eventKey='tamil'>தமிழ்</Dropdown.Item>
-                            <Dropdown.Item eventKey='telugu'>தெலுங்கு</Dropdown.Item>
-                        </Dropdown.Menu>
-                    
-                    </Dropdown>
+                    <select className="my-3 form-select w-50" value={language} onChange={(e) =>setLanguage(e.target.value)}>
+                        <option value='english'>English</option>
+                        <option value='bengali'>বাংলা</option>
+                        <option value='gujarati'>ગુજરાતી</option>
+                        <option value='hindi'>हिन्दी</option>
+                        <option value='kannada'>ಕನ್ನಡ</option>
+                        <option value='konkani'>कोंकणी</option>
+                        <option value='marathi'>मराठी</option>
+                        <option value='odia'>ଓଡିଆ</option>
+                        <option value='tamil'>தமிழ்</option>
+                        <option value='telugu'>தெலுங்கு</option>
+                    </select>
 
-                    <Dropdown className="my-3" onSelect={(e) =>setCategory(e)}>
-                        <Dropdown.Toggle variant="secondary" id="dropdown-category" >
-                        {t('category')}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu >
-                            <Dropdown.Item eventKey='Cook'>{t('cook')}</Dropdown.Item>
-                            <Dropdown.Item eventKey='Electrician'>{t('electrician')}</Dropdown.Item>
-                            <Dropdown.Item eventKey='Plumber'>{t('plumber')}</Dropdown.Item>
-                            <Dropdown.Item eventKey='Beautician'>{t('beautician')}</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <select className="my-3 form-select w-50" value={category} onChange={(e) =>setCategory(e.target.value)}>
+                        <option value='Cook'>{t('cook')}</option>
+                        <option value='Electrician'>{t('electrician')}</option>
+                        <option value='Plumber'>{t('plumber')}</option>
+                        <option value='Beautician'>{t('beautician')}</option>
+                    </select>
 
                     <div className='text-center'>
                         <Button variant="primary" className="w-50 m-auto" onClick={createServiceAd}>{t('createad')}</Button>

@@ -120,7 +120,7 @@ function Adview(){
                 <Row className='py-5'>
                     <Col>
                         <h3>{ad.title}</h3>
-                        <Image style={{resizeMode: "cover"}} src={ad.banner_url}/>
+                        <Image className="w-75" src={ad.banner_url}/>
                         <h4 >Description</h4>
                         <p>{ad.description}</p>
 
