@@ -56,7 +56,7 @@ const getGeohashRange = (
 function Navigation() {
     const [ isDarkMode ] = useDarkMode();
     const navVariant = isDarkMode ? 'dark' : 'light';
-   
+    
     const {i18n, t} = useTranslation("common");
 
     const handleTranslate = (e)=>{
@@ -64,11 +64,11 @@ function Navigation() {
         localStorage.setItem('i18nextLng', e);
     }
 
-     useEffect(()=>{
-         if(localStorage.getItem("i18nextLng").length > 3 || localStorage.getItem("i18nextLang"==null)){
+    useEffect(()=>{
+        if(localStorage.getItem("i18nextLng").length > 3 || localStorage.getItem("i18nextLang"==null)){
             i18next.changeLanguage("en");   //fallback
-         }
-     },[]);
+        }
+    },[]);
 
     return (
         <Navbar collapseOnSelect expand="lg" bg={navVariant} variant={navVariant} className="sticky-top">
