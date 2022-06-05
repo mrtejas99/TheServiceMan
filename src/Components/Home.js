@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 
 // Import Firestore database
 import { db } from "../firebase";
@@ -14,15 +14,17 @@ import { useTranslation } from "react-i18next";
 import { RiFilterOffFill } from "react-icons/ri";
 
 //Constants
-import { RATING_MASTER, LANGUAGE_MASTER } from "../constants";
+import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER } from "../constants";
 
-function FilterGroup(props) {   //component for filter
+//component for filter
+function FilterGroup(props) {
     const [filterItems, setFilterItems] = useState([]);
     const filterState = props.currentSelectedFilter;
-	const filterDisplayField = props.filterDisplayField || "name";
-	const filterByProp = props.filterByProp || props.filterDisplayField || "name";
-	const onFilterSelect = props.onFilterSelect;
+    const filterDisplayField = props.filterDisplayField || "name";
+    const filterByProp = props.filterByProp || props.filterDisplayField || "name";
+    const onFilterSelect = props.onFilterSelect;
     const filterData = props.filterData;
+    const addSuffix = props.addTextSuffix || false;
     const setFilter = (ev) => {
         ev.preventDefault();
         const filterValue = ev.target.dataset.filter;
@@ -32,10 +34,10 @@ function FilterGroup(props) {   //component for filter
     //Map each filter property with an item element
     useEffect(() => {
         setFilterItems(
-			<>
-				{
-					filterData.map(elem => (
-						<li key={elem[filterByProp]}>
+            <>
+                {
+                    filterData.map(elem => (
+                        <li key={elem[filterByProp]}>
                             {
                                 filterState == elem[filterByProp] ? (
                                     <span className="font-weight-bold">{elem[filterDisplayField]}</span>
@@ -43,16 +45,17 @@ function FilterGroup(props) {   //component for filter
                                     <a href="#" className="font-weight-normal" data-filter={elem[filterByProp]} onClick={setFilter}>{elem[filterDisplayField]}</a>
                                 )
                             }
-						</li>
-					))
-				}
-			</>
-		);
+                            { addSuffix && elem.suffix && <span>{elem.suffix}</span> }
+                        </li>
+                    ))
+                }
+            </>
+        );
     }, [filterData, filterState]);
 
     return (
         <ul className="list-unstyled">
-            <li><a href="#" onClick={setFilter} data-filter=""><RiFilterOffFill />{'Clear Filter'}</a></li>
+            <li><a href="#" onClick={setFilter} data-filter=""><RiFilterOffFill />&nbsp;{'Clear Filter'}</a></li>
             { filterItems }
         </ul>
     );
@@ -77,10 +80,13 @@ function Home() {
     // Start the fetch operation as soon as
     // the page loads
 
+    const [queryParams] = useSearchParams();
+
     const {t} = useTranslation("common");
     const navigate = useNavigate();
-    const location = useLocation(); 
+    const location = useLocation();
 
+    const search_query = queryParams.get('q') || "";
     const adsRef = collection(db, "serviceads");
 
     const updateState = (doc) =>{
@@ -99,24 +105,36 @@ function Home() {
         setLoading(false);  //hide hourglass
     }
 
-    const fetchFilteredAdData = () => new Promise((resolve, reject) => {
-        let q = '';
-            //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
-        if(filterCriteriaCategory!="")
-            q = query(adsRef, where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'), limit(5));
-        if(filterCriteriaGeo!='')
-            q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), limit(5));
-        if(filterCriteriaLang!='')
-            q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), limit(5));
-        if(filterCriteriaStar!='')
-            q = query(adsRef, where('rating', "==", filterCriteriaStar), orderBy(sortCriteria, 'asc'), limit(5));
-        if(filterCriteriaCategory=='' && filterCriteriaGeo=='' && filterCriteriaLang=='' && filterCriteriaStar=='') //initially no filters
-             q = query(adsRef, orderBy(sortCriteria, 'asc'), limit(5));
-        
-        getDocs(q)
-        .then(data => resolve(data))
-        .catch(error => reject(error));
-    });
+    const fetchFilteredAdData = (last_doc) => {
+        let q = query(adsRef);
+
+        console.log(search_query);
+
+        if(filterCriteriaCategory != '')
+            q = query(q, where('category', "==", filterCriteriaCategory));
+
+        if(filterCriteriaGeo != '')
+            q = query(q, where('location', "==", filterCriteriaGeo));
+
+        if(filterCriteriaLang != '')
+            q = query(q, where('language', "==", filterCriteriaLang));
+
+        if(filterCriteriaStar != '')
+            q = query(q, where('rating', "<=", filterCriteriaStar), orderBy('rating', 'desc'));
+
+        //Sort by criteria
+        q = query(q, orderBy(sortCriteria, 'asc'));
+
+        //Fetch after previous result
+        if (last_doc !== undefined)
+            q = query(q, startAfter(last_doc));
+
+        //Limit results per page
+        q = query(q, limit(RESULTS_PER_PAGE));
+
+        //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
+        return getDocs(q);
+    };
 
     useEffect(
         () => {
@@ -130,39 +148,28 @@ function Home() {
                 alert("An error occured while fetching ads");
             });
         },
-        [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang]
+        [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang, filterCriteriaStar]
     );
 
-    const fetchMore = async () =>{
+    const fetchMore = () => {
         setLoading(true);   //show hourglass
-        let q = '';
-        try{
-            if(filterCriteriaCategory=='')
-                q = query(adsRef, orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
-            else if(filterCriteriaCategory!="")
-                q = query(adsRef, where('category', "==", filterCriteriaCategory), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
-            else if(filterCriteriaGeo!='')
-                q = query(adsRef, where('location', "==", filterCriteriaGeo), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
-            else if(filterCriteriaLang!='')
-                q = query(adsRef, where('language', "==", filterCriteriaLang), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
-            else if(filterCriteriaStar!='')
-                q = query(adsRef, where('rating', "==", filterCriteriaStar), orderBy(sortCriteria, 'asc'), startAfter(lastDoc), limit(5));
-            const doc = await getDocs(q);
-            updateState(doc);
-        }
-        catch (err){
+
+        //Fetch more results, beginning from previous set
+        //and then append the new results
+        fetchFilteredAdData(lastDoc)
+        .then(doc => updateState(doc))
+        .catch(err => {
             console.error(err);
             alert("An error occured while fetching paginated ads");
-        }
+        });
     }
-	
-	//const updateFilterMasterProps = (data, name_field) => data.map(elem => Object.assign(elem, {"name": elem[name_field]}));
 
     const getFilterMasterData = (colle, name_field) => (
         getDocs(query(
             collection(db, colle),
             orderBy("popularity", 'desc'),
-            orderBy(name_field, 'asc')
+            orderBy(name_field, 'asc'),
+            limit(5)
         ))
         .then(data => data.docs.map(element => element.data()))
     );
@@ -176,9 +183,11 @@ function Home() {
         getFilterMasterData("locations", "city_name")
         .then(locat => setGeoMaster(locat))
         .catch(err => console.error(err));
+
         //Hard-coded for now
-		setRatingMaster(RATING_MASTER);
-		setLangMaster(LANGUAGE_MASTER);
+        //Sort 5-star to 1-star
+        setRatingMaster([...RATING_MASTER].sort((a, b) => b.value - a.value));
+        setLangMaster(LANGUAGE_MASTER);
     }, []);
 
     return (
@@ -204,15 +213,16 @@ function Home() {
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('rating')}</h6>
-                        <FilterGroup filterData={ratingMaster} onFilterSelect={setFilterCriteriaStar} currentSelectedFilter={filterCriteriaStar} filterDisplayField="rating_name" filterByProp="value" />
+                        <FilterGroup filterData={ratingMaster} onFilterSelect={setFilterCriteriaStar} currentSelectedFilter={filterCriteriaStar} filterDisplayField="rating_name" filterByProp="value" addTextSuffix />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('language')}</h6>
-						<FilterGroup filterData={langMaster} onFilterSelect={setFilterCriteriaLang} currentSelectedFilter={filterCriteriaLang} filterDisplayField="language_name" filterByProp="value"/>
+                        <FilterGroup filterData={langMaster} onFilterSelect={setFilterCriteriaLang} currentSelectedFilter={filterCriteriaLang} filterDisplayField="language_name" filterByProp="value" />
                     </div>
                 </Col>
 
                 <Col className="mx-3">
+                    {search_query !== '' && <h4>Search Results for &quot;{search_query}&quot;</h4>}
                     <Dropdown className="my-3" onSelect={(e) =>{console.log(e);setSortCriteria(e)}} value={sortCriteria}>
                         <Dropdown.Toggle variant="secondary" id="dropdown-basic" >{t('sort')}
                         </Dropdown.Toggle>
