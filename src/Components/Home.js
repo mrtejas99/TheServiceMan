@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 
 //Font-awesome
 import { RiFilterOffFill } from "react-icons/ri";
-
+import { FaStar } from "react-icons/fa";
 //Constants
 import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER } from "../constants";
 
@@ -92,8 +92,12 @@ function Home() {
     const updateState = (doc) =>{
         const isCollectionEmpty = doc.size == 0;
         if(!isCollectionEmpty){
-            doc.forEach(element => {    
+            doc.forEach(async element => {    
                 var data = element.data();
+                let rating = await FetchFeedbacks(data.posted_date);   //fetch feedback for each ad
+                console.log(`id ${data.posted_date} rating ${rating}`); //array containing feedbacks of current ad being processed
+                data.rating = rating;
+                //console.log(data);
                 setInfo(arr => [...arr , data]);
             });
 
@@ -120,7 +124,7 @@ function Home() {
             q = query(q, where('language', "==", filterCriteriaLang));
 
         if(filterCriteriaStar != '')
-            q = query(q, where('rating', "<=", filterCriteriaStar), orderBy('rating', 'desc'));
+            q = query(q, where('rating', ">=", filterCriteriaStar), orderBy('rating', 'desc'));
 
         //Sort by criteria
         q = query(q, orderBy(sortCriteria, 'asc'));
@@ -136,12 +140,28 @@ function Home() {
         return getDocs(q);
     };
 
+    const FetchFeedbacks = async (id)=>{
+        try {
+            const q = query(collection(db, "feedback"), where("adid", "==", id));
+            const doc = await getDocs(q);
+
+            let rating_total = doc.docs.reduce((sum, f) => sum + f.data().rating, 0);
+            
+            return doc.docs.length? rating_total/doc.docs.length : 0;
+
+        } catch (err) {
+            console.error(err);
+            alert("An error occured while fetching feedbacks");
+        }
+    }
+
     useEffect(
         () => {
             fetchFilteredAdData()
             .then(data => {
                 setInfo([]);    //clear results of previous filter
-                updateState(data);   
+                updateState(data); 
+                  
             })
             .catch(err => {
                 console.error(err);
@@ -240,6 +260,16 @@ function Home() {
                                 <Card.Img variant="top" src={data.banner_url} />
                                 <Card.Body className="zoomtext">
                                     <Card.Title>{data.title}</Card.Title>
+                                    <Card.Text>
+                                    {[...Array(5)].map((x, i)=>{
+                                        const ratingValue=i+1;
+                                        return (
+                                            <label>
+                                            <FaStar className="star" color={ratingValue<= (data.rating) ?"#ffc107":"#e4e5e9"}size={15}/>
+                                            </label>
+                                        );
+                                    })}
+                                    </Card.Text>
                                     <Card.Text>{data.location}</Card.Text>
                                 </Card.Body>
                             </Card>

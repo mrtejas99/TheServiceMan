@@ -7,26 +7,26 @@ const RESULTS_PER_PAGE = 5;
 const RATING_MASTER = [
     {
         "rating_name": "1 star",
-        "value": 1
+        "value": 1,
+        "suffix": " & above",
     },
     {
         "rating_name": "2 stars",
-        "suffix": " & below",
+        "suffix": " & above",
         "value": 2
     },
     {
         "rating_name": "3 stars",
-        "suffix": " & below",
+        "suffix": " & above",
         "value": 3
     },
     {
         "rating_name": "4 stars",
-        "suffix": " & below",
+        "suffix": " & above",
         "value": 4
     },
     {
         "rating_name": "5 stars",
-        "suffix": " & below",
         "value": 5
     }
 ];

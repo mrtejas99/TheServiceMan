@@ -61,18 +61,18 @@ function Navigation() {
                 <Nav.Item className="d-flex align-items-center">
                     <DarkToggle />
                 </Nav.Item>
-                <NavDropdown title={t('translate')} id="collasible-nav-dropdown" onSelect={handleTranslate} value={localStorage.getItem("i18nextLng")}>
-                    <NavDropdown.Item eventKey="en">English</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="bn">বাংলা</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="guj">ગુજરાતી</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="hi">हिन्दी</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="kn">ಕನ್ನಡ</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="kok">कोंकणी</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="mr">मराठी</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="or">ଓଡିଆ</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="ta">தமிழ்</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="te">தெலுங்கு</NavDropdown.Item>
-                </NavDropdown>
+                <select className="m-3 w-50 form-select-sm" value={localStorage.getItem("i18nextLng")} onChange={(e) =>handleTranslate(e.target.value)}>
+                    <option value='en'>English</option>
+                    <option value='bn'>বাংলা</option>
+                    <option value='guj'>ગુજરાતી</option>
+                    <option value='hi'>हिन्दी</option>
+                    <option value='kn'>ಕನ್ನಡ</option>
+                    <option value='kok'>कोंकणी</option>
+                    <option value='mr'>मराठी</option>
+                    <option value='or'>ଓଡିଆ</option>
+                    <option value='ta'>தமிழ்</option>
+                    <option value='te'>தெலுங்கு</option>
+                </select>
                 <LogInOutButton />
             </Nav>
         </Navbar.Collapse>
