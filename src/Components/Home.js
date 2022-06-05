@@ -15,6 +15,7 @@ import { RiFilterOffFill } from "react-icons/ri";
 import { FaStar } from "react-icons/fa";
 //Constants
 import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER } from "../constants";
+import { number } from "react-admin";
 
 //component for filter
 function FilterGroup(props) {
@@ -80,6 +81,8 @@ function Home() {
     // Start the fetch operation as soon as
     // the page loads
 
+    const [range,setRange] = useState({"lower":localStorage.getItem("lower"), "upper":localStorage.getItem("upper")});//for geo
+
     const [queryParams] = useSearchParams();
 
     const {t} = useTranslation("common");
@@ -125,6 +128,13 @@ function Home() {
 
         if(filterCriteriaStar != '')
             q = query(q, where('rating', ">=", filterCriteriaStar), orderBy('rating', 'desc'));
+        
+        //for querying using geohash
+        if(Object.keys(range).length != 0){
+            console.log(range);
+            //something wrong here but condition correct
+            //q = query(q, where("geohash", ">=", range.lower), where("geohash", "<=", range.upper));
+        }
 
         //Sort by criteria
         q = query(q, orderBy(sortCriteria, 'asc'));
@@ -168,7 +178,7 @@ function Home() {
                 alert("An error occured while fetching ads");
             });
         },
-        [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang, filterCriteriaStar]
+        [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang, filterCriteriaStar, range]
     );
 
     const fetchMore = () => {
@@ -187,7 +197,7 @@ function Home() {
     const getFilterMasterData = (colle, name_field) => (
         getDocs(query(
             collection(db, colle),
-            orderBy("popularity", 'desc'),
+            //orderBy("popularity", 'desc'),
             orderBy(name_field, 'asc'),
             limit(5)
         ))
@@ -200,7 +210,7 @@ function Home() {
         getFilterMasterData("adcategories", "category_name")
         .then(categories => setCatMaster(categories))
         .catch(err => console.error(err));
-        getFilterMasterData("locations", "city_name")
+        getFilterMasterData("locations", "location_name")
         .then(locat => setGeoMaster(locat))
         .catch(err => console.error(err));
 
@@ -229,7 +239,7 @@ function Home() {
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('location')}</h6>
-                        <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} filterDisplayField="city_name" />
+                        <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} filterDisplayField="location_name" />
                     </div>
                     <div className='my-3 mx-3'>
                         <h6>{t('rating')}</h6>

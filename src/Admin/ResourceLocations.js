@@ -33,6 +33,7 @@ function LocFilter(props) {
 		<Filter {...props}>
 			<NumberInput label="Search Latitude" source="latitude" alwaysOn />
 			<NumberInput label="Search Longitude" source="longitude" alwaysOn />
+			<TextInput label="Location Name" source="location_name" alwaysOn />
 			<TextInput label="Search Geohash" source="geohash" alwaysOn />
 		</Filter>
 	);
@@ -45,6 +46,7 @@ function LocList(props) {
 				<ShowButton label="View" />
 				<NumberField label="Latitude" source="latitude" />
 				<NumberField label="Logitude" source="longitude" />
+				<TextField label="Location Name" source="location_name" />
 				<TextField label="Geohash" source="geohash" />
 				<EditButton label="" />
 				<DeleteButton label="" redirect={false} />
@@ -60,6 +62,7 @@ function LocShow(props) {
 				<TextField source="id" />
 				<NumberField label="Latitude" source="latitude" />
 				<NumberField label="Logitude" source="longitude" />
+				<TextField label="Location Name" source="location_name" />
 				<TextField label="Geohash" source="geohash" />
 			</SimpleShowLayout>
 		</Show>
@@ -72,6 +75,7 @@ function LocEdit(props) {
 			<SimpleForm>
 				<NumberInput label="Latitude" source="latitude" alwaysOn />
 				<NumberInput label="Longitude" source="longitude" alwaysOn />
+				<TextInput label="Location Name" source="location_name" alwaysOn />
 				<TextInput label="Geohash" source="geohash" alwaysOn />
 			</SimpleForm>
 		</Edit>
@@ -84,6 +88,7 @@ function LocCreate(props) {
 			<SimpleForm>
 				<NumberInput label="Latitude" source="latitude" alwaysOn />
 				<NumberInput label="Longitude" source="longitude" alwaysOn />
+				<TextInput label="Location Name" source="location_name" alwaysOn />
 				<TextInput label="Geohash" source="geohash" alwaysOn />
 			</SimpleForm>
 		</Create>

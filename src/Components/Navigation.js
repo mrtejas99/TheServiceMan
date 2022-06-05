@@ -10,6 +10,10 @@ import { SearchAdsBar } from './SearchAds';
 import { useTranslation } from "react-i18next";
 import i18next from 'i18next';
 
+//geolocation 
+import geohash from "ngeohash";
+
+
 function getPosition(options) {
     return new Promise((resolve, reject) => 
         navigator.geolocation.getCurrentPosition(resolve, reject, options)
@@ -19,9 +23,35 @@ function getPosition(options) {
 function onFilterUserLocation() {
     getPosition()
     .then(data => {
-        console.log(data.coords);
+        let {latitude, longitude} = data.coords;
+        const range = getGeohashRange(latitude, longitude, 10);
+        localStorage.setItem('lower', range.lower);
+        localStorage.setItem('upper', range.upper);
     });
 }
+
+const getGeohashRange = (
+    latitude,
+    longitude,
+    distance, // miles
+  ) => {
+    const lat = 0.0144927536231884; // degrees latitude per mile
+    const lon = 0.0181818181818182; // degrees longitude per mile
+  
+    const lowerLat = latitude - lat * distance;
+    const lowerLon = longitude - lon * distance;
+  
+    const upperLat = latitude + lat * distance;
+    const upperLon = longitude + lon * distance;
+  
+    const lower = geohash.encode(lowerLat, lowerLon);
+    const upper = geohash.encode(upperLat, upperLon);
+  
+    return {
+      lower,
+      upper
+    };
+};
 
 function Navigation() {
     const [ isDarkMode ] = useDarkMode();
