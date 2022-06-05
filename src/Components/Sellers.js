@@ -52,7 +52,24 @@ function Sellers() {
             alert("An error occured while fetching data");
         }
     }
-    
+    const FetchFeedbacks = async (id)=>{
+        try {
+            info.forEach(async element=>{
+                const q = query(collection(db, "feedback"), where("adid", "==", element.posted_date));
+                const doc = await getDocs(q);
+                let rating_total = doc.docs.reduce((sum, f) => sum + f.data().rating, 0);
+                console.log(rating_total);
+                element.rating =  rating_total/doc.docs.length;
+                doc.forEach(x => {    //multiple feedback for one id
+                    var data = x.data();
+                    setFeedbacks(arr => [...arr , data]);
+                });
+            })  
+        } catch (err) {
+            console.error(err);
+            alert("An error occured while fetching feedbacks");
+        }
+    }
 
     const FetchNames = async ()=>{
         try{
@@ -76,6 +93,9 @@ function Sellers() {
         Fetchdata();    //fetch ads
     }, [location]);
 
+    useEffect(()=>{
+        FetchFeedbacks();   //fetch feedbacks for the ads
+    },[info])
 
     useEffect(()=>{
         FetchNames();   //find names of feedback givers
