@@ -5,6 +5,8 @@ import { DarkToggle, useDarkMode } from "./DarkMode";
 
 import { LogInOutButton } from "./LogInOutButton";
 import { SearchAdsBar } from './SearchAds';
+import { NotificationBell } from './NotificationBell';
+import { IconContext } from "react-icons";
 
 //translate
 import { useTranslation } from "react-i18next";
@@ -57,7 +59,7 @@ const getGeohashRange = (
 function Navigation() {
     const [ isDarkMode ] = useDarkMode();
     const navVariant = isDarkMode ? 'dark' : 'light';
-   
+    
     const {i18n, t} = useTranslation("common");
 
     const handleTranslate = (e)=>{
@@ -65,13 +67,14 @@ function Navigation() {
         localStorage.setItem('i18nextLng', e);
     }
 
-     useEffect(()=>{
-         if(localStorage.getItem("i18nextLng").length > 3 || localStorage.getItem("i18nextLang"==null)){
+    useEffect(()=>{
+        if(localStorage.getItem("i18nextLng").length > 3 || localStorage.getItem("i18nextLang"==null)){
             i18next.changeLanguage("en");   //fallback
-         }
-     },[]);
+        }
+    },[]);
 
     return (
+        <IconContext.Provider value={{ className: "shared-class", size: 21 }}>
         <Navbar collapseOnSelect expand="lg" bg={navVariant} variant={navVariant} className="sticky-top">
         <Container fluid>
         <Navbar.Brand href="/">{t('theserviceman')}</Navbar.Brand>
@@ -104,11 +107,15 @@ function Navigation() {
                     <option value='ta'>தமிழ்</option>
                     <option value='te'>தெலுங்கு</option>
                 </select>
+                <Nav.Item className="d-flex align-items-center">
+                    <NotificationBell />
+                </Nav.Item>
                 <LogInOutButton />
             </Nav>
         </Navbar.Collapse>
         </Container>
         </Navbar>
+        </IconContext.Provider>
     );
 }
 
