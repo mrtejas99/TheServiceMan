@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation, useSearchParams } from "react-router-do
 
 // Import Firestore database
 import { db } from "../firebase";
-import { query, collection, getDocs, where, orderBy, limit, startAfter } from "firebase/firestore";
+import { query, collection, getDocs, where, orderBy, limit, startAfter, startAt, endAt } from "firebase/firestore";
 
 import { Container, Button, Col, Row, Card, Dropdown, ListGroup } from "react-bootstrap";
 
@@ -16,6 +16,9 @@ import { FaStar } from "react-icons/fa";
 //Constants
 import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER } from "../constants";
 import { number } from "react-admin";
+
+//geoloc
+import { geofire } from "geofire-common";
 
 //component for filter
 function FilterGroup(props) {
@@ -81,7 +84,7 @@ function Home() {
     // Start the fetch operation as soon as
     // the page loads
 
-    const [range,setRange] = useState({"lower":localStorage.getItem("lower"), "upper":localStorage.getItem("upper")});//for geo
+    const [currentLoc,setCurrentLoc] = useState({"lower":number(localStorage.getItem("latitude")), "upper":number(localStorage.getItem("longitude"))});//for geo
 
     const [queryParams] = useSearchParams();
 
@@ -126,15 +129,28 @@ function Home() {
         if(filterCriteriaLang != '')
             q = query(q, where('language', "==", filterCriteriaLang));
 
-        if(filterCriteriaStar != '')
-            q = query(q, where('rating', ">=", filterCriteriaStar), orderBy('rating', 'desc'));
+        //if(filterCriteriaStar != '')
+        //    q = query(q, where('rating', ">=", filterCriteriaStar), orderBy('rating', 'desc'));
         
         //for querying using geohash
-        if(Object.keys(range).length != 0){
-            console.log(range);
-            //something wrong here but condition correct
-            //q = query(q, where("geohash", ">=", range.lower), where("geohash", "<=", range.upper), orderBy('posted_date', 'desc'));
-        }
+        // if(Object.keys(range).length != 0){
+        //     console.log(range);
+        //     //something wrong here but condition correct
+        //     q = query(q, where("geohash", ">=", range.lower), where("geohash", "<=", range.upper), orderBy('geohash', 'desc'));
+        // }
+
+        //for geolocation
+        // const center = [currentLoc.latitude, currentLoc.longitude];
+        // const radiusInM = 50 * 1000;    //within 50KM
+        // const bounds = geofire.geohashQueryBounds(center, radiusInM);
+        // const promises = [];
+        // if(Object.keys(currentLoc).length != 0){
+        //     for (const b of bounds) {
+        //         q = query(q, orderBy('geohash'), startAt(b[0]), endAt(b[1]));
+        //         promises.push(q.get());
+        //     }
+        // }
+
 
         //Sort by criteria
         q = query(q, orderBy(sortCriteria, 'asc'));
@@ -198,8 +214,7 @@ function Home() {
         getDocs(query(
             collection(db, colle),
             //orderBy("popularity", 'desc'),
-            orderBy(name_field, 'asc'),
-            limit(5)
+            orderBy(name_field, 'asc')
         ))
         .then(data => data.docs.map(element => element.data()))
     );

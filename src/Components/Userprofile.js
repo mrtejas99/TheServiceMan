@@ -35,7 +35,7 @@ function Userprofile() {
             const doc = await getDocs(q);
             doc.forEach(element => {
                 var data = element.data();
-                console.log(data);
+                //console.log(data);
                 setInfo(arr => [...arr , data]);
             });
             

@@ -1,4 +1,4 @@
-import React, {  useEffect } from "react";
+import React, {  useState, useEffect } from "react";
 
 import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from "react-bootstrap";
 import { DarkToggle, useDarkMode } from "./DarkMode";
@@ -12,52 +12,24 @@ import { IconContext } from "react-icons";
 import { useTranslation } from "react-i18next";
 import i18next from 'i18next';
 
-//geolocation 
-import geohash from "ngeohash";
+import { query, collection, getDocs, where } from "firebase/firestore";
+import { db } from "../firebase";
 
 
-function getPosition(options) {
-    return new Promise((resolve, reject) => 
-        navigator.geolocation.getCurrentPosition(resolve, reject, options)
-    );
-}
+
 
 function onFilterUserLocation() {
-    getPosition()
-    .then(data => {
-        let {latitude, longitude} = data.coords;
-        console.log(latitude,longitude);
-        const range = getGeohashRange(latitude, longitude, 10);
-        localStorage.setItem('lower', range.lower);
-        localStorage.setItem('upper', range.upper);
+    navigator.geolocation.getCurrentPosition(position => {
+        localStorage.setItem('latitude', position.coords.latitude);
+        localStorage.setItem('longitude', position.coords.longitude);
     });
 }
 
-const getGeohashRange = (
-    latitude,
-    longitude,
-    distance, // miles
-  ) => {
-    const lat = 0.0144927536231884; // degrees latitude per mile
-    const lon = 0.0181818181818182; // degrees longitude per mile
-  
-    const lowerLat = latitude - lat * distance;
-    const lowerLon = longitude - lon * distance;
-  
-    const upperLat = latitude + lat * distance;
-    const upperLon = longitude + lon * distance;
-  
-    const lower = geohash.encode(lowerLat, lowerLon);
-    const upper = geohash.encode(upperLat, upperLon);
-  
-    return {
-      lower,
-      upper
-    };
-};
 
 function Navigation() {
     const [ isDarkMode ] = useDarkMode();
+    const [geoMaster, setGeoMaster] = useState([]);
+
     const navVariant = isDarkMode ? 'dark' : 'light';
     
     const {i18n, t} = useTranslation("common");
@@ -67,10 +39,17 @@ function Navigation() {
         localStorage.setItem('i18nextLng', e);
     }
 
+    const getFilterMasterData = (colle, name_field) => (
+        getDocs(query(collection(db, colle),))
+        .then(data => data.docs.map(element => element.data()))
+    );
+    
     useEffect(()=>{
         if(localStorage.getItem("i18nextLng").length > 3 || localStorage.getItem("i18nextLang"==null)){
             i18next.changeLanguage("en");   //fallback
         }
+        getFilterMasterData("locations", "location_name")
+            .then(locat => setGeoMaster(locat))
     },[]);
 
     return (
@@ -84,10 +63,9 @@ function Navigation() {
                 <NavDropdown title={t('location')} id="collasible-nav-dropdown" className='me-3'>
                     <NavDropdown.Item onClick={onFilterUserLocation}>{t('getcurrentlocation')}</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action/3.1">{t('panaji')}</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.2">{t('mapusa')}</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.3">{t('ponda')}</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.3">{t('margao')}</NavDropdown.Item>
+                    {
+                    geoMaster.map((x)=><NavDropdown.Item value={x.location_name}>{x.location_name}</NavDropdown.Item>)
+                    }
                 </NavDropdown>
                 <SearchAdsBar />
             </Nav>

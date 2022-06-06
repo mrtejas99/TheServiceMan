@@ -73,7 +73,7 @@ function Sellers() {
 
     const FetchNames = async ()=>{
         try{
-            console.log(info);
+            //console.log(info);
             feedbacks.map( async d =>{
                 if(!d.posted_by) return;
                 const q = query(collection(db, "users"), where("uid", "==", d.posted_by));
