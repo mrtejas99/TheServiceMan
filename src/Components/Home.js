@@ -18,7 +18,7 @@ import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER } from "../constants";
 import { number } from "react-admin";
 
 //geoloc
-import { geofire } from "geofire-common";
+const geofire = require('geofire-common');
 
 //component for filter
 function FilterGroup(props) {
@@ -84,7 +84,7 @@ function Home() {
     // Start the fetch operation as soon as
     // the page loads
 
-    const [currentLoc,setCurrentLoc] = useState({"lower":number(localStorage.getItem("latitude")), "upper":number(localStorage.getItem("longitude"))});//for geo
+    const [currentLoc,setCurrentLoc] = useState([Number(localStorage.getItem("latitude")), Number(localStorage.getItem("longitude"))]);//for geo
 
     const [queryParams] = useSearchParams();
 
@@ -115,6 +115,61 @@ function Home() {
         setLoading(false);  //hide hourglass
     }
 
+    function queryHashes() {
+        // [START fs_geo_query_hashes]
+        // Find cities within 50km of current location
+        const radiusInM = 50 * 1000;
+      
+        // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
+        // a separate query for each pair. There can be up to 9 pairs of bounds
+        // depending on overlap, but in most cases there are 4.
+        const bounds = geofire.geohashQueryBounds(currentLoc, radiusInM);
+        const promises = [];
+        for (const b of bounds) {
+          const q = query(collection(db,'serviceAds'),orderBy('geohash'), startAt(b[0]), endAt(b[1]));
+          promises.push(getDocs(q));
+        }
+      
+        // Collect all the query results together into a single list
+        Promise.all(promises).then((snapshots) => {
+          const matchingDocs = [];
+      
+          for (const snap of snapshots) {
+            for (const doc of snap.docs) {
+              const lat = doc.get('latitude');
+              const lng = doc.get('longitude');
+      
+              // We have to filter out a few false positives due to GeoHash
+              // accuracy, but most will match
+              const distanceInKm = geofire.distanceBetween([lat, lng], currentLoc);
+              const distanceInM = distanceInKm * 1000;
+              if (distanceInM <= radiusInM) {
+                matchingDocs.push(doc);
+              }
+            }
+          }
+      
+          return matchingDocs;
+        }).then((matchingDocs) => {
+            matchingDocs.forEach(async element => {    
+                var data = element.data();
+                let rating = await FetchFeedbacks(data.posted_date);   //fetch feedback for each ad
+                console.log(`id ${data.posted_date} rating ${rating} typeof rating: ${typeof rating}`); //array containing feedbacks of current ad being processed
+                data.rating = rating;
+                setInfo(arr => [...arr , data]);
+            })
+          // Process the matching documents
+          // [START_EXCLUDE]
+          // [END_EXCLUDE]
+        })
+        .catch(err => {
+            console.error(err);
+            alert("An error occured while geoloc query");
+        });
+
+        // [END fs_geo_query_hashes]
+    }
+
     const fetchFilteredAdData = (last_doc) => {
         let q = query(adsRef);
 
@@ -138,19 +193,6 @@ function Home() {
         //     //something wrong here but condition correct
         //     q = query(q, where("geohash", ">=", range.lower), where("geohash", "<=", range.upper), orderBy('geohash', 'desc'));
         // }
-
-        //for geolocation
-        // const center = [currentLoc.latitude, currentLoc.longitude];
-        // const radiusInM = 50 * 1000;    //within 50KM
-        // const bounds = geofire.geohashQueryBounds(center, radiusInM);
-        // const promises = [];
-        // if(Object.keys(currentLoc).length != 0){
-        //     for (const b of bounds) {
-        //         q = query(q, orderBy('geohash'), startAt(b[0]), endAt(b[1]));
-        //         promises.push(q.get());
-        //     }
-        // }
-
 
         //Sort by criteria
         q = query(q, orderBy(sortCriteria, 'asc'));
@@ -187,7 +229,7 @@ function Home() {
             .then(data => {
                 setInfo([]);    //clear results of previous filter
                 updateState(data); 
-                  
+                queryHashes();
             })
             .catch(err => {
                 console.error(err);
