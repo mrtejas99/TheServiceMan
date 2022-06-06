@@ -156,7 +156,7 @@ function Adview(){
                                     <br/>
                                     <Button variant="primary" className="btn-sm my-0 me-3" onClick={() => {
                                         if(user.uid!=ad.posted_by) 
-                                            navigate("/customerfeedback/",{state:{posted_by:ad.posted_by,posted_date:ad.posted_date}})
+                                            navigate("/Servicefeedback",{state:{posted_by:ad.posted_by,posted_date:ad.posted_date}})
                                         else 
                                             alert("You cannot give feedback to your Ad");}}>Feedback
                                         </Button>
