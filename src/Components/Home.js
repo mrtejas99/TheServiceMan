@@ -133,7 +133,7 @@ function Home() {
         if(Object.keys(range).length != 0){
             console.log(range);
             //something wrong here but condition correct
-            //q = query(q, where("geohash", ">=", range.lower), where("geohash", "<=", range.upper));
+            //q = query(q, where("geohash", ">=", range.lower), where("geohash", "<=", range.upper), orderBy('posted_date', 'desc'));
         }
 
         //Sort by criteria
@@ -178,7 +178,7 @@ function Home() {
                 alert("An error occured while fetching ads");
             });
         },
-        [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang, filterCriteriaStar, range]
+        [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang, filterCriteriaStar]
     );
 
     const fetchMore = () => {

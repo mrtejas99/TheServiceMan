@@ -20,7 +20,7 @@ function Userprofile() {
           const q = query(collection(db, "users"), where("uid", "==", user.uid));
           const doc = await getDocs(q);
           const data = doc.docs[0].data();
-          console.log(data);
+          //console.log(data);
           setFname(data.fname);
           setLname(data.lname);
         } catch (err) {

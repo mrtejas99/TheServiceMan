@@ -24,6 +24,7 @@ function onFilterUserLocation() {
     getPosition()
     .then(data => {
         let {latitude, longitude} = data.coords;
+        console.log(latitude,longitude);
         const range = getGeohashRange(latitude, longitude, 10);
         localStorage.setItem('lower', range.lower);
         localStorage.setItem('upper', range.upper);

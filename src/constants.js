@@ -37,36 +37,40 @@ const LANGUAGE_MASTER = [
         "value": "english"
     },
     {
-        "language_name": "Hindi",
+        "language_name": "हिन्दी",
         "value": "hindi"
     },
     {
-        "language_name": "Gujarati",
+        "language_name": "ગુજરાતી",
         "value": "gujarati"
     },
     {
-        "language_name": "Marathi",
+        "language_name": "मराठी",
         "value": "marathi"
     },
     {
-        "language_name": "Bengali",
+        "language_name": "বাংলা",
         "value": "bengali"
     },
     {
-        "language_name": "Tamil",
+        "language_name": "தமிழ்",
         "value": "tamil"
     },
     {
-        "language_name": "Odia",
+        "language_name": "ଓଡିଆ",
         "value": "odia"
     },
     {
-        "language_name": "Konkani",
+        "language_name": "कोंकणी",
         "value": "konkani"
     },
     {
-        "language_name": "Telugu",
+        "language_name": "தெலுங்கு",
         "value": "telugu"
+    },
+    {
+        "language_name": "ಕನ್ನಡ",
+        "value": "kannada"
     }
 ];
 

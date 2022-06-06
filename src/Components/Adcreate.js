@@ -5,8 +5,12 @@ import { auth, db, logout, saveAdData, storage  } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { Container,  Col, Row, Button, Form, Dropdown } from "react-bootstrap";
+
 //translate
 import { useTranslation } from "react-i18next";
+
+import { LANGUAGE_MASTER } from "../constants";
+
 
 function Adcreate(){
     const [title, setTitle] = useState('');
@@ -18,14 +22,27 @@ function Adcreate(){
     const [language, setLanguage] = useState('');
     const [category, setCategory] = useState('');
 
+    const [catMaster, setCatMaster] = useState([]);
+    const [geoMaster, setGeoMaster] = useState([]);
+
     const {t} = useTranslation("common");
 
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
 
+    const getFilterMasterData = (colle, name_field) => (
+        getDocs(query(collection(db, colle),))
+        .then(data => data.docs.map(element => element.data()))
+    );
+
     useEffect(() => {
         if (loading) return;
         if (!user) return navigate("/Login");
+        getFilterMasterData("adcategories", "category_name")
+            .then(categories => setCatMaster(categories))
+            .catch(err => console.error(err));
+        getFilterMasterData("locations", "location_name")
+            .then(locat => setGeoMaster(locat))
       }, [user, loading]);
 
     //add to firestore
@@ -80,34 +97,26 @@ function Adcreate(){
                     </Form.Group>
 
                     <select className="my-3 form-select w-50" value={location} onChange={(e) =>setLocation(e.target.value)}>
-                        <option eventKey='Panaji'>{t('panaji')}</option>
-                        <option eventKey='Margao'>{t('margao')}</option>
-                        <option eventKey='Mapusa'>{t('mapusa')}</option>
-                        <option eventKey='Ponda'>{t('ponda')}</option>
+                    {
+                    geoMaster.map((x)=><option value={x.location_name}>{x.location_name}</option>)
+                    }
                     </select>
 
                     <select className="my-3 form-select w-50" value={language} onChange={(e) =>setLanguage(e.target.value)}>
-                        <option value='english'>English</option>
-                        <option value='bengali'>বাংলা</option>
-                        <option value='gujarati'>ગુજરાતી</option>
-                        <option value='hindi'>हिन्दी</option>
-                        <option value='kannada'>ಕನ್ನಡ</option>
-                        <option value='konkani'>कोंकणी</option>
-                        <option value='marathi'>मराठी</option>
-                        <option value='odia'>ଓଡିଆ</option>
-                        <option value='tamil'>தமிழ்</option>
-                        <option value='telugu'>தெலுங்கு</option>
+                    {
+                        LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
+                    }
                     </select>
 
                     <select className="my-3 form-select w-50" value={category} onChange={(e) =>setCategory(e.target.value)}>
-                        <option value='Cook'>{t('cook')}</option>
-                        <option value='Electrician'>{t('electrician')}</option>
-                        <option value='Plumber'>{t('plumber')}</option>
-                        <option value='Beautician'>{t('beautician')}</option>
+                    {
+                        catMaster.map((x)=><option value={x.category_name}>{x.category_name}</option>)
+                    }
                     </select>
 
                     <div className='text-center'>
                         <Button variant="primary" className="w-50 m-auto" onClick={createServiceAd}>{t('createad')}</Button>
+                        
                     </div>
                 </Col>
             </Row>
