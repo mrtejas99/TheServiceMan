@@ -183,8 +183,7 @@ function Home() {
             q = query(q, where('language', "==", filterCriteriaLang));
 
         if(filterCriteriaStar != '')
-        //instead of where('rating'.....) where('rating'/'feedback_count'.....)
-            q = query(q, where('rating', ">=", filterCriteriaStar), orderBy("rating", "desc"));
+            q = query(q, where('average', ">=", filterCriteriaStar));
         
         //for querying using geohash
         // if(Object.keys(range).length != 0){
@@ -194,7 +193,7 @@ function Home() {
         // }
 
         //Sort by criteria
-        if(sortCriteria == "posted_date" || sortCriteria == "rating")
+        if(sortCriteria == "posted_date" || sortCriteria == "average")
             q = query(q, orderBy(sortCriteria, 'desc'));
         if(sortCriteria == "title")
             q = query(q, orderBy(sortCriteria, 'asc'));
@@ -303,7 +302,7 @@ function Home() {
 
                         <Dropdown.Menu>
                             <Dropdown.Item eventKey='posted_date'>{t('date')}</Dropdown.Item>
-                            <Dropdown.Item eventKey='rating'>{t('rating')}</Dropdown.Item>
+                            <Dropdown.Item eventKey='average'>{t('rating')}</Dropdown.Item>
                             <Dropdown.Item eventKey='title'>{t('title')}</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>

@@ -63,9 +63,9 @@ function Servicefeedback(){
                 console.log(fire_id);
                 try{
                     const q = query(collection(db, "serviceads"), where("posted_date", "==", AdId));
-                    const doc = await getDocs(q);
+                    const docx = await getDocs(q);
                     
-                    const data = doc.docs[0].data();        
+                    const data = docx.docs[0].data();        
                     const r = (data.rating + Rating);
                     const c = (data.feedback_count + 1)
                     const avg = r/c;    //total number of stars divided by number of feedbacks for the ad

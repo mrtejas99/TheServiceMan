@@ -129,7 +129,8 @@ const saveAdData = async (
             category: category,
             posted_date: Date.now(),
             rating:0,
-            feedback_count:0
+            feedback_count:0,
+            average:0
         });
         alert("Ad created successfully ");
     } catch (e) {
