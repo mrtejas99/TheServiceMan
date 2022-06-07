@@ -70,7 +70,7 @@ function Home() {
     const [sortCriteria, setSortCriteria] = useState('');
     const [filterCriteriaCategory, setFilterCriteriaCategory] = useState('');
     const [filterCriteriaGeo, setFilterCriteriaGeo] = useState('');
-    const [filterCriteriaStar, setFilterCriteriaStar] = useState('');
+    const [filterCriteriaStar, setFilterCriteriaStar] = useState(0);
     const [filterCriteriaLang, setFilterCriteriaLang] = useState('');
 
     const [catMaster, setCatMaster] = useState([]);
@@ -182,7 +182,7 @@ function Home() {
         if(filterCriteriaLang != '')
             q = query(q, where('language', "==", filterCriteriaLang));
 
-        if(filterCriteriaStar != '')
+        if(filterCriteriaStar != 0)
             q = query(q, where('average', ">=", filterCriteriaStar));
         
         //for querying using geohash
