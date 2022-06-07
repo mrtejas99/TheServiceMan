@@ -58,18 +58,29 @@ function Servicefeedback(){
                     text:feedback,
                     posted_date: Date.now()
                 });
-                alert("Document written with ID: ", docRef.ref);
+                alert("feedback added successfully");
                 //increment feedback_count and rating in serviceads
                 console.log(fire_id);
                 try{
+                    const q = query(collection(db, "serviceads"), where("posted_date", "==", AdId));
+                    const doc = await getDocs(q);
+                    
+                    const data = doc.docs[0].data();        
+                    const r = (data.rating + Rating);
+                    const c = (data.feedback_count + 1)
+                    const avg = r/c;    //total number of stars divided by number of feedbacks for the ad
+                    console.log("avg rating :"+avg);
+
                     const adRef = doc(db, 'serviceads', fire_id)
                     await updateDoc(adRef, {
                         rating: increment(Rating),
-                        feedback_count: increment(1)
+                        feedback_count: increment(1),
+                        average: avg
                       });
                     console.log('updated serviceads');
                 }
                 catch(x){
+                    console.log(x);
                     alert(x);
                 }
             }

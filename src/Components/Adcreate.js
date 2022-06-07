@@ -62,7 +62,7 @@ function Adcreate(){
                     description: location.state.ad.description, 
                     experience: location.state.ad.experience, 
                     skills: location.state.ad.experience, 
-                    ad_location: location.state.ad.ad_location, 
+                    location: location.state.ad.ad_location, 
                     language: location.state.ad.language, 
                     category: location.state.ad.category
                   });
