@@ -123,7 +123,9 @@ const saveAdData = async (
             location: location,
             language: language,
             category: category,
-            posted_date: Date.now()
+            posted_date: Date.now(),
+            rating:0,
+            feedback_count:0
         });
         alert("Document written with ID: ", docRef.id);
     } catch (e) {
