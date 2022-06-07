@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { auth, db, logout, saveAdData, storage  } from "../firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
@@ -12,7 +12,8 @@ import { useTranslation } from "react-i18next";
 import { LANGUAGE_MASTER } from "../constants";
 
 
-function Adcreate(){
+function Adcreate() {
+    const { adid } = useParams();
     const [title, setTitle] = useState('');
     const [banner, setBanner] = useState(null);
     const [description, setDescription] = useState('');
@@ -29,6 +30,8 @@ function Adcreate(){
 
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
+
+    //console.log(adid);
 
     const getFilterMasterData = (colle, name_field) => (
         getDocs(query(collection(db, colle),))

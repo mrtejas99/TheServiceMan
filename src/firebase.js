@@ -25,6 +25,8 @@ import { getStorage, connectStorageEmulator } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
+//import { Firestore } from 'simple-cached-firestore';
+
 import { firebaseConfig, enableLocalEmulator, firebaseEmulatorConfig as fbEmu } from "./config";
 
 // Initialize Firebase
@@ -40,6 +42,8 @@ if (enableLocalEmulator) {
     connectFirestoreEmulator(db, fbEmu.firestore.host, fbEmu.firestore.port);
     connectStorageEmulator(storage, fbEmu.storage.host, fbEmu.storage.port);
 }
+
+//const cachedb = new Firestore<ValidatedClass>({ db: db });
 
 const googleProvider = new GoogleAuthProvider();
 const signInWithGoogle = async () => {
