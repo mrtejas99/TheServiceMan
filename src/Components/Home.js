@@ -67,7 +67,7 @@ function FilterGroup(props) {
 
 function Home() {
     const [info , setInfo] = useState([]);
-    const [sortCriteria, setSortCriteria] = useState('posted_date');
+    const [sortCriteria, setSortCriteria] = useState('');
     const [filterCriteriaCategory, setFilterCriteriaCategory] = useState('');
     const [filterCriteriaGeo, setFilterCriteriaGeo] = useState('');
     const [filterCriteriaStar, setFilterCriteriaStar] = useState('');
@@ -100,10 +100,6 @@ function Home() {
         if(!isCollectionEmpty){
             doc.forEach(async element => {    
                 var data = element.data();
-                let rating = await FetchFeedbacks(data.posted_date);   //fetch feedback for each ad
-                console.log(`id ${data.posted_date} rating ${rating} typeof rating: ${typeof rating}`); //array containing feedbacks of current ad being processed
-                data.rating = rating;
-                //console.log(data);
                 setInfo(arr => [...arr , data]);
             });
 
@@ -154,9 +150,6 @@ function Home() {
             matchingDocs.forEach(async element => {    
                 var data = element.data();
                 console.log(data)
-                let rating = await FetchFeedbacks(data.posted_date);   //fetch feedback for each ad
-                //console.log(`id ${data.posted_date} rating ${rating} typeof rating: ${typeof rating}`); //array containing feedbacks of current ad being processed
-                data.rating = rating;
                 setInfo(arr => [...arr , data]);
             })
           // Process the matching documents
@@ -172,6 +165,7 @@ function Home() {
     }
 
     const fetchFilteredAdData = (last_doc) => {
+        console.log(` cate:${filterCriteriaCategory} geo: ${filterCriteriaGeo} lang:${filterCriteriaLang} star:${filterCriteriaStar}`)
         let q = query(adsRef);
 
         //Search query
@@ -188,8 +182,9 @@ function Home() {
         if(filterCriteriaLang != '')
             q = query(q, where('language', "==", filterCriteriaLang));
 
-        //if(filterCriteriaStar != '')
-        //    q = query(q, where('rating', ">=", filterCriteriaStar), orderBy('rating', 'desc'));
+        if(filterCriteriaStar != '')
+        //instead of where('rating'.....) where('rating'/'feedback_count'.....)
+            q = query(q, where('rating', ">=", filterCriteriaStar), orderBy("rating", "desc"));
         
         //for querying using geohash
         // if(Object.keys(range).length != 0){
@@ -199,7 +194,10 @@ function Home() {
         // }
 
         //Sort by criteria
-        q = query(q, orderBy(sortCriteria, 'asc'));
+        if(sortCriteria == "posted_date" || sortCriteria == "rating")
+            q = query(q, orderBy(sortCriteria, 'desc'));
+        if(sortCriteria == "title")
+            q = query(q, orderBy(sortCriteria, 'asc'));
 
         //Fetch after previous result
         if (last_doc !== undefined)
@@ -211,21 +209,6 @@ function Home() {
         //doc = await getDocs(q, orderBy(sortCriteria, 'asc'));
         return getDocs(q);
     };
-
-    const FetchFeedbacks = async (id)=>{
-        try {
-            const q = query(collection(db, "feedback"), where("adid", "==", id));
-            const doc = await getDocs(q);
-
-            let rating_total = doc.docs.reduce((sum, f) => sum + f.data().rating, 0);
-            
-            return doc.docs.length? rating_total/doc.docs.length : 0;
-
-        } catch (err) {
-            console.error(err);
-            alert("An error occured while fetching feedbacks");
-        }
-    }
 
     useEffect(
         () => {
@@ -314,7 +297,7 @@ function Home() {
 
                 <Col className="mx-3">
                     {search_query !== '' && <h4>Search Results for &quot;{search_query}&quot;</h4>}
-                    <Dropdown className="my-3" onSelect={(e) =>{console.log(e);setSortCriteria(e)}} value={sortCriteria}>
+                    <Dropdown className="my-3" onSelect={(e) => setSortCriteria(e)} value={sortCriteria}>
                         <Dropdown.Toggle variant="secondary" id="dropdown-basic" >{t('sort')}
                         </Dropdown.Toggle>
 
@@ -336,7 +319,7 @@ function Home() {
                                         const ratingValue=i+1;
                                         return (
                                             <label>
-                                            <FaStar className="star" color={ratingValue<= (data.rating) ?"#ffc107":"#e4e5e9"}size={15}/>
+                                            <FaStar className="star" color={ratingValue<= (data.rating/data.feedback_count) ?"#ffc107":"#e4e5e9"}size={15}/>
                                             </label>
                                         );
                                     })}

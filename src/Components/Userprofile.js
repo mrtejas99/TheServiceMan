@@ -7,6 +7,8 @@ import { Container, Button, Form, Col, Row, Card } from "react-bootstrap";
 //translate
 import { useTranslation } from "react-i18next";
 
+import { FaStar } from "react-icons/fa";
+
 function Userprofile() {
     const [user, loading, error] = useAuthState(auth);
     const [fname, setFname] = useState("");
@@ -85,6 +87,16 @@ function Userprofile() {
                             <Card.Img variant="top" src={data.banner_url} />
                             <Card.Body>
                                 <Card.Title>{data.title}</Card.Title>
+                                <Card.Text>
+                                    {[...Array(5)].map((x, i)=>{
+                                        const ratingValue=i+1;
+                                        return (
+                                            <label>
+                                            <FaStar className="star" color={ratingValue<= (data.rating/data.feedback_count) ?"#ffc107":"#e4e5e9"}size={15}/>
+                                            </label>
+                                        );
+                                    })}
+                                    </Card.Text>
                                 <Card.Text>{data.location}</Card.Text>
                                 <Button variant="primary" onClick={() => navigate(`/Adview/${data.posted_date}`, {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.location, posted_by: data.posted_by}})}>{t('viewad')}</Button>
                             </Card.Body>

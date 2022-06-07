@@ -139,7 +139,7 @@ function Sellers() {
                     <h5>{t('feedback')}</h5>
                     {
                     feedbacks.map((data,index) => (
-                        <Card style={{ height: '8rem'}}>
+                        fnames[index] && <Card style={{ height: '8rem'}}>
                             <Col>
                                 <Card.Body>
                                     <Card.Title >{fnames[index]} {lnames[index]}</Card.Title>                                       

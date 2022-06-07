@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 
 // Import Firestore database
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { query, collection, getDocs, where, deleteDoc, doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 function Adview(){
@@ -95,8 +95,17 @@ function Adview(){
         }
     }
 
-    const deleteAd = ()=>{
-        alert("Ad deleted");
+    const deleteAd = async ()=>{
+        if (window.confirm("Do you really want ot delete the ad?") == true) {
+            const adRef = doc(db, 'serviceads', ad.id);
+            try{
+                await deleteDoc(adRef);
+                alert("Ad deleted successfully.");
+                navigate('/');
+            } catch (err) {
+                alert(err);
+            }
+        }
     }
 
     useEffect(() => {
@@ -122,7 +131,7 @@ function Adview(){
                 </Breadcrumb>
                 {
                     user && <div className="float-end">
-                    <Button variant="info"  className="me-3" onClick={() => navigate(`/Adedit/${id}`)}>{t('edit')}</Button>
+                    <Button variant="info"  className="me-3" onClick={() => navigate(`/Adedit/${id}`, {state:{ad:ad}})}>{t('edit')}</Button>
                     <Button variant="danger" onClick={deleteAd}>{t('delete')}</Button>
                     </div>
                 }
@@ -155,10 +164,17 @@ function Adview(){
                                     <Card.Title>{posterFname} {posterLname}</Card.Title>
                                     <br/>
                                     <Button variant="primary" className="btn-sm my-0 me-3" onClick={() => {
-                                        if(user.uid!=ad.posted_by) 
-                                            navigate("/Servicefeedback",{state:{posted_by:ad.posted_by,posted_date:ad.posted_date}})
-                                        else 
-                                            alert("You cannot give feedback to your Ad");}}>Feedback
+                                        if(user){
+                                            if(user.uid!=ad.posted_by) 
+                                                navigate("/Servicefeedback",{state:{posted_by:ad.posted_by,posted_date:ad.posted_date, fire_id:ad.id}})
+                                            else 
+                                                alert("You cannot give feedback to your Ad");
+                                        }
+                                        else{
+                                            alert("You need to log in before giving feedback");
+                                            navigate("/login");
+                                        }
+                                    }}>Feedback
                                         </Button>
                                     <Button variant="primary" className="btn-sm my-0" onClick={() => navigate("/chat",{state:{posted_by:ad.posted_by}})} >Chat</Button>
                                 </Card.Body>
@@ -169,7 +185,7 @@ function Adview(){
                         <h4>Feedback</h4>                                     
                         {
                         feedbacks.map((data,index) => (
-                            <Card style={{ height: '8rem'}}>
+                            fnames[index] && <Card style={{ height: '8rem'}}>
                             <Row>
                                 <Col>
                                     <Card.Body>
