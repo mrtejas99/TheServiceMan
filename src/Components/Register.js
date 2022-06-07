@@ -48,17 +48,17 @@ function Register() {
 
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>{t('email')}</Form.Label>
-                <Form.Control type="email" placeholder={t('email')} onChange={(e)=>setEmail(e.target.value)}  value={email}/>
+                <Form.Control type="email" placeholder={t('email')} onChange={(e)=>setEmail(e.target.value)} autoComplete="username" value={email}/>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>{t('password')}</Form.Label>
-                <Form.Control type="password" placeholder={t('password')} onChange={(e)=>setPassword(e.target.value)}  value={password}/>
+                <Form.Control type="password" placeholder={t('password')} onChange={(e)=>setPassword(e.target.value)} autoComplete="current-password" value={password}/>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicConfirm">
                 <Form.Label>{t('confirmpass')}</Form.Label>
-                <Form.Control type="password" placeholder={t('confirmpass')} onChange={(e)=>setConfPassword(e.target.value)}  value={confirmpassword}/>
+                <Form.Control type="password" placeholder={t('confirmpass')} onChange={(e)=>setConfPassword(e.target.value)} autoComplete="new-password" value={confirmpassword}/>
             </Form.Group>
 
             <div className='text-center'>

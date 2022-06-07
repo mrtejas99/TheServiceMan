@@ -155,10 +155,17 @@ function Adview(){
                                     <Card.Title>{posterFname} {posterLname}</Card.Title>
                                     <br/>
                                     <Button variant="primary" className="btn-sm my-0 me-3" onClick={() => {
-                                        if(user.uid!=ad.posted_by) 
-                                            navigate("/Servicefeedback",{state:{posted_by:ad.posted_by,posted_date:ad.posted_date}})
-                                        else 
-                                            alert("You cannot give feedback to your Ad");}}>Feedback
+                                        if(user){
+                                            if(user.uid!=ad.posted_by) 
+                                                navigate("/Servicefeedback",{state:{posted_by:ad.posted_by,posted_date:ad.posted_date, fire_id:ad.id}})
+                                            else 
+                                                alert("You cannot give feedback to your Ad");
+                                        }
+                                        else{
+                                            alert("You need to log in before giving feedback");
+                                            navigate("/login");
+                                        }
+                                    }}>Feedback
                                         </Button>
                                     <Button variant="primary" className="btn-sm my-0" onClick={() => navigate("/chat",{state:{posted_by:ad.posted_by}})} >Chat</Button>
                                 </Card.Body>
@@ -169,7 +176,7 @@ function Adview(){
                         <h4>Feedback</h4>                                     
                         {
                         feedbacks.map((data,index) => (
-                            <Card style={{ height: '8rem'}}>
+                            fnames[index] && <Card style={{ height: '8rem'}}>
                             <Row>
                                 <Col>
                                     <Card.Body>
