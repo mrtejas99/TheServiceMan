@@ -14,7 +14,7 @@ import { useLocaleState } from "react-admin";
 
 
 function Adcreate(){
-    
+
     const location = useLocation();
     const [title, setTitle] = useState('');
     const [banner, setBanner] = useState(null || location.state.ad.banner_url);
@@ -100,7 +100,7 @@ function Adcreate(){
                 <Col>
                     <Form.Group className="mb-3" controlId="formBasicTitle">
                         <Form.Label>{t('title')}</Form.Label>
-                        <Form.Control type="text" placeholder="title" value={location.state.ad.title || title} onChange={(e) => setTitle(e.target.value)}/>
+                        <Form.Control type="text" placeholder="title" defaultValue={location.state.ad.title || title} onChange={(e) => setTitle(e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group controlId="formImg" className="mb-3">
@@ -110,33 +110,33 @@ function Adcreate(){
 
                     <Form.Group className="mb-3" controlId="formBasicDescription">
                         <Form.Label>{t('description')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} value={location.state.ad.description || description} onChange={(e) => setDescription(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={location.state.ad.description || description} onChange={(e) => setDescription(e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicExperience">
                         <Form.Label>{t('experience')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} value={location.state.ad.experience || experience} onChange={(e) => setExperience(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={location.state.ad.experience || experience} onChange={(e) => setExperience(e.target.value)}/>
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group className="mb-3" controlId="formBasicSkills">
                         <Form.Label>{t('skills')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} value={location.state.ad.skills || skills} onChange={(e) => setSkills(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={location.state.ad.skills || skills} onChange={(e) => setSkills(e.target.value)}/>
                     </Form.Group>
 
-                    <select className="my-3 form-select w-50" value={location.state.ad.location || ad_location} onChange={(e) =>setLocation(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={location.state.ad.location || ad_location} onChange={(e) =>setLocation(e.target.value)}>
                     {
                     geoMaster.map((x)=><option value={x.location_name}>{x.location_name}</option>)
                     }
                     </select>
 
-                    <select className="my-3 form-select w-50" value={location.state.ad.language || language} onChange={(e) =>setLanguage(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={location.state.ad.language || language} onChange={(e) =>setLanguage(e.target.value)}>
                     {
                         LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
                     }
                     </select>
 
-                    <select className="my-3 form-select w-50" value={location.state.ad.category || category} onChange={(e) =>setCategory(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={location.state.ad.category || category} onChange={(e) =>setCategory(e.target.value)}>
                     {
                         catMaster.map((x)=><option value={x.category_name}>{x.category_name}</option>)
                     }
