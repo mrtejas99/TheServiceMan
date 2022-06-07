@@ -179,7 +179,7 @@ function Home() {
 
         if(filterCriteriaStar != '')
         //instead of where('rating'.....) where('rating'/'feedback_count'.....)
-            q = query(q, where('rating', ">=", 1), orderBy("rating", "desc"));
+            q = query(q, where('rating', ">=", filterCriteriaStar), orderBy("rating", "desc"));
         
         //for querying using geohash
         // if(Object.keys(range).length != 0){

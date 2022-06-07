@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 
 // Import Firestore database
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { query, collection, getDocs, where, deleteDoc, doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 function Adview(){
@@ -95,8 +95,17 @@ function Adview(){
         }
     }
 
-    const deleteAd = ()=>{
-        alert("Ad deleted");
+    const deleteAd = async ()=>{
+        if (window.confirm("Do you really want ot delete the ad?") == true) {
+            const adRef = doc(db, 'serviceads', ad.id);
+            try{
+                await deleteDoc(adRef);
+                alert("Ad deleted successfully.");
+                navigate('/');
+            } catch (err) {
+                alert(err);
+            }
+        }
     }
 
     useEffect(() => {
@@ -122,7 +131,7 @@ function Adview(){
                 </Breadcrumb>
                 {
                     user && <div className="float-end">
-                    <Button variant="info"  className="me-3" onClick={() => navigate(`/Adcreate/${id}`)}>{t('edit')}</Button>
+                    <Button variant="info"  className="me-3" onClick={() => navigate(`/Adcreate/${id}`, {state:{ad:ad}})}>{t('edit')}</Button>
                     <Button variant="danger" onClick={deleteAd}>{t('delete')}</Button>
                     </div>
                 }

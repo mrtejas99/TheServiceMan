@@ -127,7 +127,7 @@ const saveAdData = async (
             rating:0,
             feedback_count:0
         });
-        alert("Document written with ID: ", docRef.id);
+        alert("Ad created successfully ");
     } catch (e) {
         alert("Error adding document: ", e);
     }
