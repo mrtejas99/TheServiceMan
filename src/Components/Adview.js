@@ -131,7 +131,7 @@ function Adview(){
                 </Breadcrumb>
                 {
                     user && <div className="float-end">
-                    <Button variant="info"  className="me-3" onClick={() => navigate(`/Adcreate/${id}`, {state:{ad:ad}})}>{t('edit')}</Button>
+                    <Button variant="info"  className="me-3" onClick={() => navigate(`/Adedit/${id}`, {state:{ad:ad}})}>{t('edit')}</Button>
                     <Button variant="danger" onClick={deleteAd}>{t('delete')}</Button>
                     </div>
                 }

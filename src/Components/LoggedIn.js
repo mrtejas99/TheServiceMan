@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 function LoggedIn() {
     const {t} = useTranslation("common");
     return(
-        <NavDropdown align="end" title={<FaUser />} id="collasible-nav-dropdown" className='m-3'>
+        <NavDropdown align="end" title={<FaUser />} className='mt-3 mb-3'>
             <NavDropdown.Item href="/Userprofile">{t('profile')}</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item href="/logout">{t('logout')}</NavDropdown.Item>

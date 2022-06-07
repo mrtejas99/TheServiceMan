@@ -168,6 +168,11 @@ function Home() {
         console.log(` cate:${filterCriteriaCategory} geo: ${filterCriteriaGeo} lang:${filterCriteriaLang} star:${filterCriteriaStar}`)
         let q = query(adsRef);
 
+        //Search query
+        if (search_query !== '') {
+            console.log(search_query);
+        }
+
         if(filterCriteriaCategory != '')
             q = query(q, where('category', "==", filterCriteriaCategory));
 
@@ -328,6 +333,7 @@ function Home() {
                     <div className="text-center">
                     {loading && <h1>⌛</h1>}
                     {!loading && !isEmpty && <Button className="my-3 w-50" onClick={fetchMore} variant="warning">{t('viewmore')}</Button>}
+                    {!loading && isEmpty && <span>No results found</span>}
                     </div>
                     
                 </Col>
