@@ -168,16 +168,16 @@ function Home() {
             console.log(search_query);
         }
 
-        if(filterCriteriaCategory !== '')
+        if(filterCriteriaCategory != '')
             q = query(q, where('category', "==", filterCriteriaCategory));
 
-        if(filterCriteriaGeo !== '')
+        if(filterCriteriaGeo != '')
             q = query(q, where('location', "==", filterCriteriaGeo));
 
-        if(filterCriteriaLang !== '')
+        if(filterCriteriaLang != '')
             q = query(q, where('language', "==", filterCriteriaLang));
 
-        if(filterCriteriaStar !== '')
+        if(filterCriteriaStar != '')
             q = query(q, where('average', ">=", filterCriteriaStar));
         
         //for querying using geohash
