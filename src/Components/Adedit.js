@@ -17,7 +17,7 @@ function Adedit() {
     const { adid } = useParams();
     const location = useLocation();
     const [title, setTitle] = useState('');
-    const [banner, setBanner] = useState(location.state.ad.banner_url || '');
+    const [banner, setBanner] = useState('');
     const [description, setDescription] = useState('');
     const [experience, setExperience] = useState('');
     const [skills, setSkills] = useState('');
@@ -42,6 +42,15 @@ function Adedit() {
     );
 
     useEffect(() => {
+        setTitle(location.state.ad.title)
+        setBanner(location.state.ad.banner_url)
+        setDescription(location.state.ad.description)
+        setExperience(location.state.ad.experience)
+        setSkills(location.state.ad.skills)
+        setLocation(location.state.ad.location)
+        setLanguage(location.state.ad.language)
+        setCategory(location.state.ad.category)
+
         if (loading) return;
         if (!user) return navigate("/Login");
         getFilterMasterData("adcategories", "category_name")
@@ -49,21 +58,23 @@ function Adedit() {
             .catch(err => console.error(err));
         getFilterMasterData("locations", "location_name")
             .then(locat => setGeoMaster(locat))
-    }, [user, loading]);
+    }, [user, loading, location.ad]);
 
     //add to firestore
     const createServiceAd = async () => {
         try{
-            const adRef = doc(db, 'serviceads', location.state.ad.id)
+            const fireid = location.state.ad.id;
+            const adRef = doc(db, 'serviceads',fireid )
             await updateDoc(adRef, {
                 title:title, 
-                banner: banner, 
+                banner_url: banner, 
                 description: description, 
                 experience: experience, 
-                skills: experience, 
+                skills: skills, 
                 location: location, 
                 language: language, 
-                category: category
+                category: category,
+                location: ad_location
                 });
             console.log('updated servicead');
             alert("Ad updated successfully")
