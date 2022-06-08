@@ -17,7 +17,7 @@ function Adedit() {
     const { adid } = useParams();
     const location = useLocation();
     const [title, setTitle] = useState('');
-    const [banner, setBanner] = useState(null || location.state.ad.banner_url);
+    const [banner, setBanner] = useState(location.state.ad.banner_url || '');
     const [description, setDescription] = useState('');
     const [experience, setExperience] = useState('');
     const [skills, setSkills] = useState('');
@@ -56,14 +56,14 @@ function Adedit() {
         try{
             const adRef = doc(db, 'serviceads', location.state.ad.id)
             await updateDoc(adRef, {
-                title:location.state.ad.title, 
-                banner: location.state.ad.banner_url, 
-                description: location.state.ad.description, 
-                experience: location.state.ad.experience, 
-                skills: location.state.ad.experience, 
-                location: location.state.ad.ad_location, 
-                language: location.state.ad.language, 
-                category: location.state.ad.category
+                title:title, 
+                banner: banner, 
+                description: description, 
+                experience: experience, 
+                skills: experience, 
+                location: location, 
+                language: language, 
+                category: category
                 });
             console.log('updated servicead');
             alert("Ad updated successfully")
@@ -91,7 +91,7 @@ function Adedit() {
         <Container className="py-3"> 
             <Form className='my-5 px-3' >    
             <Row className='py-5'>
-                <h2 className="text-center">{t('createad')} </h2>  
+                <h2 className="text-center">{t('updatead')} </h2>  
                 <Col>
                     <Form.Group className="mb-3" controlId="formBasicTitle">
                         <Form.Label>{t('title')}</Form.Label>
@@ -121,7 +121,7 @@ function Adedit() {
 
                     <select className="my-3 form-select w-50" defaultValue={location.state.ad.location} onChange={(e) =>setLocation(e.target.value)}>
                     {
-                    geoMaster.map((x)=><option value={x.location_name}>{x.location_name}</option>)
+                        geoMaster.map((x)=><option value={x.location_name}>{x.location_name}</option>)
                     }
                     </select>
 
@@ -138,7 +138,7 @@ function Adedit() {
                     </select>
 
                     <div className='text-center'>
-                        <Button variant="primary" className="w-50 m-auto" onClick={createServiceAd}>{t('createad')}</Button>
+                        <Button variant="primary" className="w-50 m-auto" onClick={createServiceAd}>{t('updatead')}</Button>
                         
                     </div>
                 </Col>
