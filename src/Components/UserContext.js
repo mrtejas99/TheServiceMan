@@ -19,13 +19,18 @@ function UserProvider(props) {
 
 	useEffect(() => {
 		if (!loading) {
-			const [uD, sUD] = userData;
-			console.log("Is here", user);
+			const [uD, setUD] = userData;
 
-			sUD(Object.assign(Object.assign({}, uD), {
-				"user_id": user.uid,
-				"display_name": user.displayName || user.email || "Guest"
-			}));
+			if (user)
+				setUD(Object.assign(Object.assign({}, uD), {
+					"user_id": user.uid,
+					"display_name": user.displayName || user.email || "Guest"
+				}));
+			else
+				setUD(Object.assign(Object.assign({}, uD), {
+					"user_id": null,
+					"display_name": "Guest"
+				}));
 		}
 	}, [user, loading]);
 

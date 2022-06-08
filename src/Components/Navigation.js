@@ -61,10 +61,10 @@ function Navigation() {
         <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className=" w-75 me-auto">
                 <NavDropdown title={t('location')} id="collasible-nav-dropdown" className='me-3'>
-                    <NavDropdown.Item onClick={onFilterUserLocation}>{t('getcurrentlocation')}</NavDropdown.Item>
+                    <NavDropdown.Item key="__userloc" onClick={onFilterUserLocation}>{t('getcurrentlocation')}</NavDropdown.Item>
                     <NavDropdown.Divider />
                     {
-                    geoMaster.map((x)=><NavDropdown.Item value={x.location_name}>{x.location_name}</NavDropdown.Item>)
+						geoMaster.map((x)=><NavDropdown.Item key={x.location_name} value={x.location_name}>{x.location_name}</NavDropdown.Item>)
                     }
                 </NavDropdown>
                 <SearchAdsBar />
