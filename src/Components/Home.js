@@ -165,7 +165,7 @@ function Home() {
     }
 
     const fetchFilteredAdData = (last_doc) => {
-        console.log(` cate:${filterCriteriaCategory} geo: ${filterCriteriaGeo} lang:${filterCriteriaLang} star:${filterCriteriaStar}`)
+        console.log(` cate:${filterCriteriaCategory} geo: ${filterCriteriaGeo} lang:${filterCriteriaLang} star:${filterCriteriaStar} ${typeof filterCriteriaStar}`)
         let q = query(adsRef);
 
         //Search query
