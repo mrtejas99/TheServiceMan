@@ -42,11 +42,8 @@ function SignInScreen() {
 
 function AdminLoginForm(props) {
     return (
-        <div>
-            <div style={{fontFamily: "monospace", marginLeft: '15px'}}>
-                <p>Username: test@example.com</p>
-                <p>Password: password</p>
-            </div>
+        <div style={{textAlign: "center"}}>
+            <h4 style={{fontFamily: "monospace"}}>Login</h4>
             <LoginForm {...props} />
         </div>
     );
@@ -55,7 +52,9 @@ function AdminLoginForm(props) {
 
 function AdminLoginPage(props) {
     return (
-        <Login loginForm={<AdminLoginForm {...props} />} {...props} />
+        <Login {...props}>
+            <AdminLoginForm {...props} />
+        </Login>
     );
 }
 
