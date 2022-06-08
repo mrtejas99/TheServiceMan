@@ -26,4 +26,11 @@ const firebaseEmulatorConfig = {
     }
 };
 
-export { firebaseConfig, enableLocalEmulator, firebaseEmulatorConfig };
+const adminConfig = {
+	//Enable Logging from React-admin-firebase (in console)
+	"raf_logging": false,
+	//How the admin session is stored: 'session', 'local' or 'none'
+	"auth_storage": 'local'
+};
+
+export { firebaseConfig, enableLocalEmulator, firebaseEmulatorConfig, adminConfig };

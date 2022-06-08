@@ -74,8 +74,24 @@ const LANGUAGE_MASTER = [
     }
 ];
 
+const USER_ROLES = [
+	{
+		'name': 'superadmin',
+		'id': 0
+	},
+	{
+		'name': 'admin',
+		'id': 1
+	},
+	{
+		'name': 'user',
+		'id': 2
+	}
+];
+
 export {
     RESULTS_PER_PAGE,
     RATING_MASTER,
-    LANGUAGE_MASTER
+    LANGUAGE_MASTER,
+	USER_ROLES
 };

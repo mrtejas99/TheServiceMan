@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from "react-bootstrap";
-import { LogInOutButton } from "./LogInOutButton";
+import React from "react";
+import { NavDropdown } from "react-bootstrap";
 import { FaUser } from "react-icons/fa";
 
 //translate
@@ -10,6 +9,7 @@ function LoggedIn() {
     const {t} = useTranslation("common");
     return(
         <NavDropdown align="end" title={<FaUser />} className='mt-3 mb-3'>
+            <NavDropdown.ItemText className="text-success">Welcome, user!</NavDropdown.ItemText>
             <NavDropdown.Item href="/Userprofile">{t('profile')}</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item href="/logout">{t('logout')}</NavDropdown.Item>
