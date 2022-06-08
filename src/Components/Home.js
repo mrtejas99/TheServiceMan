@@ -29,12 +29,6 @@ function FilterGroup(props) {
     const onFilterSelect = props.onFilterSelect;
     const filterData = props.filterData;
     const addSuffix = props.addTextSuffix || false;
-    const setFilter = (ev) => {
-        ev.preventDefault();
-        const filterValue = JSON.parse(ev.target.dataset.filter);
-		console.log(filterValue, typeof filterValue);
-        onFilterSelect(filterValue);
-    };
 
     //Map each filter property with an item element
     useEffect(() => {
@@ -47,7 +41,7 @@ function FilterGroup(props) {
                                 filterState == elem[filterByProp] ? (
                                     <span className="font-weight-bold">{elem[filterDisplayField]}</span>
                                 ) : (
-                                    <a href="#" className="font-weight-normal" data-filter={JSON.stringify(elem[filterByProp])} onClick={setFilter}>{elem[filterDisplayField]}</a>
+                                    <a href="#" className="font-weight-normal" onClick={e=>{e.preventDefault(); onFilterSelect(elem[filterByProp]);}}>{elem[filterDisplayField]}</a>
                                 )
                             }
                             { addSuffix && elem.suffix && <span>{elem.suffix}</span> }
@@ -60,7 +54,7 @@ function FilterGroup(props) {
 
     return (
         <ul className="list-unstyled">
-            <li><a href="#" onClick={setFilter} data-filter=""><RiFilterOffFill />&nbsp;{'Clear Filter'}</a></li>
+            <li><a href="#" onClick={e=>{e.preventDefault(); onFilterSelect('');}}><RiFilterOffFill />&nbsp;{'Clear Filter'}</a></li>
             { filterItems }
         </ul>
     );
@@ -183,7 +177,7 @@ function Home() {
         if(filterCriteriaLang != '')
             q = query(q, where('language', "==", filterCriteriaLang));
 
-        if(filterCriteriaStar != 0)
+        if(filterCriteriaStar != '')
             q = query(q, where('average', ">=", filterCriteriaStar));
         
         //for querying using geohash

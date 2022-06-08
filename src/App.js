@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 //User settings context
 import { ClientSettingsProvider } from './Components/ClientSettings';
+import { UserProvider } from './Components/UserContext';
 
 //Theme manager
 import { BoostrapTheme, BootswatchTheme } from './Components/AppTheme';
@@ -37,28 +38,30 @@ import AdminPanel from './AdminPanel';
  */
 function TheServiceManApp() {
 	return (
-		<div className='app' >
-			<BoostrapTheme lightModeTheme={BootswatchTheme.FLATLY} darkModeTheme={BootswatchTheme.DARKLY} />
-			<Navigation />
-			<Routes>
-				<Route exact path='/' element={<Home/>} />
-				<Route path="/login" element={<Login/>} />
-				<Route path="/register" element={<Register/>} />
-				<Route path="/forgotpass" element={<Forgotpass/>} />
-				<Route path="/Userprofile" element={<Userprofile/>} />
-				<Route path="/Adview/:id" element={<Adview/>} />
-				<Route path="/Customerfeedback" element={<Customerfeedback />} />
-				<Route path="/Servicefeedback" element={<Servicefeedback />} />
-				<Route path="/Adedit/:adid" element={<Adedit />} />
-				<Route path="/Adcreate" element={<Adcreate />} />
-				<Route path="/Sellers" element={<Sellers />} />
-				<Route path="/Customers" element={<Customers />} />
-				<Route path="/fetch" element={<Fetch />} />
-				<Route path="/Logout" element={<Logout />} />
-				<Route path="*" element={<Error/>} />
-			</Routes>
-			<Footer />
-		</div>
+		<UserProvider>
+			<div className='app' >
+				<BoostrapTheme lightModeTheme={BootswatchTheme.FLATLY} darkModeTheme={BootswatchTheme.DARKLY} />
+				<Navigation />
+				<Routes>
+					<Route exact path='/' element={<Home/>} />
+					<Route path="/login" element={<Login/>} />
+					<Route path="/register" element={<Register/>} />
+					<Route path="/forgotpass" element={<Forgotpass/>} />
+					<Route path="/Userprofile" element={<Userprofile/>} />
+					<Route path="/Adview/:id" element={<Adview/>} />
+					<Route path="/Customerfeedback" element={<Customerfeedback />} />
+					<Route path="/Servicefeedback" element={<Servicefeedback />} />
+					<Route path="/Adedit/:adid" element={<Adedit />} />
+					<Route path="/Adcreate" element={<Adcreate />} />
+					<Route path="/Sellers" element={<Sellers />} />
+					<Route path="/Customers" element={<Customers />} />
+					<Route path="/fetch" element={<Fetch />} />
+					<Route path="/Logout" element={<Logout />} />
+					<Route path="*" element={<Error/>} />
+				</Routes>
+				<Footer />
+			</div>
+		</UserProvider>
 	);
 }
 
