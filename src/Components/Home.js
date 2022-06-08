@@ -31,7 +31,8 @@ function FilterGroup(props) {
     const addSuffix = props.addTextSuffix || false;
     const setFilter = (ev) => {
         ev.preventDefault();
-        const filterValue = ev.target.dataset.filter;
+        const filterValue = JSON.parse(ev.target.dataset.filter);
+		console.log(filterValue, typeof filterValue);
         onFilterSelect(filterValue);
     };
 
@@ -46,7 +47,7 @@ function FilterGroup(props) {
                                 filterState == elem[filterByProp] ? (
                                     <span className="font-weight-bold">{elem[filterDisplayField]}</span>
                                 ) : (
-                                    <a href="#" className="font-weight-normal" data-filter={elem[filterByProp]} onClick={setFilter}>{elem[filterDisplayField]}</a>
+                                    <a href="#" className="font-weight-normal" data-filter={JSON.stringify(elem[filterByProp])} onClick={setFilter}>{elem[filterDisplayField]}</a>
                                 )
                             }
                             { addSuffix && elem.suffix && <span>{elem.suffix}</span> }
@@ -332,7 +333,7 @@ function Home() {
                     <div className="text-center">
                     {loading && <h1>⌛</h1>}
                     {!loading && !isEmpty && <Button className="my-3 w-50" onClick={fetchMore} variant="warning">{t('viewmore')}</Button>}
-                    {!loading && isEmpty && <span>No results found</span>}
+                    {!loading && (info.length === 0) && <span>No results found</span>}
                     </div>
                     
                 </Col>
