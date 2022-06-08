@@ -8,7 +8,7 @@ function AdminDashboard() {
     console.log(authProvider.getAuthUser);
     return (
         <Card>
-            <CardHeader title="Welcome to the administration" />
+            <CardHeader title={<span>Welcome to the <b>TheServiceMan</b> Admin page</span>} />
             <CardContent>Lorem ipsum sic dolor amet...</CardContent>
         </Card>
     );

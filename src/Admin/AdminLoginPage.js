@@ -43,7 +43,7 @@ function SignInScreen() {
 function AdminLoginForm(props) {
     return (
         <div style={{textAlign: "center"}}>
-            <h4 style={{fontFamily: "monospace"}}>Login</h4>
+            <h4 style={{fontFamily: "monospace"}}>Admin Login</h4>
             <LoginForm {...props} />
         </div>
     );
