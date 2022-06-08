@@ -23,6 +23,7 @@ import { Adview } from './Components/Adview';
 import { Customerfeedback } from './Components/Customerfeedback';
 import { Servicefeedback } from './Components/Servicefeedback';
 import { Adcreate } from "./Components/Adcreate";
+import { Adedit } from "./Components/Adedit";
 import { Sellers } from "./Components/Sellers";
 import { Customers } from "./Components/Customers";
 import { Fetch } from "./Components/temp";
@@ -48,7 +49,7 @@ function TheServiceManApp() {
 				<Route path="/Adview/:id" element={<Adview/>} />
 				<Route path="/Customerfeedback" element={<Customerfeedback />} />
 				<Route path="/Servicefeedback" element={<Servicefeedback />} />
-				<Route path="/Adedit/:adid" element={<Adcreate />} />
+				<Route path="/Adedit/:adid" element={<Adedit />} />
 				<Route path="/Adcreate" element={<Adcreate />} />
 				<Route path="/Sellers" element={<Sellers />} />
 				<Route path="/Customers" element={<Customers />} />

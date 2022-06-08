@@ -10,12 +10,14 @@ import { Container,  Col, Row, Button, Form, Dropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import { LANGUAGE_MASTER } from "../constants";
+import { useLocaleState } from "react-admin";
 
 
-function Adcreate() {
+function Adedit() {
     const { adid } = useParams();
+    const location = useLocation();
     const [title, setTitle] = useState('');
-    const [banner, setBanner] = useState(null);
+    const [banner, setBanner] = useState(null || location.state.ad.banner_url);
     const [description, setDescription] = useState('');
     const [experience, setExperience] = useState('');
     const [skills, setSkills] = useState('');
@@ -32,6 +34,7 @@ function Adcreate() {
     const navigate = useNavigate();
 
     //console.log(adid);
+    console.log(location.state.ad)
 
     const getFilterMasterData = (colle, name_field) => (
         getDocs(query(collection(db, colle),))
@@ -46,12 +49,29 @@ function Adcreate() {
             .catch(err => console.error(err));
         getFilterMasterData("locations", "location_name")
             .then(locat => setGeoMaster(locat))
-      }, [user, loading]);
+    }, [user, loading]);
 
     //add to firestore
     const createServiceAd = async () => {
-        saveAdData(user.uid, title, banner, description, experience, skills, ad_location, language, category);
-        navigate("/");
+        try{
+            const adRef = doc(db, 'serviceads', location.state.ad.id)
+            await updateDoc(adRef, {
+                title:location.state.ad.title, 
+                banner: location.state.ad.banner_url, 
+                description: location.state.ad.description, 
+                experience: location.state.ad.experience, 
+                skills: location.state.ad.experience, 
+                location: location.state.ad.ad_location, 
+                language: location.state.ad.language, 
+                category: location.state.ad.category
+                });
+            console.log('updated servicead');
+            alert("Ad updated successfully")
+            navigate("/");
+        }
+        catch(x){
+            alert(x);
+        }
     };
 
     const handleImageAsFile =  (e) => {
@@ -75,7 +95,7 @@ function Adcreate() {
                 <Col>
                     <Form.Group className="mb-3" controlId="formBasicTitle">
                         <Form.Label>{t('title')}</Form.Label>
-                        <Form.Control type="text" placeholder="title" defaultValue={title} onChange={(e) => setTitle(e.target.value)}/>
+                        <Form.Control type="text" placeholder="title" defaultValue={location.state.ad.title} onChange={(e) => setTitle(e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group controlId="formImg" className="mb-3">
@@ -85,33 +105,33 @@ function Adcreate() {
 
                     <Form.Group className="mb-3" controlId="formBasicDescription">
                         <Form.Label>{t('description')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={description} onChange={(e) => setDescription(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={location.state.ad.description} onChange={(e) => setDescription(e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicExperience">
                         <Form.Label>{t('experience')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={experience} onChange={(e) => setExperience(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={location.state.ad.experience} onChange={(e) => setExperience(e.target.value)}/>
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group className="mb-3" controlId="formBasicSkills">
                         <Form.Label>{t('skills')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={skills} onChange={(e) => setSkills(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={location.state.ad.skills} onChange={(e) => setSkills(e.target.value)}/>
                     </Form.Group>
 
-                    <select className="my-3 form-select w-50" defaultValue={ad_location} onChange={(e) =>setLocation(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={location.state.ad.location} onChange={(e) =>setLocation(e.target.value)}>
                     {
                     geoMaster.map((x)=><option value={x.location_name}>{x.location_name}</option>)
                     }
                     </select>
 
-                    <select className="my-3 form-select w-50" defaultValue={language} onChange={(e) =>setLanguage(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={location.state.ad.language} onChange={(e) =>setLanguage(e.target.value)}>
                     {
                         LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
                     }
                     </select>
 
-                    <select className="my-3 form-select w-50" defaultValue={category} onChange={(e) =>setCategory(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={location.state.ad.category} onChange={(e) =>setCategory(e.target.value)}>
                     {
                         catMaster.map((x)=><option value={x.category_name}>{x.category_name}</option>)
                     }
@@ -129,4 +149,4 @@ function Adcreate() {
     );
 }
 
-export { Adcreate };
+export { Adedit };
