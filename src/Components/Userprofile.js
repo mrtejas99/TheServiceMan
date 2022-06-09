@@ -27,7 +27,7 @@ function Userprofile() {
           setLname(data.lname);
         } catch (err) {
           console.error(err);
-          alert("An error occured while fetching user data");
+          alert(t("errfetchposter"));
         }
     };
 
@@ -43,7 +43,7 @@ function Userprofile() {
             
         } catch (err) {
             console.error(err);
-            alert("An error occured while fetching user ads");
+            alert(t("errfetchad"));
         }
     }
 
@@ -75,7 +75,7 @@ function Userprofile() {
                     </Col>
                     <Col>
                         <Button variant="info" onClick={() => navigate("/Adcreate")}>{t('advertise')}</Button><br />
-                        <Button variant="info" onClick={() => navigate("/Sellers")} className='my-3'>{t('switch')}</Button>
+                        <Button variant="info" onClick={() => navigate("/Sellers")} state={{posted_by:user.uid}} className='my-3'>{t('switch')}</Button>
                     </Col>
                 </Row>
                 <br/>   

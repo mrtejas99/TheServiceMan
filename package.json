@@ -30,6 +30,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "^5.0.1",
     "simple-cached-firestore": "^6.0.1",
+    "translation-check": "^1.0.2",
     "use-local-storage": "^2.3.6",
     "web-vitals": "^2.1.4"
   },

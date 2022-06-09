@@ -25,3 +25,11 @@
 	padding: 0.2em 0.45em;
 	opacity: 1.0;
 }
+
+.list-group{
+    max-height: 10rem;
+	max-width: 10rem;
+    margin-bottom: 10vw;
+    overflow-y: auto;
+	overflow-x: hidden;
+}

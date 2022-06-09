@@ -27,6 +27,7 @@ function Sellers() {
     const Fetchdata = async ()=>{
         try {
             //get ads posted by the seller
+            console.log(location.state.posted_by)
             const q1 = query(collection(db, "serviceads"), where("posted_by", "==", location.state.posted_by));
             const doc1 = await getDocs(q1);
             doc1.forEach(async element => {
@@ -35,8 +36,6 @@ function Sellers() {
                 //data1.rating = rating;
                 setInfo(arr => [...arr , data1]);
             });
-
-            
 
             //get the seller details
             const q2 = query(collection(db, "users"), where("uid", "==", location.state.posted_by));
@@ -49,7 +48,7 @@ function Sellers() {
 
         } catch (err) {
             console.error(err);
-            alert("An error occured while fetching data");
+            alert(t("errfetchposter"));
         }
     }
     const FetchFeedbacks = async (id)=>{
@@ -67,7 +66,7 @@ function Sellers() {
             })  
         } catch (err) {
             console.error(err);
-            alert("An error occured while fetching feedbacks");
+            alert(t("errfetchfeedback"));
         }
     }
 
@@ -85,7 +84,7 @@ function Sellers() {
             //console.log(fnames)
         } catch (err) {
             console.error(err);
-            alert("An error occured while fetching names of feedbackers");
+            alert(t("errfetchposter"));
         }
     }
 

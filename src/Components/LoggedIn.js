@@ -13,7 +13,7 @@ function LoggedIn() {
 
     return(
         <NavDropdown align="end" title={<FaUser />} className='mt-3 mb-3'>
-            <NavDropdown.ItemText className="text-success">Welcome, {userData.display_name}</NavDropdown.ItemText>
+            <NavDropdown.ItemText className="text-success">{t('welcome')} {userData.display_name}</NavDropdown.ItemText>
             <NavDropdown.Item href="/Userprofile">{t('profile')}</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item href="/logout">{t('logout')}</NavDropdown.Item>

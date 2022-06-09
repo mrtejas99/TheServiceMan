@@ -101,7 +101,7 @@ function Adcreate() {
 
                     <select className="my-3 form-select w-50" defaultValue={ad_location} onChange={(e) =>setLocation(e.target.value)}>
                     {
-                    geoMaster.map((x)=><option value={x.location_name}>{x.location_name}</option>)
+                    geoMaster.map((x)=><option value={x.location_name}>{t(x.location_name)}</option>)
                     }
                     </select>
 
@@ -113,7 +113,7 @@ function Adcreate() {
 
                     <select className="my-3 form-select w-50" defaultValue={category} onChange={(e) =>setCategory(e.target.value)}>
                     {
-                        catMaster.map((x)=><option value={x.category_name}>{x.category_name}</option>)
+                        catMaster.map((x)=><option value={x.category_name}>{t(x.category_name)}</option>)
                     }
                     </select>
 

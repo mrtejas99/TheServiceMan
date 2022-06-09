@@ -48,7 +48,7 @@ function Adview(){
             console.log(ad);
         } catch (err) {
             console.error(err);
-            alert("An error occured while fetching ad data");
+            alert(t("errfetchad"));
         }
     }
 
@@ -62,7 +62,7 @@ function Adview(){
             });
         } catch (err) {
             console.error(err);
-            alert("An error occured while fetching feedbacks");
+            alert(t("errfetchfeedback"));
         }
 
         try{
@@ -74,7 +74,7 @@ function Adview(){
             setPosterLname(data.lname);
         } catch (err) {
             console.error(err);
-            alert("An error occured while fetching names of Ad poster");
+            alert(t("errfetchposter"));
         }
     }
 
@@ -91,7 +91,7 @@ function Adview(){
             //console.log(fnames)
         } catch (err) {
             console.error(err);
-            alert("An error occured while fetching names of feedbackers");
+            alert("errfetchposter");
         }
     }
 
@@ -100,7 +100,7 @@ function Adview(){
             const adRef = doc(db, 'serviceads', ad.id);
             try{
                 await deleteDoc(adRef);
-                alert("Ad deleted successfully.");
+                alert(t("deletesuccess"));
                 navigate('/');
             } catch (err) {
                 alert(err);
@@ -125,12 +125,11 @@ function Adview(){
             <Container className="py-3">
                 <Breadcrumb>
                     <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                    <Breadcrumb.Item href="#">{ad.category}</Breadcrumb.Item>
-                    <Breadcrumb.Item href="#">Goa</Breadcrumb.Item>
-                    <Breadcrumb.Item active>{ad.location}</Breadcrumb.Item>
+                    <Breadcrumb.Item href="#">{t(ad.category)}</Breadcrumb.Item>
+                    <Breadcrumb.Item active>{t(ad.location)}</Breadcrumb.Item>
                 </Breadcrumb>
                 {
-                    user.uid==ad.posted_by && <div className="float-end">
+                    user && user.uid==ad.posted_by && <div className="float-end">
                     <Button variant="info"  className="me-3" onClick={() => navigate(`/Adedit/${id}`, {state:{ad:ad}})}>{t('edit')}</Button>
                     <Button variant="danger" onClick={deleteAd}>{t('delete')}</Button>
                     </div>
@@ -140,49 +139,49 @@ function Adview(){
                     <Col>
                         <h3>{ad.title}</h3>
                         <Image className="w-75 my-3" src={ad.banner_url}/>
-                        <h4 >Description</h4>
+                        <h4 >{t("description")}</h4>
                         <p>{ad.description}</p>
 
-                        <h4>Experience</h4>
+                        <h4>{t("experience")}</h4>
                         <p>{ad.experience}</p>
                     </Col>
                    
                     <Col >
-                        <h4>Skills</h4>
+                        <h4>{t("skills")}</h4>
                         <div className='py-3'>
                             { 
                                 ad.skills.split(",").map((e) => <Badge  className="m-1" bg="secondary">{e}</Badge>)
                             }
                         </div>
-                        <h4>User description</h4>
+                        <h4>{t("userdescription")}</h4>
 
                         <Card style={{ width: '25rem'}} className="my-3">
                             <Row>
                                 <Col className="w-25"><Card.Img className='px-2 py-2'variant="top" src={logo} style={logoStyle} /></Col>
                                 <Col className="w-75">
                                 <Card.Body>
-                                    <Card.Title>{posterFname} {posterLname}</Card.Title>
+                                    <Card.Title><Link className="my-3" to="/Sellers" state={{posted_by:ad.posted_by}}>{posterFname} {posterLname}</Link></Card.Title>
                                     <br/>
                                     <Button variant="primary" className="btn-sm my-0 me-3" onClick={() => {
                                         if(user){
                                             if(user.uid!=ad.posted_by) 
                                                 navigate("/Servicefeedback",{state:{posted_by:ad.posted_by,posted_date:ad.posted_date, fire_id:ad.id}})
                                             else 
-                                                alert("You cannot give feedback to your Ad");
+                                                alert(t("errselffeedback"));
                                         }
                                         else{
-                                            alert("You need to log in before giving feedback");
+                                            alert(t("loginbeforefeedback"));
                                             navigate("/login");
                                         }
-                                    }}>Feedback
+                                    }}>{t("feedback")}
                                         </Button>
-                                    <Button variant="primary" className="btn-sm my-0" onClick={() => navigate("/chat",{state:{posted_by:ad.posted_by}})} >Chat</Button>
+                                    <Button variant="primary" className="btn-sm my-0" onClick={() => navigate("/chat",{state:{posted_by:ad.posted_by}})} >{t("chat")}</Button>
                                 </Card.Body>
                                 </Col>
                             </Row>
                         </Card>
 
-                        <h4>Feedback</h4>                                     
+                        <h4>{t("feedback")}</h4>                                     
                         {
                         feedbacks.map((data,index) => (
                             fnames[index] && <Card style={{ height: '8rem'}}>
@@ -207,7 +206,6 @@ function Adview(){
                             </Card>
                         ))
                         }
-                        <Link className="my-3" to="/Sellers" state={{posted_by:ad.posted_by}}>View more</Link>
                     </Col>
                 </Row>
 

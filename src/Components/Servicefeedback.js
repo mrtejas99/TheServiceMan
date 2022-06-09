@@ -5,11 +5,15 @@ import { auth, db, logout } from "../firebase";
 import { query, collection, getDocs, where, addDoc, updateDoc, increment, doc } from "firebase/firestore";
 import { Form, Button } from "react-bootstrap";
 import {FaStar} from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+
 
 function Servicefeedback(){
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
     const location = useLocation(); 
+
+    const {t} = useTranslation("common");
 
     const [feedback , setfeedback] = useState(null);
     const [Rating, setRating] = useState(1);
@@ -48,7 +52,7 @@ function Servicefeedback(){
     const createFeedback = async () => {
         try {
             if(data)
-                alert("You have already given feedback for the Ad");
+                alert(t("erralreadygavefeedback"));
             else{
                 const docRef =  addDoc(collection(db, "feedback"), {
                     posted_by:user1,
@@ -58,7 +62,7 @@ function Servicefeedback(){
                     text:feedback,
                     posted_date: Date.now()
                 });
-                alert("feedback added successfully");
+                alert(t("feedbacksuccess"));
                 //increment feedback_count and rating in serviceads
                 console.log(fire_id);
                 try{
@@ -95,12 +99,12 @@ function Servicefeedback(){
 
     return(
         <Form className='w-50 mx-auto my-5 '>
-            <h2 className="text-center">Service feedback </h2>            
+            <h2 className="text-center">{t("servicefeedback")}</h2>            
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>How was your experience with the service?</Form.Label>
+                <Form.Label>{t("sfeedbacklabel")}</Form.Label>
                 <div>
-                    <span>Rating </span>
+                    <span>{t("rating") }</span>
                     {[...Array(5)].map((star, i)=>{
                     const ratingValue=i+1;
                     //alert(`type ${typeof ratingValue} value ${ratingValue}`)
@@ -124,7 +128,7 @@ function Servicefeedback(){
             </Form.Group>
             <div className='text-center'>
                 <Button variant="primary" onClick={createFeedback} >
-                    Submit
+                    {t("submit")}
                 </Button>
             </div>
             

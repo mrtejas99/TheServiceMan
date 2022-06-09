@@ -10,6 +10,7 @@ i18n.use(Backend).use(LanguageDetector).use(initReactI18next).init({
     },
 
     fallbackLng: "en",
+    saveMissing: true,
     debug: false,
 
     //can have multiple namespace using an array of strings

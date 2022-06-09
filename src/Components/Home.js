@@ -17,6 +17,7 @@ import { FaStar } from "react-icons/fa";
 import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER } from "../constants";
 import { number } from "react-admin";
 
+
 //geoloc
 const geofire = require('geofire-common');
 
@@ -30,6 +31,8 @@ function FilterGroup(props) {
     const filterData = props.filterData;
     const addSuffix = props.addTextSuffix || false;
 
+    const {t} = useTranslation("common");
+
     //Map each filter property with an item element
     useEffect(() => {
         setFilterItems(
@@ -39,12 +42,12 @@ function FilterGroup(props) {
                         <li key={elem[filterByProp]}>
                             {
                                 filterState == elem[filterByProp] ? (
-                                    <span className="font-weight-bold">{elem[filterDisplayField]}</span>
+                                    <span className="font-weight-bold">t({elem[filterDisplayField]})</span>
                                 ) : (
-                                    <a href="#" className="font-weight-normal" onClick={e=>{e.preventDefault(); onFilterSelect(elem[filterByProp]);}}>{elem[filterDisplayField]}</a>
+                                    <a href="#" className="font-weight-normal" onClick={e=>{e.preventDefault(); onFilterSelect(elem[filterByProp]);}}>{t(elem[filterDisplayField])}</a>
                                 )
                             }
-                            { addSuffix && elem.suffix && <span>{elem.suffix}</span> }
+                            { addSuffix && elem.suffix && <span>{t(elem.suffix)}</span> }
                         </li>
                     ))
                 }
@@ -53,8 +56,8 @@ function FilterGroup(props) {
     }, [filterData, filterState]);
 
     return (
-        <ul className="list-unstyled">
-            <li><a href="#" onClick={e=>{e.preventDefault(); onFilterSelect('');}}><RiFilterOffFill />&nbsp;{'Clear Filter'}</a></li>
+        <ul className="list-unstyled list-group">
+            <li><a href="#" onClick={e=>{e.preventDefault(); onFilterSelect('');}}><RiFilterOffFill />&nbsp;{t('Clear Filter')}</a></li>
             { filterItems }
         </ul>
     );
@@ -153,7 +156,7 @@ function Home() {
         })
         .catch(err => {
             console.error(err);
-            alert("An error occured while geoloc query");
+            alert(t('errgeoloc'));
         });
 
         // [END fs_geo_query_hashes]
@@ -214,7 +217,7 @@ function Home() {
             })
             .catch(err => {
                 console.error(err);
-                alert("An error occured while fetching ads");
+                alert(t("errfetchad"));
             });
         },
         [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang, filterCriteriaStar]
@@ -229,7 +232,7 @@ function Home() {
         .then(doc => updateState(doc))
         .catch(err => {
             console.error(err);
-            alert("An error occured while fetching paginated ads");
+            alert(t("errfetchad")); //paginated
         });
     }
 
@@ -290,7 +293,7 @@ function Home() {
                 </Col>
 
                 <Col className="mx-3">
-                    {search_query !== '' && <h4>Search Results for &quot;{search_query}&quot;</h4>}
+                    {search_query !== '' && <h4>{t('Search Results for')} &quot;{search_query}&quot;</h4>}
                     <Dropdown className="my-3" onSelect={(e) => setSortCriteria(e)} value={sortCriteria}>
                         <Dropdown.Toggle variant="secondary" id="dropdown-basic" >{t('sort')}
                         </Dropdown.Toggle>
@@ -318,7 +321,7 @@ function Home() {
                                         );
                                     })}
                                     </Card.Text>
-                                    <Card.Text>{data.location}</Card.Text>
+                                    <Card.Text>{t(data.location)}</Card.Text>
                                 </Card.Body>
                             </Card>
                         ))
@@ -326,8 +329,8 @@ function Home() {
                     </Row>
                     <div className="text-center">
                     {loading && <h1>⌛</h1>}
-                    {!loading && !isEmpty && <Button className="my-3 w-50" onClick={fetchMore} variant="warning">{t('viewmore')}</Button>}
-                    {!loading && (info.length === 0) && <span>No results found</span>}
+                    {!loading && !isEmpty && <Button className="my-3 w-50" onClick={fetchMore} variant="warning">{t("viewmore")}</Button>}
+                    {!loading && (info.length === 0) && <span>{t("No results found")}</span>}
                     </div>
                     
                 </Col>
