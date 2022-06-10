@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation, useSearchParams } from "react-router-do
 // Import Firestore database
 import { db } from "../firebase";
 import { query, collection, getDocs, where, orderBy, limit, startAfter, startAt, endAt } from "firebase/firestore";
+import { getFilterMasterData } from '../datautils';
 
 import { Container, Button, Col, Row, Card, Dropdown, ListGroup } from "react-bootstrap";
 
@@ -168,7 +169,7 @@ function Home() {
 
         //Search query
         if (search_query !== '') {
-            console.log(search_query);
+            q = query(q, where('category', "==", search_query));
         }
 
         if(filterCriteriaCategory != '')
@@ -235,15 +236,6 @@ function Home() {
             alert(t("errfetchad")); //paginated
         });
     }
-
-    const getFilterMasterData = (colle, name_field) => (
-        getDocs(query(
-            collection(db, colle),
-            //orderBy("popularity", 'desc'),
-            orderBy(name_field, 'asc')
-        ))
-        .then(data => data.docs.map(element => element.data()))
-    );
 
     //When home page is mounted
     useEffect(() => {
