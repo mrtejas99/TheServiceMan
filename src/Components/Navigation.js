@@ -15,15 +15,9 @@ import i18next from 'i18next';
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { db } from "../firebase";
 
+import { useClientSettings } from "./ClientSettings"
 
 
-
-function onFilterUserLocation() {
-    navigator.geolocation.getCurrentPosition(position => {
-        localStorage.setItem('latitude', position.coords.latitude);
-        localStorage.setItem('longitude', position.coords.longitude);
-    });
-}
 
 
 function Navigation() {
@@ -33,6 +27,14 @@ function Navigation() {
     const navVariant = isDarkMode ? 'dark' : 'light';
     
     const {i18n, t} = useTranslation("common");
+
+    const [clientSettings, updateClientSetting] = useClientSettings();
+
+    function onFilterUserLocation() {
+        navigator.geolocation.getCurrentPosition(position => {
+            updateClientSetting({"latitude": position.coords.latitude, "longitude": position.coords.longitude})
+        });  
+    }
 
     const handleTranslate = (e)=>{
         i18n.changeLanguage(e);

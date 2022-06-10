@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 
 // Import Firestore database
@@ -19,6 +19,7 @@ import { number } from "react-admin";
 
 
 //geoloc
+import { ClientSettingsContext } from "./ClientSettings";
 const geofire = require('geofire-common');
 
 //component for filter
@@ -82,7 +83,7 @@ function Home() {
     // Start the fetch operation as soon as
     // the page loads
 
-    const [currentLoc,setCurrentLoc] = useState([Number(localStorage.getItem("latitude")), Number(localStorage.getItem("longitude"))]);//for geo
+    const [center,setCenter] = useState([]);//for geo
 
     const [queryParams] = useSearchParams();
 
@@ -109,7 +110,12 @@ function Home() {
         setLoading(false);  //hide hourglass
     }
 
+    const [cs, updateCS] = useContext(ClientSettingsContext);
+    useEffect(() => { console.log(cs.latitude, cs.longitude) }, [cs])
+
     function queryHashes() {
+        //alert(cs.latitude+" "+ cs.longitude)
+        setCenter([cs.latitude ,cs.longitude]);//for geo
         // [START fs_geo_query_hashes]
         // Find cities within 50km of current location
         const radiusInM = 50 * 1000;
@@ -117,7 +123,7 @@ function Home() {
         // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
         // a separate query for each pair. There can be up to 9 pairs of bounds
         // depending on overlap, but in most cases there are 4.
-        const bounds = geofire.geohashQueryBounds(currentLoc, radiusInM);
+        const bounds = geofire.geohashQueryBounds(center, radiusInM);
         const promises = [];
         for (const b of bounds) {
           const q = query(collection(db,'serviceAds'),orderBy('geohash'), startAt(b[0]), endAt(b[1]));
@@ -135,7 +141,7 @@ function Home() {
       
               // We have to filter out a few false positives due to GeoHash
               // accuracy, but most will match
-              const distanceInKm = geofire.distanceBetween([lat, lng], currentLoc);
+              const distanceInKm = geofire.distanceBetween([lat, lng], center);
               const distanceInM = distanceInKm * 1000;
               if (distanceInM <= radiusInM) {
                 matchingDocs.push(doc);
@@ -169,6 +175,7 @@ function Home() {
         //Search query
         if (search_query !== '') {
             console.log(search_query);
+            q = query(q, orderBy("title","asc"), startAt(search_query), endAt(search_query+"\uf8ff"));
         }
 
         if(filterCriteriaCategory != '')
@@ -179,7 +186,6 @@ function Home() {
 
         if(filterCriteriaLang != '')
             q = query(q, where('language', "==", filterCriteriaLang));
-
         if(filterCriteriaStar != '')
             q = query(q, where('average', ">=", filterCriteriaStar));
         
@@ -279,6 +285,7 @@ function Home() {
                         <FilterGroup filterData={catMaster} onFilterSelect={setFilterCriteriaCategory} currentSelectedFilter={filterCriteriaCategory} filterDisplayField="category_name" />
                     </div>
                     <div className='my-3 mx-3'>
+                        <a href="#" onClick={queryHashes} >{t('getcurrentlocation')}</a>
                         <h6>{t('location')}</h6>
                         <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} filterDisplayField="location_name" />
                     </div>
