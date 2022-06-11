@@ -1,6 +1,6 @@
-import React, {  useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
-import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button, ToggleButton } from "react-bootstrap";
+import { Navbar, Container, Nav, Form } from "react-bootstrap";
 import { DarkToggle, useDarkMode } from "./DarkMode";
 
 import { LogInOutButton } from "./LogInOutButton";
@@ -13,25 +13,12 @@ import { useTranslation } from "react-i18next";
 import i18next from 'i18next';
 import { LANGUAGE_MASTER } from "../constants";
 
-import { query, collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
-
-import { useClientSettings } from "./ClientSettings"
-
 function Navigation() {
     const [ isDarkMode ] = useDarkMode();
 
     const navVariant = isDarkMode ? 'dark' : 'light';
     
     const {i18n, t} = useTranslation("common");
-
-    const [clientSettings, updateClientSetting] = useClientSettings();
-
-    function onFilterUserLocation() {
-        navigator.geolocation.getCurrentPosition(position => {
-            updateClientSetting({"latitude": position.coords.latitude, "longitude": position.coords.longitude})
-        });  
-    }
 
     const handleTranslate = (e)=>{
         i18n.changeLanguage(e);

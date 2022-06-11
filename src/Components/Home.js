@@ -11,8 +11,8 @@ import { Container, Button, Col, Row, Card, Dropdown } from "react-bootstrap";
 //translate
 import { useTranslation } from "react-i18next";
 
-//Font-awesome
-import { RiFilterOffFill, RiMapPin2Line } from "react-icons/ri";
+//Icons from React-icons and Font-awesome
+import { RiFilterOffFill, RiMapPin2Line, RiCheckboxCircleLine } from "react-icons/ri";
 import { FaStar } from "react-icons/fa";
 //Constants
 import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER } from "../constants";
@@ -64,33 +64,52 @@ function FilterGroup(props) {
     );
 }
 
+function useGeoStatus() {
+    const [geoFilterStatus, setGeoFilterStatus] = useState({active: false, acquired: false});
+    const setIsActive = value => setGeoFilterStatus(Object.assign(Object.assign({}, geoFilterStatus), {active: value}));
+    const setIsAcquired = value => setGeoFilterStatus(Object.assign(Object.assign({}, geoFilterStatus), {acquired: value}));
+    const isOperational = () => geoFilterStatus.active && geoFilterStatus.acquired;
+    return [geoFilterStatus, setIsActive, setIsAcquired, isOperational];
+}
+
 function Home() {
+    //List of ads loaded
     const [info, setInfo] = useState([]);
+
+    //Sort-by parameter
     const [sortCriteria, setSortCriteria] = useState('');
+
+    //Filtering modes
     const [filterCriteriaCategory, setFilterCriteriaCategory] = useState('');
     const [filterCriteriaGeo, setFilterCriteriaGeo] = useState('');
     const [filterCriteriaStar, setFilterCriteriaStar] = useState(0);
     const [filterCriteriaLang, setFilterCriteriaLang] = useState('');
 
+    //Dataset of various master collections
     const [catMaster, setCatMaster] = useState([]);
     const [geoMaster, setGeoMaster] = useState([]);
     const [ratingMaster, setRatingMaster] = useState([]);
     const [langMaster, setLangMaster] = useState([]);
 
+    //Pagination
     const [lastDoc, setLastDoc] = useState();   //store the last ad for pagination
     const [loading, setLoading] = useState(true);  //hourglass
     const [isEmpty, setIsEmpty] = useState(false);  //showmore
 
+    //Geo-location of the user
     const [clientLocationCentre, setCientLocationCenter] = useState(null); //for geo location
+    const [geoFilterStatus, setGeoFilterIsActive, setGeoIsAcquired, isGeoFilterOperational] = useGeoStatus();
 
-    //Query string for Search results query for example
+    //Query string (for example: Search results query)
     const [queryParams] = useSearchParams();
 
     //Client settings
-    const [clientSettings, updateClientSettings] = useContext(ClientSettingsContext);
+    const [clientSettings, updateClientSetting] = useContext(ClientSettingsContext);
 
     //Translation
     const { t } = useTranslation("common");
+
+    //Page router navigation
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -198,6 +217,31 @@ function Home() {
         return getDocs(q);
     };
 
+    //Proimise wrapper for Geo Location
+    const getNavGeolocation = () => new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
+
+    const acquireUserLocation = () => {
+        return getNavGeolocation()
+        .then(position => updateClientSetting(
+            { "cli_latitude": position.coords.latitude, "cli_longitude": position.coords.longitude }
+        ));
+    };
+
+    //Geo-location acquisition
+    useEffect(() => {
+        if (geoFilterStatus.active && !geoFilterStatus.acquired) {
+            acquireUserLocation()
+            .then(() => setGeoIsAcquired(true))
+            .catch(() => {
+                setGeoIsAcquired(false);
+                setGeoFilterIsActive(false);
+                //Failed to acquire your location 
+                window.alert(t("errlocfetch"));
+            });
+        }
+    }, [geoFilterStatus]);
+
+
     useEffect(
         () => {
             fetchFilteredAdData()
@@ -211,7 +255,15 @@ function Home() {
                     alert(t("errfetchad"));
                 });
         },
-        [location, sortCriteria, filterCriteriaCategory, filterCriteriaGeo, filterCriteriaLang, filterCriteriaStar]
+        [
+            location,
+            sortCriteria,
+            filterCriteriaCategory,
+            filterCriteriaGeo,
+            filterCriteriaLang,
+            filterCriteriaStar,
+            isGeoFilterOperational()
+        ]
     );
 
     const fetchMore = () => {
@@ -243,6 +295,10 @@ function Home() {
         setLangMaster(LANGUAGE_MASTER);
     }, []);
 
+    //Lazy to do this in JSX, so a wrapper it is!
+    const geoStatusToStyle = () =>
+        geoFilterStatus.active ? (geoFilterStatus.acquired ? "text-danger font-weight-bold" : "text-dark") : "";
+
     return (
         <Container fluid className="py-3">
             <span><b className='me-3'>{t('popularsearches')}</b>{' '}
@@ -256,7 +312,7 @@ function Home() {
                 <Col sm={2} >
                     <h5>{t('filter')}</h5>
 
-					<a href="#"><RiMapPin2Line />&nbsp;{t('usecurrentlocation')}</a>
+					<a href="#" onClick={e=>setGeoFilterIsActive(!geoFilterStatus.active)} className={geoStatusToStyle()}>{isGeoFilterOperational() ? <RiCheckboxCircleLine /> : <RiMapPin2Line />}&nbsp;{t('usecurrentlocation')}{(geoFilterStatus.active && !geoFilterStatus.acquired) ? "..." : ""}</a>
 
                     <div className='my-3 mx-3'>
                         <h6>{t('category')}</h6>
@@ -277,6 +333,7 @@ function Home() {
                 </Col>
 
                 <Col className="mx-3">
+                    {isGeoFilterOperational() && <span className="text-warning">{t('Note: Viewing nearby results only')}</span>}
                     {search_query !== '' && <h4>{t('Search Results for')} &quot;{search_query}&quot;</h4>}
                     <Dropdown className="my-3" onSelect={(e) => setSortCriteria(e)} value={sortCriteria}>
                         <Dropdown.Toggle variant="secondary" id="dropdown-basic" >{t('sort')}
