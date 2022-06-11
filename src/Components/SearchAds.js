@@ -1,27 +1,42 @@
 
-import React from 'react';
-import { Form, FormControl, Button } from "react-bootstrap";
-import { useSearchParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useSearchParams, useNavigate, createSearchParams } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
+
+import { ReactSearchAutocomplete } from 'react-search-autocomplete'
+import { getFilterMasterData } from '../datautils';
 
 function SearchAdsBar() {
     const { t } = useTranslation("common");
 
     const [queryParams] = useSearchParams();
+    const navigate = useNavigate();
+
     const search_query = queryParams.get('q') || "";
 
+    const [searchOptions, setSearchOptions] = useState([]);
+
+    //Temporary. Load from a cache or something later
+    useEffect(() => {
+        getFilterMasterData("adcategories", "category_name")
+        .then(categories => setSearchOptions(categories))
+    }, []);
+
     return (
-        <Form className="d-flex w-100 px-5" action="/">
-            <FormControl
-                type="search"
+        <div className="me-2 w-100">
+            <ReactSearchAutocomplete
+                items={searchOptions}
+                inputSearchString={search_query}
+                onSelect={item => navigate({
+                    pathname: '/',
+                    search: `?${createSearchParams({"q": item.category_name})}`
+                })}
                 placeholder="Search"
-                className="me-2"
-                name="q"
-                defaultValue={search_query}
+                fuseOptions={{ keys: ["category_name"] }}
+                resultStringKeyName="category_name"
             />
-            <Button variant="outline-success" type="submit">{t('search')}</Button>
-        </Form>
+        </div>
     );
 }
 
