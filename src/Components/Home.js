@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { RiFilterOffFill, RiMapPin2Line, RiCheckboxCircleLine } from "react-icons/ri";
 import { FaStar } from "react-icons/fa";
 //Constants
-import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER } from "../constants";
+import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER, GEOSEARCH_PROXIMITY_RANGE } from "../constants";
 
 //geoloc
 import { ClientSettingsContext } from "./ClientSettings";
@@ -40,7 +40,7 @@ function FilterGroup(props) {
             <>
                 {
                     filterData.map(elem => (
-                        <li key={elem[filterByProp]}>
+                        <li key={elem[filterByProp]} className="list-inline-item">
                             {
                                 filterState === elem[filterByProp] ? (
                                     <span className="font-weight-bold">{t(elem[filterDisplayField])}</span>
@@ -57,18 +57,27 @@ function FilterGroup(props) {
     }, [filterData, filterState, t]);
 
     return (
-        <ul className="list-unstyled list-group">
+        <ul className="list-unstyled list-group list-inline">
             <li><a href="#" onClick={e => { e.preventDefault(); onFilterSelect(''); }}><RiFilterOffFill />&nbsp;{t('Clear Filter')}</a></li>
             {filterItems}
         </ul>
     );
 }
 
+/**
+ * Geo-location search filter status (active or not) with persistence
+ */
 function useGeoStatus() {
-    const [geoFilterStatus, setGeoFilterStatus] = useState({active: false, acquired: false});
+    //To save active status
+    const [clientSettings, updateClientSetting] = useContext(ClientSettingsContext);
+    const [geoFilterStatus, setGeoFilterStatus] = useState({
+        active: clientSettings.geofilter_active || false,
+        acquired: false
+    });
     const setIsActive = value => setGeoFilterStatus(Object.assign(Object.assign({}, geoFilterStatus), {active: value}));
     const setIsAcquired = value => setGeoFilterStatus(Object.assign(Object.assign({}, geoFilterStatus), {acquired: value}));
     const isOperational = () => geoFilterStatus.active && geoFilterStatus.acquired;
+    useEffect(() => updateClientSetting({geofilter_active: geoFilterStatus.active}), [geoFilterStatus]);
     return [geoFilterStatus, setIsActive, setIsAcquired, isOperational];
 }
 
@@ -130,28 +139,34 @@ function Home() {
     }
 
     useEffect(() => {
-        if (clientSettings.latitude && clientSettings.longitude)
-            setCientLocationCenter([clientSettings.latitude, clientSettings.longitude])
-    }, [clientSettings])
+        if (clientSettings.cli_latitude && clientSettings.cli_longitude)
+            setCientLocationCenter([clientSettings.cli_latitude, clientSettings.cli_longitude])
+    }, [clientSettings, isGeoFilterOperational()])
 
-    function queryHashes() {
+    function queriesForGeoHashes() {
         if (clientLocationCentre === null) return;
+
         // [START fs_geo_query_hashes]
         // Find cities within 50km of current location
-        const radiusInM = 50 * 1e3;
+        const radiusInM = GEOSEARCH_PROXIMITY_RANGE;
+
+        const geo_filters = [];
 
         // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
         // a separate query for each pair. There can be up to 9 pairs of bounds
         // depending on overlap, but in most cases there are 4.
         const bounds = geofire.geohashQueryBounds(clientLocationCentre, radiusInM);
-        const promises = [];
+        //const promises = [];
         for (const b of bounds) {
-            const q = query(adsRef, orderBy('geohash'), startAt(b[0]), endAt(b[1]));
-            promises.push(getDocs(q));
+            //const q = query(adsRef, orderBy('geohash'), startAt(b[0]), endAt(b[1]));
+            //geo_filters.push([orderBy('geohash'), startAt(b[0]), endAt(b[1])]);
+            //promises.push(getDocs(q));
         }
 
+        return geo_filters;
+
         // Collect all the query results together into a single list
-        Promise.all(promises)
+        /*Promise.all(promises)
         .then(snapshots => matchGeoHashAds(snapshots, clientLocationCentre, radiusInM))
         .then(matchingDocs => {
             matchingDocs.forEach(async element => {
@@ -166,13 +181,18 @@ function Home() {
         .catch(err => {
             console.error(err);
             alert(t('errgeoloc'));
-        });
+        });*/
         // [END fs_geo_query_hashes]
     }
 
     const fetchFilteredAdData = (last_doc) => {
         console.log(` cate:${filterCriteriaCategory} geo: ${filterCriteriaGeo} lang:${filterCriteriaLang} star:${filterCriteriaStar} ${typeof filterCriteriaStar}`)
         let q = query(adsRef);
+
+        //Geohash filter
+        if (isGeoFilterOperational()) {
+            let geoQueries = queriesForGeoHashes();
+        }
 
         //Search query
         if (search_query !== '') {
@@ -218,25 +238,22 @@ function Home() {
     };
 
     //Proimise wrapper for Geo Location
-    const getNavGeolocation = () => new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
-
-    const acquireUserLocation = () => {
-        return getNavGeolocation()
-        .then(position => updateClientSetting(
-            { "cli_latitude": position.coords.latitude, "cli_longitude": position.coords.longitude }
-        ));
-    };
+    const acquireNavGeoLocation = () => new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
 
     //Geo-location acquisition
     useEffect(() => {
         if (geoFilterStatus.active && !geoFilterStatus.acquired) {
-            acquireUserLocation()
+            acquireNavGeoLocation()
+            .then(position => updateClientSetting({
+                "cli_latitude": position.coords.latitude,
+                "cli_longitude": position.coords.longitude
+            }))
             .then(() => setGeoIsAcquired(true))
             .catch(() => {
                 setGeoIsAcquired(false);
                 setGeoFilterIsActive(false);
-                //Failed to acquire your location 
-                window.alert(t("errlocfetch"));
+                //Failed to acquire location 
+                window.alert(t("errgeoloc"));
             });
         }
     }, [geoFilterStatus]);
@@ -312,7 +329,7 @@ function Home() {
                 <Col sm={2} >
                     <h5>{t('filter')}</h5>
 
-					<a href="#" onClick={e=>setGeoFilterIsActive(!geoFilterStatus.active)} className={geoStatusToStyle()}>{isGeoFilterOperational() ? <RiCheckboxCircleLine /> : <RiMapPin2Line />}&nbsp;{t('usecurrentlocation')}{(geoFilterStatus.active && !geoFilterStatus.acquired) ? "..." : ""}</a>
+					<a href="#" onClick={()=>setGeoFilterIsActive(!geoFilterStatus.active)} className={geoStatusToStyle()}>{isGeoFilterOperational() ? <RiCheckboxCircleLine /> : <RiMapPin2Line />}&nbsp;{t('usecurrentlocation')}{(geoFilterStatus.active && !geoFilterStatus.acquired) ? "..." : ""}</a>
 
                     <div className='my-3 mx-3'>
                         <h6>{t('category')}</h6>

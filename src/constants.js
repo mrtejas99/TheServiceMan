@@ -4,6 +4,9 @@
 //How many items to load at once on home page
 const RESULTS_PER_PAGE = 5;
 
+//Radius within which ads should be filtered, in Meters (50e3 is 50km)
+const GEOSEARCH_PROXIMITY_RANGE = 50e3;
+
 const RATING_MASTER = [
     {
         "rating_name": "1 star",
@@ -103,5 +106,6 @@ export {
     RESULTS_PER_PAGE,
     RATING_MASTER,
     LANGUAGE_MASTER,
+    GEOSEARCH_PROXIMITY_RANGE,
 	USER_ROLES
 };
