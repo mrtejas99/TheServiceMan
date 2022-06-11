@@ -8,21 +8,21 @@ const RATING_MASTER = [
     {
         "rating_name": "1 star",
         "value": 1,
-        "suffix": " & above",
+        "suffix": "& above",
     },
     {
         "rating_name": "2 stars",
-        "suffix": " & above",
+        "suffix": "& above",
         "value": 2
     },
     {
         "rating_name": "3 stars",
-        "suffix": " & above",
+        "suffix": "& above",
         "value": 3
     },
     {
         "rating_name": "4 stars",
-        "suffix": " & above",
+        "suffix": "& above",
         "value": 4
     },
     {
@@ -34,43 +34,53 @@ const RATING_MASTER = [
 const LANGUAGE_MASTER = [
     {
         "language_name": "English",
-        "value": "english"
+        "value": "english",
+		"code": "en"
     },
     {
         "language_name": "हिन्दी",
-        "value": "hindi"
+        "value": "hindi",
+		"code": "hi"
     },
     {
         "language_name": "ગુજરાતી",
-        "value": "gujarati"
+        "value": "gujarati",
+		"code": "guj"
     },
     {
         "language_name": "मराठी",
-        "value": "marathi"
+        "value": "marathi",
+		"code": "mr"
     },
     {
         "language_name": "বাংলা",
-        "value": "bengali"
+        "value": "bengali",
+		"code": "bn"
     },
     {
         "language_name": "தமிழ்",
-        "value": "tamil"
+        "value": "tamil",
+		"code": "ta"
     },
     {
         "language_name": "ଓଡିଆ",
-        "value": "odia"
+        "value": "odia",
+		"code": "or"
     },
     {
         "language_name": "कोंकणी",
-        "value": "konkani"
+        "value": "konkani",
+		"code": "kok"
     },
     {
         "language_name": "தெலுங்கு",
-        "value": "telugu"
+        "value": "telugu",
+		"code": "te"
     },
     {
         "language_name": "ಕನ್ನಡ",
-        "value": "kannada"
+        "value": "kannada",
+		"code": "kn"
     }
 ];
 

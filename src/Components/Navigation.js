@@ -1,6 +1,6 @@
 import React, {  useState, useEffect } from "react";
 
-import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from "react-bootstrap";
+import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button, ToggleButton } from "react-bootstrap";
 import { DarkToggle, useDarkMode } from "./DarkMode";
 
 import { LogInOutButton } from "./LogInOutButton";
@@ -11,18 +11,15 @@ import { IconContext } from "react-icons";
 //translate
 import { useTranslation } from "react-i18next";
 import i18next from 'i18next';
+import { LANGUAGE_MASTER } from "../constants";
 
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { query, collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
 import { useClientSettings } from "./ClientSettings"
 
-
-
-
 function Navigation() {
     const [ isDarkMode ] = useDarkMode();
-    const [geoMaster, setGeoMaster] = useState([]);
 
     const navVariant = isDarkMode ? 'dark' : 'light';
     
@@ -41,60 +38,42 @@ function Navigation() {
         localStorage.setItem('i18nextLng', e);
     }
 
-    const getFilterMasterData = (colle, name_field) => (
-        getDocs(query(collection(db, colle),))
-        .then(data => data.docs.map(element => element.data()))
-    );
-    
     useEffect(()=>{
         if(localStorage.getItem("i18nextLng").length > 3 || localStorage.getItem("i18nextLang"==null)){
             i18next.changeLanguage("en");   //fallback
         }
-        getFilterMasterData("locations", "location_name")
-            .then(locat => setGeoMaster(locat))
-    },[i18n]);
+    },[]);
 
     return (
         <IconContext.Provider value={{ className: "shared-class", size: 21 }}>
-        <Navbar collapseOnSelect expand="lg" bg={navVariant} variant={navVariant} className="sticky-top">
-        <Container fluid>
-        <Navbar.Brand href="/">{t('theserviceman')}</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className=" w-75 me-auto">
-                <NavDropdown title={t('location')} id="collasible-nav-dropdown" className='me-3'>
-                    <NavDropdown.Item key="__userloc" onClick={onFilterUserLocation}>{t('getcurrentlocation')}</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    {
-						geoMaster.map((x)=><NavDropdown.Item key={x.location_name} value={x.location_name}>{x.location_name}</NavDropdown.Item>)
-                    }
-                </NavDropdown>
-                <SearchAdsBar />
-            </Nav>
-            <Nav className='mx-3'>
-                <Nav.Item className="d-flex align-items-center">
-                    <DarkToggle />
-                </Nav.Item>
-                <select className="m-3 w-50 form-select-sm" value={localStorage.getItem("i18nextLng")} onChange={(e) =>handleTranslate(e.target.value)}>
-                    <option value='en'>English</option>
-                    <option value='bn'>বাংলা</option>
-                    <option value='guj'>ગુજરાતી</option>
-                    <option value='hi'>हिन्दी</option>
-                    <option value='kn'>ಕನ್ನಡ</option>
-                    <option value='kok'>कोंकणी</option>
-                    <option value='mr'>मराठी</option>
-                    <option value='or'>ଓଡିଆ</option>
-                    <option value='ta'>தமிழ்</option>
-                    <option value='te'>தெலுங்கு</option>
-                </select>
-                <Nav.Item className="d-flex align-items-center">
-                    <NotificationBell />
-                </Nav.Item>
-                <LogInOutButton />
-            </Nav>
-        </Navbar.Collapse>
-        </Container>
-        </Navbar>
+			<Navbar collapseOnSelect expand="lg" bg={navVariant} variant={navVariant} className="sticky-top">
+			<Container fluid>
+			<Navbar.Brand href="/">{t('theserviceman')}</Navbar.Brand>
+			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
+			<Navbar.Collapse id="responsive-navbar-nav">
+				<Nav className="w-75 me-auto">
+					<SearchAdsBar />
+				</Nav>
+
+				<Nav className='mx-3'>
+					<Nav.Item className="d-flex align-items-center">
+						<DarkToggle />
+					</Nav.Item>
+					<Nav.Item className="d-flex align-items-center ml-3">
+						<Form.Control as="select" id="lang-translate" className="w-100" defaultValue={localStorage.getItem("i18nextLng")} onChange={(e) =>handleTranslate(e.target.value)}>
+							{
+								LANGUAGE_MASTER.map(lang => <option value={lang.code}>{lang.language_name}</option>)
+							}
+						</Form.Control>
+					</Nav.Item>
+					<Nav.Item className="ml-3 d-flex align-items-center">
+						<NotificationBell />
+					</Nav.Item>
+					<LogInOutButton />
+				</Nav>
+			</Navbar.Collapse>
+			</Container>
+			</Navbar>
         </IconContext.Provider>
     );
 }
