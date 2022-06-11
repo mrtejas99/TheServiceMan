@@ -52,7 +52,7 @@ function Navigation() {
         }
         getFilterMasterData("locations", "location_name")
             .then(locat => setGeoMaster(locat))
-    },[]);
+    },[i18n]);
 
     return (
         <IconContext.Provider value={{ className: "shared-class", size: 21 }}>

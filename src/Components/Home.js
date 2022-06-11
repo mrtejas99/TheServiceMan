@@ -219,7 +219,7 @@ function Home() {
             .then(data => {
                 setInfo([]);    //clear results of previous filter
                 updateState(data); 
-                queryHashes();
+                //queryHashes();
             })
             .catch(err => {
                 console.error(err);
