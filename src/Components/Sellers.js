@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import { Container, Button, Form, Col, Row, Card } from "react-bootstrap";
 
 // Import Firestore database
@@ -18,17 +18,18 @@ function Sellers() {
     const [info , setInfo] = useState([]);
     const [fname, setFname] = useState('');
     const [lname, setLname] = useState('');
-    const [uid, setUid] = useState('');
     const [fnames, setFnames] = useState(['']);
     const [lnames, setLnames] = useState(['']);
     const [feedbacks , setFeedbacks] = useState([]);
 
+    let { id } = useParams(); //the user id
+    console.log(id)    
 
     const Fetchdata = async ()=>{
         try {
             //get ads posted by the seller
-            console.log(location.state.posted_by)
-            const q1 = query(collection(db, "serviceads"), where("posted_by", "==", location.state.posted_by));
+            
+            const q1 = query(collection(db, "serviceads"), where("posted_by", "==", id));
             const doc1 = await getDocs(q1);
             doc1.forEach(async element => {
                 var data1 = element.data();
@@ -38,14 +39,12 @@ function Sellers() {
             });
 
             //get the seller details
-            const q2 = query(collection(db, "users"), where("uid", "==", location.state.posted_by));
+            const q2 = query(collection(db, "users"), where("uid", "==", id));
             const doc2 = await getDocs(q2);
             const data2 = doc2.docs[0].data();
             //console.log(data2);
             setFname(data2.fname);
             setLname(data2.lname);
-            setUid(data2.uid);
-
         } catch (err) {
             console.error(err);
             alert(t("errfetchposter"));

@@ -33,7 +33,7 @@ function Navigation() {
 
     return (
         <IconContext.Provider value={{ className: "shared-class", size: 21 }}>
-			<Navbar collapseOnSelect expand="lg" bg={navVariant} variant={navVariant} className="sticky-top">
+			<Navbar collapseOnSelect expand="sm" bg={navVariant} variant={navVariant} className="sticky-top">
 			<Container fluid>
 			<Navbar.Brand href="/">{t('theserviceman')}</Navbar.Brand>
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
