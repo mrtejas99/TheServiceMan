@@ -13,13 +13,14 @@ import { useTranslation } from "react-i18next";
 
 //Icons from React-icons and Font-awesome
 import { RiFilterOffFill, RiMapPin2Line, RiCheckboxCircleLine } from "react-icons/ri";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaRegStar } from "react-icons/fa";
+
 //Constants
 import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER, GEOSEARCH_PROXIMITY_RANGE } from "../constants";
 
 //geoloc
 import { ClientSettingsContext } from "./ClientSettings";
-import NavbarCollapse from "react-bootstrap/esm/NavbarCollapse";
+
 const geofire = require('geofire-common');
 
 //Component to render a filter group - list of filters
@@ -66,7 +67,7 @@ function FilterGroup(props) {
 }
 
 /**
- * Geo-location search filter status (active or not) with persistence
+ * Geo-location search filter status (active or not)
  */
 function useGeoStatus(defaultActive) {
     //To save active status
@@ -151,7 +152,6 @@ function Home() {
     }, [clientSettings, isGeoFilterOperational()]);
     
     useEffect(() => updateClientSetting({geofilter_active: geoFilterStatus.active}), [geoFilterStatus]);
-    
 
     function queriesForGeoHashes() {
         if (clientLocationCentre === null) return;
@@ -167,9 +167,11 @@ function Home() {
         // depending on overlap, but in most cases there are 4.
         const bounds = geofire.geohashQueryBounds(clientLocationCentre, radiusInM);
         //const promises = [];
+        
+        geo_filters.push(orderBy('geohash'));
         for (const b of bounds) {
             //const q = query(adsRef, orderBy('geohash'), startAt(b[0]), endAt(b[1]));
-            //geo_filters.push([orderBy('geohash'), startAt(b[0]), endAt(b[1])]);
+            geo_filters.push(startAt(b[0]), endAt(b[1]));
             //promises.push(getDocs(q));
         }
 
@@ -202,6 +204,8 @@ function Home() {
         //Geohash filter
         if (isGeoFilterOperational()) {
             let geoQueries = queriesForGeoHashes();
+            if (geoQueries && geoQueries.length > 0)
+                q = query(q, ...geoQueries);
         }
 
         //Search query
@@ -408,16 +412,20 @@ function Home() {
                     <Row xs={2} sm={3} md={4} lg={6} className="g-4">
                         {
                             info.map((data, idx) => (
-                                <Card className="highlight me-3" role="button" key={idx} style={{ width: '15rem' }} onClick={() => {incrementPopularity(data.category); navigate(`/Adview/${data.posted_date}`)}}>
+                                <Card className="highlight zoomtext me-3" role="button" key={idx} style={{ width: '15rem' }} onClick={() => {incrementPopularity(data.category); navigate(`/Adview/${data.posted_date}`)}}>
                                     <Card.Img variant="top" src={data.banner_url} />
-                                    <Card.Body className="zoomtext">
+                                    <Card.Body>
                                         <Card.Title>{data.title}</Card.Title>
                                         <Card.Text>
                                             {[...Array(5)].map((x, i) => {
                                                 const ratingValue = i + 1;
                                                 return (
                                                     <label>
-                                                        <FaStar className="star" color={ratingValue <= (data.rating / data.feedback_count) ? "#ffc107" : "#e4e5e9"} size={15} />
+                                                        {(ratingValue <= (data.rating / data.feedback_count)) ? (
+                                                            <FaStar color="#ffc107" size={15} />
+                                                        ) : (
+                                                            <FaRegStar className="text-warning" size={15} />
+                                                        )}
                                                     </label>
                                                 );
                                             })}
@@ -438,7 +446,6 @@ function Home() {
             </Row>
 
         </Container>
-
     );
 }
 
