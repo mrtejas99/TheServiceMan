@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link, useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 
 // Import Firestore database
 import { db } from "../firebase";
@@ -68,21 +68,22 @@ function FilterGroup(props) {
 /**
  * Geo-location search filter status (active or not) with persistence
  */
-function useGeoStatus() {
+function useGeoStatus(defaultActive) {
     //To save active status
-    const [clientSettings, updateClientSetting] = useContext(ClientSettingsContext);
     const [geoFilterStatus, setGeoFilterStatus] = useState({
-        active: clientSettings.geofilter_active || false,
+        active: defaultActive,
         acquired: false
     });
     const setIsActive = value => setGeoFilterStatus(Object.assign(Object.assign({}, geoFilterStatus), {active: value}));
     const setIsAcquired = value => setGeoFilterStatus(Object.assign(Object.assign({}, geoFilterStatus), {acquired: value}));
     const isOperational = () => geoFilterStatus.active && geoFilterStatus.acquired;
-    useEffect(() => updateClientSetting({geofilter_active: geoFilterStatus.active}), [geoFilterStatus]);
     return [geoFilterStatus, setIsActive, setIsAcquired, isOperational];
 }
 
 function Home() {
+    //Client settings
+    const [clientSettings, updateClientSetting] = useContext(ClientSettingsContext);
+
     //List of ads loaded
     const [info, setInfo] = useState([]);
     const [popular, setPopular] = useState([])
@@ -93,7 +94,7 @@ function Home() {
     //Filtering modes
     const [filterCriteriaCategory, setFilterCriteriaCategory] = useState('');
     const [filterCriteriaGeo, setFilterCriteriaGeo] = useState('');
-    const [filterCriteriaStar, setFilterCriteriaStar] = useState(0);
+    const [filterCriteriaStar, setFilterCriteriaStar] = useState('');
     const [filterCriteriaLang, setFilterCriteriaLang] = useState('');
 
     //Dataset of various master collections
@@ -109,13 +110,17 @@ function Home() {
 
     //Geo-location of the user
     const [clientLocationCentre, setCientLocationCenter] = useState(null); //for geo location
-    const [geoFilterStatus, setGeoFilterIsActive, setGeoIsAcquired, isGeoFilterOperational] = useGeoStatus();
+    const [
+        geoFilterStatus,
+        setGeoFilterIsActive,
+        setGeoIsAcquired,
+        isGeoFilterOperational
+    ] = useGeoStatus(
+        clientSettings.geofilter_active || false
+    );
 
     //Query string (for example: Search results query)
     const [queryParams] = useSearchParams();
-
-    //Client settings
-    const [clientSettings, updateClientSetting] = useContext(ClientSettingsContext);
 
     //Translation
     const { t } = useTranslation("common");
@@ -143,7 +148,10 @@ function Home() {
     useEffect(() => {
         if (clientSettings.cli_latitude && clientSettings.cli_longitude)
             setCientLocationCenter([clientSettings.cli_latitude, clientSettings.cli_longitude])
-    }, [clientSettings, isGeoFilterOperational()])
+    }, [clientSettings, isGeoFilterOperational()]);
+    
+    useEffect(() => updateClientSetting({geofilter_active: geoFilterStatus.active}), [geoFilterStatus]);
+    
 
     function queriesForGeoHashes() {
         if (clientLocationCentre === null) return;
@@ -204,15 +212,16 @@ function Home() {
             q = query(q, where('category', "==", search_query));
         }
 
-        if (filterCriteriaCategory != '')
+        if (filterCriteriaCategory !== '')
             q = query(q, where('category', "==", filterCriteriaCategory));
 
-        if (filterCriteriaGeo != '')
+        if (filterCriteriaGeo !== '')
             q = query(q, where('location', "==", filterCriteriaGeo));
 
-        if (filterCriteriaLang != '')
+        if (filterCriteriaLang !== '')
             q = query(q, where('language', "==", filterCriteriaLang));
-        if (filterCriteriaStar != '')
+
+        if (filterCriteriaStar !== '')
             q = query(q, where('average', ">=", filterCriteriaStar));
 
         //for querying using geohash
@@ -223,9 +232,9 @@ function Home() {
         // }
 
         //Sort by criteria
-        if (sortCriteria == "posted_date" || sortCriteria == "average")
+        if (sortCriteria === "posted_date" || sortCriteria === "average")
             q = query(q, orderBy(sortCriteria, 'desc'));
-        if (sortCriteria == "title")
+        if (sortCriteria === "title")
             q = query(q, orderBy(sortCriteria, 'asc'));
 
         //Fetch after previous result
