@@ -19,7 +19,11 @@ function Adcreate() {
     const [description, setDescription] = useState('');
     const [experience, setExperience] = useState('');
     const [skills, setSkills] = useState('');
-    const [ad_location, setLocation] = useState('');
+    const [ad_location, setLocation] = useState(null);
+    const [lat, setLat] = useState(0);
+    const [long, setLong] = useState(0);
+    const [hash, setHash] = useState('');
+
     const [language, setLanguage] = useState('');
     const [category, setCategory] = useState('');
 
@@ -49,8 +53,8 @@ function Adcreate() {
       }, [user, loading]);
 
     //add to firestore
-    const createServiceAd = async () => {
-        saveAdData(user.uid, title, banner, description, experience, skills, ad_location, language, category);
+    const createServiceAd = async (e) => {
+        saveAdData(user.uid, title, banner, description, experience, skills, ad_location.location_name, Number(ad_location.latitude), Number(ad_location.longitude), ad_location.geohash, language, category);
         navigate("/");
     };
 
@@ -66,7 +70,6 @@ function Adcreate() {
             });
         });
     }
-
     return(
         <Container className="py-3"> 
             <Form className='my-5 px-3' >    
@@ -99,21 +102,21 @@ function Adcreate() {
                         <Form.Control as="textarea" rows={3} defaultValue={skills} onChange={(e) => setSkills(e.target.value)}/>
                     </Form.Group>
 
-                    <select className="my-3 form-select w-50" defaultValue={ad_location} onChange={(e) =>setLocation(e.target.value)}>
+                    <select className="my-3 form-select w-50"  onChange={(e) =>setLocation(JSON.parse(e.target.value))}>
                     {
-                    geoMaster.map((x)=><option value={x.location_name}>{t(x.location_name)}</option>)
+                        geoMaster.map((x)=><option value={JSON.stringify(x)} >{t(x.location_name)}</option>)
                     }
                     </select>
 
-                    <select className="my-3 form-select w-50" defaultValue={language} onChange={(e) =>setLanguage(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={language} onChange={(e) =>setLanguage(e.target.value)}> 
                     {
                         LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
                     }
                     </select>
 
                     <select className="my-3 form-select w-50" defaultValue={category} onChange={(e) =>setCategory(e.target.value)}>
-                    {
-                        catMaster.map((x)=><option value={x.category_name}>{t(x.category_name)}</option>)
+                    {   //to prevent showing first option as blank 
+                        catMaster.map((x)=> x.category_name && <option value={x.category_name}>{t(x.category_name)}</option>)
                     }
                     </select>
 

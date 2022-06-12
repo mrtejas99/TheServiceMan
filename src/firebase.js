@@ -114,6 +114,9 @@ const saveAdData = async (
     experience,
     skills,
     location,
+    latitude,
+    longitude,
+    geohash,
     language,
     category) => {
     try {
@@ -125,6 +128,9 @@ const saveAdData = async (
             experience: experience,
             skills: skills,
             location: location,
+            latitude: latitude,
+            longitude: longitude,
+            geohash: geohash,
             language: language,
             category: category,
             posted_date: Date.now(),
