@@ -67,21 +67,22 @@ function FilterGroup(props) {
 /**
  * Geo-location search filter status (active or not) with persistence
  */
-function useGeoStatus() {
+function useGeoStatus(defaultActive) {
     //To save active status
-    const [clientSettings, updateClientSetting] = useContext(ClientSettingsContext);
     const [geoFilterStatus, setGeoFilterStatus] = useState({
-        active: clientSettings.geofilter_active || false,
+        active: defaultActive,
         acquired: false
     });
     const setIsActive = value => setGeoFilterStatus(Object.assign(Object.assign({}, geoFilterStatus), {active: value}));
     const setIsAcquired = value => setGeoFilterStatus(Object.assign(Object.assign({}, geoFilterStatus), {acquired: value}));
     const isOperational = () => geoFilterStatus.active && geoFilterStatus.acquired;
-    useEffect(() => updateClientSetting({geofilter_active: geoFilterStatus.active}), [geoFilterStatus]);
     return [geoFilterStatus, setIsActive, setIsAcquired, isOperational];
 }
 
 function Home() {
+    //Client settings
+    const [clientSettings, updateClientSetting] = useContext(ClientSettingsContext);
+
     //List of ads loaded
     const [info, setInfo] = useState([]);
 
@@ -91,7 +92,7 @@ function Home() {
     //Filtering modes
     const [filterCriteriaCategory, setFilterCriteriaCategory] = useState('');
     const [filterCriteriaGeo, setFilterCriteriaGeo] = useState('');
-    const [filterCriteriaStar, setFilterCriteriaStar] = useState(0);
+    const [filterCriteriaStar, setFilterCriteriaStar] = useState('');
     const [filterCriteriaLang, setFilterCriteriaLang] = useState('');
 
     //Dataset of various master collections
@@ -107,13 +108,17 @@ function Home() {
 
     //Geo-location of the user
     const [clientLocationCentre, setCientLocationCenter] = useState(null); //for geo location
-    const [geoFilterStatus, setGeoFilterIsActive, setGeoIsAcquired, isGeoFilterOperational] = useGeoStatus();
+    const [
+        geoFilterStatus,
+        setGeoFilterIsActive,
+        setGeoIsAcquired,
+        isGeoFilterOperational
+    ] = useGeoStatus(
+        clientSettings.geofilter_active || false
+    );
 
     //Query string (for example: Search results query)
     const [queryParams] = useSearchParams();
-
-    //Client settings
-    const [clientSettings, updateClientSetting] = useContext(ClientSettingsContext);
 
     //Translation
     const { t } = useTranslation("common");
@@ -141,7 +146,10 @@ function Home() {
     useEffect(() => {
         if (clientSettings.cli_latitude && clientSettings.cli_longitude)
             setCientLocationCenter([clientSettings.cli_latitude, clientSettings.cli_longitude])
-    }, [clientSettings, isGeoFilterOperational()])
+    }, [clientSettings, isGeoFilterOperational()]);
+    
+    useEffect(() => updateClientSetting({geofilter_active: geoFilterStatus.active}), [geoFilterStatus]);
+    
 
     function queriesForGeoHashes() {
         if (clientLocationCentre === null) return;
