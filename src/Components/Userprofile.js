@@ -12,7 +12,6 @@ import { FaStar } from "react-icons/fa";
 function Userprofile() {
     const [user, loading, error] = useAuthState(auth);
     const [fname, setFname] = useState("");
-    const [lname, setLname] = useState("");
     const [info , setInfo] = useState([]);
     const navigate = useNavigate();
     const {t} = useTranslation("common");
@@ -24,7 +23,6 @@ function Userprofile() {
           const data = doc.docs[0].data();
           //console.log(data);
           setFname(data.fname);
-          setLname(data.lname);
         } catch (err) {
           console.error(err);
           alert(t("errfetchposter"));
@@ -50,6 +48,7 @@ function Userprofile() {
     useEffect(() => {
         if (loading) return;
         if (!user) return navigate("/Login");
+        //console.log(user);
         // eslint-disable-next-line
         fetchUserName();
         fetchUserAds();
@@ -75,7 +74,7 @@ function Userprofile() {
                     </Col>
                     <Col>
                         <Button variant="info" onClick={() => navigate("/Adcreate")}>{t('advertise')}</Button><br />
-                        <Button variant="info" onClick={() => navigate("/Sellers")} state={{posted_by:user.uid}} className='my-3'>{t('switch')}</Button>
+                        <Button variant="info" onClick={() => navigate(`/Sellers/${user.uid}`)} className='my-3'>{t('switch')}</Button>
                     </Col>
                 </Row>
                 <br/>   

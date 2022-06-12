@@ -53,7 +53,7 @@ function TheServiceManApp() {
 					<Route path="/Servicefeedback" element={<Servicefeedback />} />
 					<Route path="/Adedit/:adid" element={<Adedit />} />
 					<Route path="/Adcreate" element={<Adcreate />} />
-					<Route path="/Sellers" element={<Sellers />} />
+					<Route path="/Sellers/:id" element={<Sellers />} />
 					<Route path="/Customers" element={<Customers />} />
 					<Route path="/fetch" element={<Fetch />} />
 					<Route path="/Logout" element={<Logout />} />

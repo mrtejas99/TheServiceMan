@@ -19,6 +19,7 @@ import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER, GEOSEARCH_PROXIMITY_R
 
 //geoloc
 import { ClientSettingsContext } from "./ClientSettings";
+import NavbarCollapse from "react-bootstrap/esm/NavbarCollapse";
 const geofire = require('geofire-common');
 
 //Component to render a filter group - list of filters
@@ -85,6 +86,7 @@ function Home() {
 
     //List of ads loaded
     const [info, setInfo] = useState([]);
+    const [popular, setPopular] = useState([])
 
     //Sort-by parameter
     const [sortCriteria, setSortCriteria] = useState('');
@@ -319,19 +321,51 @@ function Home() {
         //Sort 5-star to 1-star
         setRatingMaster([...RATING_MASTER].sort((a, b) => b.value - a.value));
         setLangMaster(LANGUAGE_MASTER);
+
+        //fetch popular search
+        getTopFive();
     }, []);
 
     //Lazy to do this in JSX, so a wrapper it is!
     const geoStatusToStyle = () =>
         geoFilterStatus.active ? (geoFilterStatus.acquired ? "text-danger font-weight-bold" : "text-dark") : "";
 
+    const incrementPopularity = (c) =>{
+        var retrievedObject = JSON.parse(localStorage.getItem('popular'));
+        if(c in retrievedObject)
+            retrievedObject[c]++;
+        else{
+            retrievedObject[c] = 0;
+            retrievedObject[c]++;
+        }
+        localStorage.setItem('popular', JSON.stringify(retrievedObject));
+        console.log('popular: ', retrievedObject);
+    }
+
+    function getTopFive(){
+        if(!localStorage.getItem('popular'))
+            localStorage.setItem('popular', JSON.stringify({ 'Beautician': 0}));  //to prevent undefined error
+
+        var retrievedObject = JSON.parse(localStorage.getItem('popular'));
+        var items = Object.keys(retrievedObject).map(function(key) {
+            return [key, retrievedObject[key]];
+        });
+        
+        items.sort(function(first, second) {
+          return second[1] - first[1];
+        });
+        
+        console.log(items.slice(0, 5).map(k => k[0]));
+        setPopular(items.slice(0, 5));
+    
+    }
     return (
         <Container fluid className="py-3">
-            <span><b className='me-3'>{t('popularsearches')}</b>{' '}
-                <a href="#">{t('cook')}</a> {' '}
-                <a href="#">{t('electrician')}</a>{' '}
-                <a href="#">{t('plumber')}</a>{' '}
-                <a href="#">{t('beautician')}</a>{' '}
+            <span>
+            <b className='me-3'>{t('popularsearches')}</b>{' '}
+            {
+                popular.map((c) => <a href="#" className="mx-1">{c[0]}</a>)
+            }
             </span>
 
             <Row className='py-5'>
@@ -374,7 +408,7 @@ function Home() {
                     <Row xs={2} sm={3} md={4} lg={6} className="g-4">
                         {
                             info.map((data, idx) => (
-                                <Card className="highlight me-3" role="button" key={idx} style={{ width: '15rem' }} onClick={() => navigate(`/Adview/${data.posted_date}`)}>
+                                <Card className="highlight me-3" role="button" key={idx} style={{ width: '15rem' }} onClick={() => {incrementPopularity(data.category); navigate(`/Adview/${data.posted_date}`)}}>
                                     <Card.Img variant="top" src={data.banner_url} />
                                     <Card.Body className="zoomtext">
                                         <Card.Title>{data.title}</Card.Title>
