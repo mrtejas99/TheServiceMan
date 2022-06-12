@@ -3,7 +3,7 @@ import React from 'react';
 //translate
 import { useTranslation } from "react-i18next";
 
-function Footer(){
+function Footer() {
     const {t} = useTranslation("common");
 
     return(
