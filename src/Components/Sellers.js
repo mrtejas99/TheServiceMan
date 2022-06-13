@@ -18,12 +18,12 @@ function Sellers() {
     const [info , setInfo] = useState([]);
     const [fname, setFname] = useState('');
     const [lname, setLname] = useState('');
-    const [fnames, setFnames] = useState(['']);
-    const [lnames, setLnames] = useState(['']);
+    const [fnames, setFnames] = useState([]);
+    const [lnames, setLnames] = useState([]);
     const [feedbacks , setFeedbacks] = useState([]);
 
     let { id } = useParams(); //the user id
-    console.log(id)    
+    console.log(id)
 
     const Fetchdata = async ()=>{
         try {
@@ -59,6 +59,7 @@ function Sellers() {
                 console.log(rating_total);
                 element.rating =  rating_total/doc.docs.length;
                 doc.forEach(x => {    //multiple feedback for one id
+                    //console.log("Seller fb", x);
                     var data = x.data();
                     setFeedbacks(arr => [...arr , data]);
                 });
@@ -136,26 +137,29 @@ function Sellers() {
                 <Col className="w-25">
                     <h5>{t('feedback')}</h5>
                     {
-                    feedbacks.map((data,index) => (
-                        fnames[index] && <Card style={{ height: '8rem'}}>
-                            <Col>
-                                <Card.Body>
-                                    <Card.Title >{fnames[index]} {lnames[index]}</Card.Title>                                       
-                                    <div>
-                                    {[...Array(5)].map((star, i)=>{
-                                        const ratingValue=i+1;
-                                        return (
-                                            <label>
-                                            <FaStar className="star" color={ratingValue<= (data.rating) ?"#ffc107":"#e4e5e9"}size={15}/>
-                                            </label>
-                                                );
-                                    })}
-                                    </div>
-                                    <Card.Text>{data.text}</Card.Text>
-                                </Card.Body>
-                            </Col>
-                        </Card>
-                    ))
+                    feedbacks.map((data,index) => {
+                        return (
+                            fnames[index] && <Card style={{ height: '8rem'}}>
+                                <Col>
+                                    <Card.Body>
+                                        <Card.Title >{fnames[index]} {lnames[index]}</Card.Title>                                       
+                                        <div>
+                                        {
+                                        [...Array(5)].map((star, i)=>{
+                                            const ratingValue=i+1;
+                                            return (
+                                                <label>
+                                                <FaStar className="star" color={ratingValue<= (data.rating) ?"#ffc107":"#e4e5e9"}size={15}/>
+                                                </label>
+                                                    );
+                                        })}
+                                        </div>
+                                        <Card.Text>{data.text}</Card.Text>
+                                    </Card.Body>
+                                </Col>
+                            </Card>
+                        );
+                    })
                     }
                 </Col>
             </Row>

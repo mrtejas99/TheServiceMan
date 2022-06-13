@@ -19,7 +19,7 @@ function Adview(){
     //const location = useLocation(); //https://stackoverflow.com/a/70742138/10597778        
 
     const navigate = useNavigate();
-    const [ad, setAd] = useState({skills:"none"});   //since it is an document
+    const [ad, setAd] = useState(null);   //since it is an document
     const [feedbacks , setFeedbacks] = useState([]);
     const {t} = useTranslation("common");
 
@@ -43,7 +43,7 @@ function Adview(){
             const q = query(collection(db, "serviceads"), where("posted_date", "==", id));
             const doc = await getDocs(q);
             console.log(doc.docs);
-            const data = doc.docs[0].data();    //only one matching ad for each id
+            const data = doc.docs[0];//.data();    //only one matching ad for each id
             setAd(data);
             console.log(ad);
         } catch (err) {
@@ -66,8 +66,8 @@ function Adview(){
         }
 
         try{
-            if(!ad.posted_by) return;
-            const q = query(collection(db, "users"),where("uid", "==",ad.posted_by));
+            if(!ad) return;
+            const q = query(collection(db, "users"),where("uid", "==",ad.data().posted_by));
             const doc = await getDocs(q);
             const data = doc.docs[0].data();
             setPosterFname(data.fname);
@@ -125,32 +125,34 @@ function Adview(){
             <Container className="py-3">
                 <Breadcrumb>
                     <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                    <Breadcrumb.Item href="#">{t(ad.category)}</Breadcrumb.Item>
-                    <Breadcrumb.Item active>{t(ad.location)}</Breadcrumb.Item>
+                    {ad && (<Breadcrumb.Item href="#">{t(ad.data().category)}</Breadcrumb.Item>)}
+                    {ad && (<Breadcrumb.Item active>{t(ad.data().location)}</Breadcrumb.Item>)}
                 </Breadcrumb>
                 {
-                    user && user.uid==ad.posted_by && <div className="float-end">
-                    <Button variant="info"  className="me-3" onClick={() => navigate(`/Adedit/${id}`, {state:{ad:ad}})}>{t('edit')}</Button>
-                    <Button variant="danger" onClick={deleteAd}>{t('delete')}</Button>
-                    </div>
+                    user && ad && user.uid==ad.data().posted_by && (
+                        <div className="float-end">
+                            <Button variant="info"  className="me-3" onClick={() => navigate(`/Adedit/${id}`, {state:{ad:ad}})}>{t('edit')}</Button>
+                            <Button variant="danger" onClick={deleteAd}>{t('delete')}</Button>
+                        </div>
+                    )
                 }
                 
-                <Row className='py-5'>
+                {ad && (<Row className='py-5'>
                     <Col>
-                        <h3>{ad.title}</h3>
-                        <Image className="w-75 my-3" src={ad.banner_url}/>
+                        <h3>{ad.data().title}</h3>
+                        <Image className="w-75 my-3" src={ad.data().banner_url}/>
                         <h4 >{t("description")}</h4>
-                        <p>{ad.description}</p>
+                        <p>{ad.data().description}</p>
 
                         <h4>{t("experience")}</h4>
-                        <p>{ad.experience}</p>
+                        <p>{ad.data().experience}</p>
                     </Col>
                    
                     <Col >
                         <h4>{t("skills")}</h4>
                         <div className='py-3'>
                             { 
-                                ad.skills.split(",").map((e) => <Badge  className="m-1" bg="secondary">{e}</Badge>)
+                                ad.data().skills.split(",").map((e) => <Badge  className="m-1" bg="secondary">{e}</Badge>)
                             }
                         </div>
                         <h4>{t("userdescription")}</h4>
@@ -160,12 +162,13 @@ function Adview(){
                                 <Col className="w-25"><Card.Img className='px-2 py-2'variant="top" src={logo} style={logoStyle} /></Col>
                                 <Col className="w-75">
                                 <Card.Body>
-                                    <Card.Title><Link className="my-3" to={`/Sellers/${ad.posted_by}`} state={{posted_by:ad.posted_by}}>{posterFname} {posterLname}</Link></Card.Title>
+                                    <Card.Title><Link className="my-3" to={`/Sellers/${ad.data().posted_by}`} state={{posted_by:ad.data().posted_by}}>{posterFname} {posterLname}</Link></Card.Title>
                                     <br/>
                                     <Button variant="primary" className="btn-sm my-0 me-3" onClick={() => {
                                         if(user){
-                                            if(user.uid!=ad.posted_by) 
-                                                navigate("/Servicefeedback",{state:{posted_by:ad.posted_by,posted_date:ad.posted_date, fire_id:ad.id}})
+                                            console.log(ad);
+                                            if(user.uid!=ad.data().posted_by) 
+                                                navigate("/Servicefeedback",{state:{posted_by:ad.data().posted_by,posted_date:ad.data().posted_date, fire_id:ad.id}})
                                             else 
                                                 alert(t("errselffeedback"));
                                         }
@@ -178,13 +181,13 @@ function Adview(){
 
                                     <Button variant="primary" className="btn-sm my-0" onClick={() => {
                                          if(user){
-                                            if(user.uid!=ad.posted_by) 
-                                                navigate(`/chat/${ad.posted_by}`,{state:{posted_by:ad.posted_by}})
+                                            if(user.uid!=ad.data().posted_by) 
+                                                navigate(`/chat/${ad.data().posted_by}`,{state:{posted_by:ad.data().posted_by}})
                                             else 
                                                 alert("chat error");
                                         }
                                         else{
-                                            alert("login before chating");
+                                            alert("login before chatting");
                                             navigate("/login");
                                         }
                                     }}>{t("chat")}
@@ -209,7 +212,7 @@ function Adview(){
                                                 <label>
                                                 <FaStar className="star" color={ratingValue<= (data.rating) ?"#ffc107":"#e4e5e9"}size={15}/>
                                                 </label>
-                                                    );
+                                            )
                                         })}
                                         </div>
                                         <Card.Text>{data.text}</Card.Text>
@@ -221,6 +224,7 @@ function Adview(){
                         }
                     </Col>
                 </Row>
+            )}
 
             </Container>
         </Suspense>
