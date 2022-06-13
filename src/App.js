@@ -30,6 +30,9 @@ import { Customers } from "./Components/Customers";
 import { Fetch } from "./Components/temp";
 import { Logout } from "./Components/Logout";
 
+import { Chat } from "./Components/ChatA";
+import { ChatHome } from "./Components/chatHome";
+
 //Admin dashboard
 import AdminPanel from './AdminPanel';
 
@@ -57,6 +60,8 @@ function TheServiceManApp() {
 					<Route path="/Customers" element={<Customers />} />
 					<Route path="/fetch" element={<Fetch />} />
 					<Route path="/Logout" element={<Logout />} />
+					<Route path="/chat/:id" element={<Chat />} />
+					<Route path="/chathome" element={<ChatHome />} />
 					<Route path="*" element={<Error/>} />
 				</Routes>
 				<Footer />

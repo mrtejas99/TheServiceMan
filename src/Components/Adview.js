@@ -160,7 +160,7 @@ function Adview(){
                                 <Col className="w-25"><Card.Img className='px-2 py-2'variant="top" src={logo} style={logoStyle} /></Col>
                                 <Col className="w-75">
                                 <Card.Body>
-                                    <Card.Title><Link className="my-3" to={`/Sellers/${ad.posted_by}`}>{posterFname} {posterLname}</Link></Card.Title>
+                                    <Card.Title><Link className="my-3" to={`/Sellers/${ad.posted_by}`} state={{posted_by:ad.posted_by}}>{posterFname} {posterLname}</Link></Card.Title>
                                     <br/>
                                     <Button variant="primary" className="btn-sm my-0 me-3" onClick={() => {
                                         if(user){
@@ -175,7 +175,22 @@ function Adview(){
                                         }
                                     }}>{t("feedback")}
                                         </Button>
-                                    <Button variant="primary" className="btn-sm my-0" onClick={() => navigate("/chat",{state:{posted_by:ad.posted_by}})} >{t("chat")}</Button>
+                                    /*hk*/
+
+                                    <Button variant="primary" className="btn-sm my-0" onClick={() => {
+                                         if(user){
+                                            if(user.uid!=ad.posted_by) 
+                                                navigate(`/chat/${ad.posted_by}`,{state:{posted_by:ad.posted_by}})
+                                            else 
+                                                alert("chat error");
+                                        }
+                                        else{
+                                            alert("login before chating");
+                                            navigate("/login");
+                                        }
+                                    }}>{t("chat")}
+                                    </Button>
+                                    /*hk*/
                                 </Card.Body>
                                 </Col>
                             </Row>

@@ -1,20 +1,22 @@
-.zoomtext:hover > .card-body {
-    transition: transform 0.2s ease-in;
-    transform: scale(1.2) !important;
+.zoomtext:hover>.card-body {
+	transition: transform 0.2s ease-in;
+	transform: scale(1.2) !important;
 }
+
 .highlight {
 	border: 3px solid transparent;
 	box-sizing: border-box;
 }
-.highlight:hover{
-    border-color: rgb(233, 233, 36);
+
+.highlight:hover {
+	border-color: rgb(233, 233, 36);
 }
 
 /* To hide the drop-down arrow */
-.hidden-arrow > a::before, 
-.hidden-arrow > a::after {
-    border: none;
-    content: none;
+.hidden-arrow>a::before,
+.hidden-arrow>a::after {
+	border: none;
+	content: none;
 }
 
 .notification-badge {
@@ -26,10 +28,56 @@
 	opacity: 1.0;
 }
 
-.list-group{
-    max-height: 10rem;
+.list-group {
+	max-height: 10rem;
 	max-width: 10rem;
-    margin-bottom: 10vw;
-    overflow-y: auto;
+	margin-bottom: 10vw;
+	overflow-y: auto;
 	overflow-x: hidden;
+}
+
+.messages {
+	height: calc(100vh - 40vh);
+	overflow-y: hidden;
+	overflow-y: auto;
+	border-bottom: 1px solid black;
+}
+
+.messages_container {
+	position: relative;
+	width: 100%;
+	border: 1px solid black;
+}
+
+.message_wrapper {
+	margin-top: 5px;
+	padding: 0px 5px;
+}
+
+.message_wrapper div {
+	padding: 10px;
+	display: inline-block;
+	max-width: 50%;
+	text-align: left;
+	word-wrap: break-word;
+	border-radius: 5px;
+}
+
+.message_wrapper small {
+	display: inline-block;
+	margin-top: 15px;
+	opacity: 0.8;
+}
+
+.message_wrapper.own {
+	text-align: right;
+}
+
+.me {
+	background: blue;
+	color: white;
+}
+
+.friend {
+	background: gray;
 }
