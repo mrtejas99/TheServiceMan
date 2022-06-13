@@ -5,7 +5,7 @@
 import React from 'react';
 
 import { Admin, Resource } from 'react-admin';
-import { dataProvider, adminAuthProvider } from './Admin/AdminProvider';
+import { dataProvider, adminProvider, adminAuthProvider } from './Admin/AdminProvider';
 import AdminLoginPage from './Admin/AdminLoginPage';
 import AdminDashboard from './Admin/AdminDashboard';
 
@@ -25,7 +25,7 @@ function AdminPanel() {
 	return (
 		<Admin	basename="/admin"
 				dataProvider={dataProvider}
-				authProvider={adminAuthProvider}
+				authProvider={adminProvider}
 				loginPage={AdminLoginPage}
 				dashboard={AdminDashboard} >
 			<Resource name="users" list={User.UserList} show={User.UserShow} edit={User.UserEdit} icon={UserIcon} />
