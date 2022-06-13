@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Badge, Button, NavDropdown } from "react-bootstrap";
+import { Badge, Button, NavDropdown, Nav } from "react-bootstrap";
 
 //import { FaBell } from "react-icons/fa";
 import { BsFillChatFill } from "react-icons/bs";
 
-import { Scrollbars } from 'react-custom-scrollbars-2';
+//import { Scrollbars } from 'react-custom-scrollbars-2';
+
+import { query, collection, where, onSnapshot } from "firebase/firestore";
+import { db, auth } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function ChatBellIcon(props) {
 	const count = props.unreadCount || 0;
@@ -16,6 +20,7 @@ function ChatBellIcon(props) {
     );
 }
 
+/*
 function ChatMessageItem({item}) {
 	return (
 		<NavDropdown.Item className={item.is_read ? "" : "bg-light text-primary"} style={{width:'25vw', maxWidth:'30vw'}} href={"/chat/" + item.posted_by}>
@@ -60,6 +65,33 @@ function NotificationBell() {
             }
 			</Scrollbars>
         </NavDropdown>
+    );
+}*/
+
+//Without dropdown
+function NotificationBell() {
+	const [recentUnread, setRecentUnread] = useState(0);
+	const [user] = useAuthState(auth);
+
+	useEffect(() => {
+		if (!user) {
+			setRecentUnread(0);
+			return;
+		}
+
+		const q = query(collection(db, "lastchat"), where("to", "==", user.uid), where("is_read", "==", false));
+		let unsubfn = onSnapshot(q, data => {
+			if (user)
+				setRecentUnread(data.size);
+		});
+
+		return () => unsubfn();
+	}, [user]);
+
+    return (
+        <Nav.Link href="/chathome">
+			<ChatBellIcon unreadCount={recentUnread} />
+		</Nav.Link>
     );
 }
 

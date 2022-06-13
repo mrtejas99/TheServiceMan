@@ -102,9 +102,7 @@ const sendPasswordReset = async (email) => {
     }
 };
 
-const logout = () => {
-    signOut(auth);
-};
+const logout = () => signOut(auth);
 
 const saveAdData = async (
     user,

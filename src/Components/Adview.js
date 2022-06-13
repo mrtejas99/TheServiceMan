@@ -175,7 +175,6 @@ function Adview(){
                                         }
                                     }}>{t("feedback")}
                                         </Button>
-                                    /*hk*/
 
                                     <Button variant="primary" className="btn-sm my-0" onClick={() => {
                                          if(user){
@@ -190,7 +189,6 @@ function Adview(){
                                         }
                                     }}>{t("chat")}
                                     </Button>
-                                    /*hk*/
                                 </Card.Body>
                                 </Col>
                             </Row>

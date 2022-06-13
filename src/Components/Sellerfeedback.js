@@ -47,7 +47,6 @@ function Sellerfeedback({user11,user22}){
         try {
           const docRef =  addDoc(collection(db, "sellerfeedback"), {
             posted_by:user11,
-            adid:AdId,
             to:user22,
             rating:Rating,
             text:feedback,
@@ -73,7 +72,7 @@ function Sellerfeedback({user11,user22}){
         <Form className='w-50 mx-auto my-5 '>
             <h6>{user2}{user1}</h6>
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>How was your experience with the seller?</Form.Label>
+                <Form.Label>How was your experience with the customer?</Form.Label>
                 <div>
                 <span>Rating </span>
                 {[...Array(5)].map((star, i)=>{

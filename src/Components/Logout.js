@@ -18,11 +18,14 @@ function Logout() {
           return;
         }
         if (user) {
-            logout();
-            navigate("/login");
+            logout()
+            .then(() => navigate("/login"))
+            .catch((msg) => {
+                navigate("/login");
+            });
         }
         else
-        navigate("/");
+            navigate("/");
 
     }, [user, loading]);
     
