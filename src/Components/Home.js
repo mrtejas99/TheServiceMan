@@ -21,9 +21,6 @@ import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER, GEOSEARCH_PROXIMITY_R
 //geoloc
 import { ClientSettingsContext } from "./ClientSettings";
 
-const geofire = require('geofire-common');
-
-
 //Component to render a filter group - list of filters
 function FilterGroup(props) {
     const [filterItems, setFilterItems] = useState([]);
@@ -132,6 +129,7 @@ function Home() {
     const location = useLocation();
 
     const search_query = queryParams.get('q') || "";
+
     //Reference to all ads collection
     const adsRef = collection(db, "serviceads");
 
@@ -147,56 +145,13 @@ function Home() {
         setLoading(false);  //hide hourglass
     }
 
+    //Update user location state if changed
     useEffect(() => {
         if (clientSettings.cli_latitude && clientSettings.cli_longitude)
             setCientLocationCenter([clientSettings.cli_latitude, clientSettings.cli_longitude])
     }, [clientSettings, isGeoFilterOperational()]);
-    
     useEffect(() => updateClientSetting({geofilter_active: geoFilterStatus.active}), [geoFilterStatus]);
 
-    function queriesForGeoHashes() {
-        if (clientLocationCentre === null) return;
-
-        // [START fs_geo_query_hashes]
-        // Find cities within 50km of current location
-        const radiusInM = GEOSEARCH_PROXIMITY_RANGE;
-
-        const geo_filters = [];
-
-        // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
-        // a separate query for each pair. There can be up to 9 pairs of bounds
-        // depending on overlap, but in most cases there are 4.
-        const bounds = geofire.geohashQueryBounds(clientLocationCentre, radiusInM);
-        //const promises = [];
-        
-        geo_filters.push(orderBy('geohash'));
-        for (const b of bounds) {
-            //const q = query(adsRef, orderBy('geohash'), startAt(b[0]), endAt(b[1]));
-            geo_filters.push(startAt(b[0]), endAt(b[1]));
-            //promises.push(getDocs(q));
-        }
-
-        return geo_filters;
-
-        // Collect all the query results together into a single list
-        /*Promise.all(promises)
-        .then(snapshots => matchGeoHashAds(snapshots, clientLocationCentre, radiusInM))
-        .then(matchingDocs => {
-            matchingDocs.forEach(async element => {
-                var data = element.data();
-                console.log(data)
-                setInfo(arr => [...arr, data]);
-            })
-            // Process the matching documents
-            // [START_EXCLUDE]
-            // [END_EXCLUDE]
-        })
-        .catch(err => {
-            console.error(err);
-            alert(t('errgeoloc'));
-        });*/
-        // [END fs_geo_query_hashes]
-    }
 
     const fetchFilteredAdData = (last_doc) => {
         console.log(` cate:${filterCriteriaCategory} geo: ${filterCriteriaGeo} lang:${filterCriteriaLang} star:${filterCriteriaStar} ${typeof filterCriteriaStar}`)
@@ -204,7 +159,7 @@ function Home() {
         let geoFilterUsed = false;
 
         //Geohash filter
-        if (isGeoFilterOperational() && clientLocationCentre.length === 2) {
+        if (isGeoFilterOperational() && clientLocationCentre && clientLocationCentre.length === 2) {
             let geoRange = getGeohashRange(clientLocationCentre, GEOSEARCH_PROXIMITY_RANGE);
             q = query(q, where("geohash", ">=", geoRange.lower), where("geohash", "<=", geoRange.upper));
             geoFilterUsed = true;
@@ -390,7 +345,7 @@ function Home() {
                         <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} filterDisplayField="location_name" />
                     </div>
                     {
-                    (geoFilterStatus.active && <div className='my-3 mx-3'>
+                    (!geoFilterStatus.active) && (<div className='my-3 mx-3'>
                         <h6>{t('rating')}</h6>
                         <FilterGroup filterData={ratingMaster} onFilterSelect={setFilterCriteriaStar} currentSelectedFilter={filterCriteriaStar} filterDisplayField="rating_name" filterByProp="value" addTextSuffix translatePrefix />
                     </div>)
