@@ -4,7 +4,7 @@ import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 // Import Firestore database
 import { db } from "../firebase";
 import { query, collection, getDocs, where, orderBy, limit, startAfter, startAt, endAt } from "firebase/firestore";
-import { getFilterMasterData, matchGeoHashAds } from '../datautils';
+import { getFilterMasterData, getGeohashRange } from '../datautils';
 
 import { Container, Button, Col, Row, Card, Dropdown } from "react-bootstrap";
 
@@ -22,6 +22,7 @@ import { RESULTS_PER_PAGE, RATING_MASTER, LANGUAGE_MASTER, GEOSEARCH_PROXIMITY_R
 import { ClientSettingsContext } from "./ClientSettings";
 
 const geofire = require('geofire-common');
+
 
 //Component to render a filter group - list of filters
 function FilterGroup(props) {
@@ -200,12 +201,13 @@ function Home() {
     const fetchFilteredAdData = (last_doc) => {
         console.log(` cate:${filterCriteriaCategory} geo: ${filterCriteriaGeo} lang:${filterCriteriaLang} star:${filterCriteriaStar} ${typeof filterCriteriaStar}`)
         let q = query(adsRef);
+        let geoFilterUsed = false;
 
         //Geohash filter
-        if (isGeoFilterOperational()) {
-            let geoQueries = queriesForGeoHashes();
-            if (geoQueries && geoQueries.length > 0)
-                q = query(q, ...geoQueries);
+        if (isGeoFilterOperational() && clientLocationCentre.length === 2) {
+            let geoRange = getGeohashRange(clientLocationCentre, GEOSEARCH_PROXIMITY_RANGE);
+            q = query(q, where("geohash", ">=", geoRange.lower), where("geohash", "<=", geoRange.upper));
+            geoFilterUsed = true;
         }
 
         //Search query
@@ -225,7 +227,8 @@ function Home() {
         if (filterCriteriaLang !== '')
             q = query(q, where('language', "==", filterCriteriaLang));
 
-        if (filterCriteriaStar !== '')
+        //Stupid restriction of firebase
+        if (filterCriteriaStar !== '' && !geoFilterUsed)
             q = query(q, where('average', ">=", filterCriteriaStar));
 
         //for querying using geohash
@@ -386,10 +389,12 @@ function Home() {
                         <h6>{t('location')}</h6>
                         <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} filterDisplayField="location_name" />
                     </div>
-                    <div className='my-3 mx-3'>
+                    {
+                    (geoFilterStatus.active && <div className='my-3 mx-3'>
                         <h6>{t('rating')}</h6>
                         <FilterGroup filterData={ratingMaster} onFilterSelect={setFilterCriteriaStar} currentSelectedFilter={filterCriteriaStar} filterDisplayField="rating_name" filterByProp="value" addTextSuffix translatePrefix />
-                    </div>
+                    </div>)
+                    }
                     <div className='my-3 mx-3'>
                         <h6>{t('language')}</h6>
                         <FilterGroup filterData={langMaster} onFilterSelect={setFilterCriteriaLang} currentSelectedFilter={filterCriteriaLang} filterDisplayField="language_name" filterByProp="value" />

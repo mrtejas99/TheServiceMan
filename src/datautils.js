@@ -1,7 +1,9 @@
 
 import { db } from "./firebase";
 import { query, collection, getDocs, orderBy } from "firebase/firestore";
-const geofire = require('geofire-common');
+import geohash from "ngeohash";
+
+//const geofire = require('geofire-common');
 
 const getFilterMasterData = (colle, name_field) => (
     getDocs(query(
@@ -12,6 +14,24 @@ const getFilterMasterData = (colle, name_field) => (
     .then(data => data.docs.map(element => element.data()))
 );
 
+const getGeohashRange = (position, distance) => {
+    const [latitude, longitude] = position;
+    const lat_per_mile = 0.0144927536231884; // degrees latitude per mile
+    const lon_per_mile = 0.0181818181818182; // degrees longitude per mile
+
+    const lowerLat = latitude - lat_per_mile * distance;
+    const lowerLon = longitude - lon_per_mile * distance;
+
+    const upperLat = latitude + lat_per_mile * distance;
+    const upperLon = longitude + lon_per_mile * distance;
+
+    const lower = geohash.encode(lowerLat, lowerLon);
+    const upper = geohash.encode(upperLat, upperLon);
+
+    return { lower, upper };
+};
+
+/*
 const matchGeoHashAds = (snapshots, coordinate, proximity) => {
     const matchingDocs = [];
 
@@ -32,5 +52,6 @@ const matchGeoHashAds = (snapshots, coordinate, proximity) => {
 
     return matchingDocs;
 };
+*/
 
-export { getFilterMasterData, matchGeoHashAds };
+export { getFilterMasterData, getGeohashRange };
