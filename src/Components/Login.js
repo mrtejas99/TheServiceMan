@@ -24,7 +24,7 @@ function Login() {
     }, [user, loading]);
     
     return(
-        <Form className='w-50 mx-auto my-5 '>
+        <Form className='w-50 mx-auto my-5' onSubmit={e => {e.preventDefault(); logInWithEmailAndPassword(email, password)}}>
             <h2 className="text-center">{t('login')} </h2>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>{t('email')}</Form.Label>
@@ -42,9 +42,7 @@ function Login() {
             </Form.Group>
 
             <div className='text-center'>
-                <Button variant="primary" onClick={() => logInWithEmailAndPassword(email, password)}>
-                    {t('login')}
-                </Button>
+                <Button type="submit" variant="primary">{t('login')}</Button>
                 <div className='my-3'>{t('notmember')} <Link to="/register">{t('register')}</Link> </div>
                 <hr></hr>
                 <Button variant="light" onClick={signInWithGoogle}>
