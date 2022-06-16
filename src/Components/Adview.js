@@ -131,7 +131,7 @@ function Adview(){
                 {
                     user && ad && user.uid==ad.data().posted_by && (
                         <div className="float-end">
-                            <Button variant="info"  className="me-3" onClick={() => navigate(`/Adedit/${ad.id}`, {state: {ad: ad.data()}})}>{t('edit')}</Button>
+                            <Button variant="info"  className="me-3" onClick={() => navigate(`/Adedit/${ad.id}`, {state: {ad: ad.data(), adid: ad.id}})}>{t('edit')}</Button>
                             <Button variant="danger" onClick={deleteAd}>{t('delete')}</Button>
                         </div>
                     )

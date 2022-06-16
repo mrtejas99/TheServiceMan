@@ -11,31 +11,32 @@ import { useAuthState } from "react-firebase-hooks/auth";
 const UserContext = createContext();
 
 function UserProvider(props) {
-	const userData = useState({
+	const [userData, setUserData] = useState({
 		"user_id": null,
+		"loaded": false,
 		"display_name": "Guest"
 	});
+	const updateUserData = data => setUserData(prev => Object.assign(Object.assign({}, prev), data));
 	const [user, loading, error] = useAuthState(auth);
 
 	useEffect(() => {
 		if (!loading) {
-			const [uD, setUD] = userData;
-
 			if (user)
-				setUD(Object.assign(Object.assign({}, uD), {
+				updateUserData({
 					"user_id": user.uid,
-					"display_name": user.displayName || user.email || "Guest"
-				}));
+					"display_name": user.displayName || user.email || "User"
+				});
 			else
-				setUD(Object.assign(Object.assign({}, uD), {
+				updateUserData({
 					"user_id": null,
 					"display_name": "Guest"
-				}));
+				});
 		}
+		updateUserData({"loaded": !loading});
 	}, [user, loading]);
 
 	return (
-		<UserContext.Provider value={userData}>
+		<UserContext.Provider value={{userData, setUserData, updateUserData}}>
 			{props.children}
 		</UserContext.Provider>
 	);

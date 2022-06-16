@@ -9,7 +9,7 @@ import { UserContext } from './UserContext';
 
 function LoggedIn() {
     const {t} = useTranslation("common");
-	const [userData, setUserData] = useContext(UserContext);
+	const { userData } = useContext(UserContext);
 
     return(
         <NavDropdown align="end" title={<FaUser />} className='mt-3 mb-3'>

@@ -1,83 +1,102 @@
-import React, { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import React, { useEffect, useState, useContext } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { auth, db, logout, saveAdData, storage  } from "../firebase";
-import { query, collection, getDocs, doc, updateDoc } from "firebase/firestore";
+
+import { Container, Col, Row, Button, Form } from "react-bootstrap";
+
+import { db, storage } from "../firebase";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { Container,  Col, Row, Button, Form, Dropdown } from "react-bootstrap";
 
 //translate
 import { useTranslation } from "react-i18next";
 
 import { LANGUAGE_MASTER } from "../constants";
+import { getFilterMasterData } from "../datautils";
+import { UserContext } from "./UserContext";
 
 function Adedit() {
     const { adid } = useParams();
     const { state } = useLocation();
 
-    const [title, setTitle] = useState('');
-    const [banner, setBanner] = useState('');
-    const [description, setDescription] = useState('');
-    const [experience, setExperience] = useState('');
-    const [skills, setSkills] = useState('');
-    const [ad_location, setLocation] = useState('');
-    const [language, setLanguage] = useState('');
-    const [category, setCategory] = useState('');
-
-    const [catMaster, setCatMaster] = useState([]);
-    const [geoMaster, setGeoMaster] = useState([]);
+    const [fieldData, setFieldData] = useState({});     //Store pre-filled values
+    const updateFieldData = (field, value) => setFieldData(prev => ({
+        ...prev,
+        [field]: value
+    }));
+    const [currAdId, setCurrAdId] = useState(adid);     //ID of the ad to update
+    const [catMaster, setCatMaster] = useState([]);     //Master data for all available categories
+    const [geoMaster, setGeoMaster] = useState([]);     //Master data for all locations
 
     const {t} = useTranslation("common");
 
-    const [user, loading, error] = useAuthState(auth);
+    const { userData } = useContext(UserContext);
     const navigate = useNavigate();
 
-    //console.log(adid);
-
-    const getFilterMasterData = (colle, name_field) => (
-        getDocs(query(collection(db, colle),))
-        .then(data => data.docs.map(element => element.data()))
-    );
-
+    //Wait for user login status to fetch master data
     useEffect(() => {
-        setTitle(state.ad.title)
-        setBanner(state.ad.banner_url)
-        setDescription(state.ad.description)
-        setExperience(state.ad.experience)
-        setSkills(state.ad.skills)
-        setLocation(state.ad.location)
-        setLanguage(state.ad.language)
-        setCategory(state.ad.category)
+        if (userData && userData.loaded) {
+            if (!userData.user_id) {
+                return navigate("/Login");
+            }
+            
+            getFilterMasterData("adcategories", "category_name")
+                .then(categories => setCatMaster(categories))
+                .catch(err => console.error(err));
+            getFilterMasterData("locations", "location_name")
+                .then(locat => setGeoMaster(locat));
+        }
+    }, [userData]);
 
-        if (loading) return;
-        if (!user) return navigate("/Login");
-        getFilterMasterData("adcategories", "category_name")
-            .then(categories => setCatMaster(categories))
-            .catch(err => console.error(err));
-        getFilterMasterData("locations", "location_name")
-            .then(locat => setGeoMaster(locat))
-    }, [user, loading, state]);
+    //Load pre-filled values
+    useEffect(() => {
+        let fetchAdId = (state && state.adid) || adid;
+        setCurrAdId(fetchAdId);
+
+        if (state && state.ad) {
+            //We have a state with ad data from previous page. Just restore it
+            setFieldData({
+                'title': state.ad.title,
+                'banner_url': state.ad.banner_url,
+                'description': state.ad.description,
+                'experience': state.ad.experience,
+                'skills': state.ad.skills,
+                'language': state.ad.language,
+                'category': state.ad.category,
+                'location': state.ad.location
+            });
+        } else if (!fieldData.hasOwnProperty('title')) {
+            //We don't have state data, so try to fetch from database
+            getDoc(doc(db, 'serviceads', fetchAdId))
+            .then(document => document.data())
+            .then(data => {
+                setFieldData({
+                    'title': data.title,
+                    'banner_url': data.banner_url,
+                    'description': data.description,
+                    'experience': data.experience,
+                    'skills': data.skills,
+                    'language': data.language,
+                    'category': data.category,
+                    'location': data.location
+                });
+            })
+            .catch(() => {
+                alert(`The ad with id ${fetchAdId} doesn't exist`);
+                navigate('/');
+            });
+        }
+    }, [state, adid]);
 
     //add to firestore
     const createServiceAd = async () => {
-        try{
-            const fireid = state.ad.id;
-            const adRef = doc(db, 'serviceads',fireid )
-            await updateDoc(adRef, {
-                title:title, 
-                banner_url: banner, 
-                description: description, 
-                experience: experience, 
-                skills: skills,
-                language: language, 
-                category: category,
-                location: ad_location
-                });
+        try {
+            const adRef = doc(db, 'serviceads', currAdId)
+            await updateDoc(adRef, fieldData);
             console.log('updated servicead');
             alert(t("adupdatesuccess"))
             navigate("/");
         }
-        catch(x){
+        catch(x) {
             alert(x);
         }
     };
@@ -88,8 +107,8 @@ function Adedit() {
         const storageRef = ref(storage, `files/${file.name}`);
          uploadBytes(storageRef, file).then((snapshot) => {
             getDownloadURL(snapshot.ref).then((downloadURL) => {
-                setBanner(downloadURL);
-                console.log(banner);
+                updateFieldData('banner', downloadURL);
+                console.log(fieldData.banner);
                 //saveurl(downloadURL);
             });
         });
@@ -103,7 +122,7 @@ function Adedit() {
                 <Col>
                     <Form.Group className="mb-3" controlId="formBasicTitle">
                         <Form.Label>{t('title')}</Form.Label>
-                        <Form.Control type="text" placeholder="title" defaultValue={state.ad.title} onChange={(e) => setTitle(e.target.value)}/>
+                        <Form.Control type="text" placeholder="Title" defaultValue={fieldData.title} onChange={(e) => updateFieldData('title', e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group controlId="formImg" className="mb-3">
@@ -113,41 +132,48 @@ function Adedit() {
 
                     <Form.Group className="mb-3" controlId="formBasicDescription">
                         <Form.Label>{t('description')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={state.ad.description} onChange={(e) => setDescription(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={fieldData.description} onChange={(e) => updateFieldData('description', e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicExperience">
                         <Form.Label>{t('experience')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={state.ad.experience} onChange={(e) => setExperience(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={fieldData.experience} onChange={(e) => updateFieldData('experience', e.target.value)}/>
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group className="mb-3" controlId="formBasicSkills">
                         <Form.Label>{t('skills')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={state.ad.skills} onChange={(e) => setSkills(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={fieldData.skills} onChange={(e) => updateFieldData('skills', e.target.value)}/>
                     </Form.Group>
 
-                    <select className="my-3 form-select w-50" defaultValue={state.ad.location} onChange={(e) =>setLocation(e.target.value)}>
-                    {
-                        geoMaster.map((x)=><option value={x.location_name}>{t(x.location_name)}</option>)
-                    }
-                    </select>
+                    <Form.Group className="mb-3" controlId="formBasicLocation">
+                        <Form.Label>{t('location')}</Form.Label>
+                        <select className="my-3 form-select w-50" defaultValue={fieldData.location} onChange={(e) =>updateFieldData('location', e.target.value)}>
+                        {
+                            geoMaster.map((x)=><option value={x.location_name}>{t(x.location_name)}</option>)
+                        }
+                        </select>
+                    </Form.Group>
 
-                    <select className="my-3 form-select w-50" defaultValue={state.ad.language} onChange={(e) =>setLanguage(e.target.value)}>
-                    {
-                        LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
-                    }
-                    </select>
+                    <Form.Group className="mb-3" controlId="formBasicLanguage">
+                        <Form.Label>{t('language')}</Form.Label>
+                        <select className="my-3 form-select w-50" defaultValue={fieldData.language} onChange={(e) =>updateFieldData('language', e.target.value)}>
+                        {
+                            LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
+                        }
+                        </select>
+                    </Form.Group>
 
-                    <select className="my-3 form-select w-50" defaultValue={state.ad.category} onChange={(e) =>setCategory(e.target.value)}>
-                    {
-                        catMaster.map((x)=><option value={x.category_name}>{t(x.category_name)}</option>)
-                    }
-                    </select>
-
+                    <Form.Group className="mb-3" controlId="formBasicCategory">
+                        <Form.Label>{t('category')}</Form.Label>
+                        <select className="my-3 form-select w-50" defaultValue={fieldData.category} onChange={(e) =>updateFieldData('category', e.target.value)}>
+                        {
+                            catMaster.map((x)=><option value={x.category_name}>{t(x.category_name)}</option>)
+                        }
+                        </select>
+                    </Form.Group>
                     <div className='text-center'>
                         <Button variant="primary" className="w-50 m-auto" onClick={createServiceAd}>{t('updatead')}</Button>
-                        
                     </div>
                 </Col>
             </Row>
