@@ -112,9 +112,9 @@ function Sellers() {
                     <Row xs={1} md={2} lg={4} className="g-4">               
                     {
                     info.map((data, idx) => (
-                        <Card className="highlight me-3" role="button" key={idx} style={{ width: '15rem' }} onClick={() => navigate(`/Adview/${data.posted_date}`)}>
+                        <Card className="highlight zoomtext me-3" role="button" key={idx} style={{ width: '15rem' }} onClick={() => navigate(`/Adview/${data.posted_date}`)}>
                             <Card.Img variant="top" src={data.banner_url} />
-                            <Card.Body className="zoomtext">
+                            <Card.Body>
                                 <Card.Title>{data.title}</Card.Title>
                                 <Card.Text>
                                 {[...Array(5)].map((x, i)=>{

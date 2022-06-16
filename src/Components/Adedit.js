@@ -10,12 +10,11 @@ import { Container,  Col, Row, Button, Form, Dropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import { LANGUAGE_MASTER } from "../constants";
-import { useLocaleState } from "react-admin";
-
 
 function Adedit() {
     const { adid } = useParams();
-    const location = useLocation();
+    const { state } = useLocation();
+
     const [title, setTitle] = useState('');
     const [banner, setBanner] = useState('');
     const [description, setDescription] = useState('');
@@ -34,7 +33,6 @@ function Adedit() {
     const navigate = useNavigate();
 
     //console.log(adid);
-    console.log(location.state.ad)
 
     const getFilterMasterData = (colle, name_field) => (
         getDocs(query(collection(db, colle),))
@@ -42,14 +40,14 @@ function Adedit() {
     );
 
     useEffect(() => {
-        setTitle(location.state.ad.title)
-        setBanner(location.state.ad.banner_url)
-        setDescription(location.state.ad.description)
-        setExperience(location.state.ad.experience)
-        setSkills(location.state.ad.skills)
-        setLocation(location.state.ad.location)
-        setLanguage(location.state.ad.language)
-        setCategory(location.state.ad.category)
+        setTitle(state.ad.title)
+        setBanner(state.ad.banner_url)
+        setDescription(state.ad.description)
+        setExperience(state.ad.experience)
+        setSkills(state.ad.skills)
+        setLocation(state.ad.location)
+        setLanguage(state.ad.language)
+        setCategory(state.ad.category)
 
         if (loading) return;
         if (!user) return navigate("/Login");
@@ -58,20 +56,19 @@ function Adedit() {
             .catch(err => console.error(err));
         getFilterMasterData("locations", "location_name")
             .then(locat => setGeoMaster(locat))
-    }, [user, loading, location.ad]);
+    }, [user, loading, state]);
 
     //add to firestore
     const createServiceAd = async () => {
         try{
-            const fireid = location.state.ad.id;
+            const fireid = state.ad.id;
             const adRef = doc(db, 'serviceads',fireid )
             await updateDoc(adRef, {
                 title:title, 
                 banner_url: banner, 
                 description: description, 
                 experience: experience, 
-                skills: skills, 
-                location: location, 
+                skills: skills,
                 language: language, 
                 category: category,
                 location: ad_location
@@ -106,7 +103,7 @@ function Adedit() {
                 <Col>
                     <Form.Group className="mb-3" controlId="formBasicTitle">
                         <Form.Label>{t('title')}</Form.Label>
-                        <Form.Control type="text" placeholder="title" defaultValue={location.state.ad.title} onChange={(e) => setTitle(e.target.value)}/>
+                        <Form.Control type="text" placeholder="title" defaultValue={state.ad.title} onChange={(e) => setTitle(e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group controlId="formImg" className="mb-3">
@@ -116,33 +113,33 @@ function Adedit() {
 
                     <Form.Group className="mb-3" controlId="formBasicDescription">
                         <Form.Label>{t('description')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={location.state.ad.description} onChange={(e) => setDescription(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={state.ad.description} onChange={(e) => setDescription(e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicExperience">
                         <Form.Label>{t('experience')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={location.state.ad.experience} onChange={(e) => setExperience(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={state.ad.experience} onChange={(e) => setExperience(e.target.value)}/>
                     </Form.Group>
                 </Col>
                 <Col>
                     <Form.Group className="mb-3" controlId="formBasicSkills">
                         <Form.Label>{t('skills')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={location.state.ad.skills} onChange={(e) => setSkills(e.target.value)}/>
+                        <Form.Control as="textarea" rows={3} defaultValue={state.ad.skills} onChange={(e) => setSkills(e.target.value)}/>
                     </Form.Group>
 
-                    <select className="my-3 form-select w-50" defaultValue={location.state.ad.location} onChange={(e) =>setLocation(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={state.ad.location} onChange={(e) =>setLocation(e.target.value)}>
                     {
                         geoMaster.map((x)=><option value={x.location_name}>{t(x.location_name)}</option>)
                     }
                     </select>
 
-                    <select className="my-3 form-select w-50" defaultValue={location.state.ad.language} onChange={(e) =>setLanguage(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={state.ad.language} onChange={(e) =>setLanguage(e.target.value)}>
                     {
                         LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
                     }
                     </select>
 
-                    <select className="my-3 form-select w-50" defaultValue={location.state.ad.category} onChange={(e) =>setCategory(e.target.value)}>
+                    <select className="my-3 form-select w-50" defaultValue={state.ad.category} onChange={(e) =>setCategory(e.target.value)}>
                     {
                         catMaster.map((x)=><option value={x.category_name}>{t(x.category_name)}</option>)
                     }
