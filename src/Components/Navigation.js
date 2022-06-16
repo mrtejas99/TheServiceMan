@@ -47,11 +47,11 @@ function Navigation() {
 						<DarkToggle />
 					</Nav.Item>
 					<Nav.Item className="d-flex align-items-center ml-3">
-						<Form.Control as="select" id="lang-translate" className="w-100" defaultValue={localStorage.getItem("i18nextLng")} onChange={(e) =>handleTranslate(e.target.value)}>
-							{
-								LANGUAGE_MASTER.map(lang => <option value={lang.code}>{lang.language_name}</option>)
-							}
-						</Form.Control>
+						<Form.Select className="w-100" defaultValue={localStorage.getItem("i18nextLng")} onChange={(e) =>handleTranslate(e.target.value)}>
+						{
+							LANGUAGE_MASTER.map(lang => <option value={lang.code}>{lang.language_name}</option>)
+						}
+						</Form.Select>
 					</Nav.Item>
 					<Nav.Item className="ml-3 d-flex align-items-center">
 						<NotificationBell />

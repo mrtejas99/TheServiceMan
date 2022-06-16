@@ -102,27 +102,35 @@ function Adcreate() {
                         <Form.Control as="textarea" rows={3} defaultValue={skills} onChange={(e) => setSkills(e.target.value)}/>
                     </Form.Group>
 
-                    <select className="my-3 form-select w-50"  onChange={(e) =>setLocation(JSON.parse(e.target.value))}>
-                    {
-                        geoMaster.map((x)=><option value={JSON.stringify(x)} >{t(x.location_name)}</option>)
-                    }
-                    </select>
+                    <Form.Group className="mb-3" controlId="formBasicLocation">
+                        <Form.Label>{t('location')}</Form.Label>
+                        <Form.Select className="my-3 w-50"  onChange={(e) =>setLocation(JSON.parse(e.target.value))}>
+                        {
+                            geoMaster.map((x)=><option value={JSON.stringify(x)} >{t(x.location_name)}</option>)
+                        }
+                        </Form.Select>
+                    </Form.Group>
 
-                    <select className="my-3 form-select w-50" defaultValue={language} onChange={(e) =>setLanguage(e.target.value)}> 
-                    {
-                        LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
-                    }
-                    </select>
-
-                    <select className="my-3 form-select w-50" defaultValue={category} onChange={(e) =>setCategory(e.target.value)}>
-                    {   //to prevent showing first option as blank 
-                        catMaster.map((x)=> x.category_name && <option value={x.category_name}>{t(x.category_name)}</option>)
-                    }
-                    </select>
+                    <Form.Group className="mb-3" controlId="formBasicLanguage">
+                        <Form.Label>{t('language')}</Form.Label>
+                        <Form.Select className="my-3 w-50" defaultValue={language} onChange={(e) =>setLanguage(e.target.value)}> 
+                        {
+                            LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
+                        }
+                        </Form.Select>
+                    </Form.Group>
+                    
+                    <Form.Group className="mb-3" controlId="formBasicCategory">
+                        <Form.Label>{t('category')}</Form.Label>
+                        <Form.Select className="my-3 w-50" defaultValue={category} onChange={(e) =>setCategory(e.target.value)}>
+                        {   //to prevent showing first option as blank 
+                            catMaster.map((x)=> x.category_name && <option value={x.category_name}>{t(x.category_name)}</option>)
+                        }
+                        </Form.Select>
+                    </Form.Group>
 
                     <div className='text-center'>
                         <Button variant="primary" className="w-50 m-auto" onClick={createServiceAd}>{t('createad')}</Button>
-                        
                     </div>
                 </Col>
             </Row>

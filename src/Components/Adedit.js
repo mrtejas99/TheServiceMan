@@ -148,29 +148,29 @@ function Adedit() {
 
                     <Form.Group className="mb-3" controlId="formBasicLocation">
                         <Form.Label>{t('location')}</Form.Label>
-                        <select className="my-3 form-select w-50" defaultValue={fieldData.location} onChange={(e) =>updateFieldData('location', e.target.value)}>
+                        <Form.Select className="my-3 w-50" defaultValue={fieldData.location} onChange={(e) => updateFieldData('location', e.target.value)}>
                         {
                             geoMaster.map((x)=><option value={x.location_name}>{t(x.location_name)}</option>)
                         }
-                        </select>
+                        </Form.Select>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicLanguage">
                         <Form.Label>{t('language')}</Form.Label>
-                        <select className="my-3 form-select w-50" defaultValue={fieldData.language} onChange={(e) =>updateFieldData('language', e.target.value)}>
+                        <Form.Select className="my-3 w-50" defaultValue={fieldData.language} onChange={(e) =>updateFieldData('language', e.target.value)}>
                         {
                             LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
                         }
-                        </select>
+                        </Form.Select>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicCategory">
                         <Form.Label>{t('category')}</Form.Label>
-                        <select className="my-3 form-select w-50" defaultValue={fieldData.category} onChange={(e) =>updateFieldData('category', e.target.value)}>
+                        <Form.Select className="my-3 w-50" defaultValue={fieldData.category} onChange={(e) =>updateFieldData('category', e.target.value)}>
                         {
                             catMaster.map((x)=><option value={x.category_name}>{t(x.category_name)}</option>)
                         }
-                        </select>
+                        </Form.Select>
                     </Form.Group>
                     <div className='text-center'>
                         <Button variant="primary" className="w-50 m-auto" onClick={createServiceAd}>{t('updatead')}</Button>
