@@ -32,6 +32,7 @@ function SearchAdsBar() {
                     pathname: '/',
                     search: `?${createSearchParams({"q": item.category_name})}`
                 })}
+                onClear={() => navigate('/')}
                 placeholder={t("search")}
                 fuseOptions={{ keys: ["category_name"] }}
                 resultStringKeyName="category_name"
