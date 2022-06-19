@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams, createSearchParams } from "react-router-dom";
 
 // Import Firestore database
 import { db } from "../firebase";
@@ -326,7 +326,7 @@ function Home() {
             <span>
             <b className='me-3'>{t('popularsearches')}</b>{' '}
             {
-                popular.map((c) => <a href="#" className="mx-1">{c[0]}</a>)
+                popular.map((c) => <a href={`/?${createSearchParams({"q": c[0]})}`} className="mx-1">{c[0]}</a>)
             }
             </span>
 
