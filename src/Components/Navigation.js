@@ -37,23 +37,22 @@ function Navigation() {
 			<Container fluid>
 			<Navbar.Brand href="/">{t('theserviceman')}</Navbar.Brand>
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
-			<Navbar.Collapse id="responsive-navbar-nav">
-				<Nav className="w-75 me-auto">
+			<Navbar.Collapse>
+				<Nav className="w-100 mx-auto me-auto d-flex align-items-center">
 					<SearchAdsBar />
 				</Nav>
-
-				<Nav className='mx-3'>
-					<Nav.Item className="d-flex align-items-center">
+				<Nav className="w-100 mx-3 me-auto mt-3 mt-sm-0 d-flex align-items-center justify-content-sm-end flex-row">
+					<Nav.Item className="ml-3">
 						<DarkToggle />
 					</Nav.Item>
-					<Nav.Item className="d-flex align-items-center ml-3">
-						<Form.Select className="w-100" defaultValue={localStorage.getItem("i18nextLng")} onChange={(e) =>handleTranslate(e.target.value)}>
+					<Nav.Item className="ml-3">
+						<Form.Select defaultValue={localStorage.getItem("i18nextLng")} onChange={(e) =>handleTranslate(e.target.value)}>
 						{
 							LANGUAGE_MASTER.map(lang => <option value={lang.code}>{lang.language_name}</option>)
 						}
 						</Form.Select>
 					</Nav.Item>
-					<Nav.Item className="ml-3 d-flex align-items-center">
+					<Nav.Item className="ml-3">
 						<NotificationBell />
 					</Nav.Item>
 					<LogInOutButton />

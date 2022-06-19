@@ -24,7 +24,7 @@ function SearchAdsBar() {
     }, []);
 
     return (
-        <div className="me-2 w-100">
+        <div className="w-100">
             <ReactSearchAutocomplete
                 items={searchOptions}
                 inputSearchString={search_query}
