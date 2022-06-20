@@ -41,7 +41,7 @@ function Navigation() {
 				<Nav className="w-100 mx-auto me-auto d-flex align-items-center">
 					<SearchAdsBar />
 				</Nav>
-				<Nav className="w-100 mx-3 me-auto mt-3 mt-sm-0 d-flex align-items-center justify-content-sm-end flex-row">
+				<Nav className="w-100 mx-auto me-auto mt-3 mt-sm-0 d-flex align-items-center justify-content-sm-end flex-row">
 					<Nav.Item className="ml-3">
 						<DarkToggle />
 					</Nav.Item>
