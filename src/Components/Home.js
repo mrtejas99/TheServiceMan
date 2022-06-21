@@ -332,28 +332,36 @@ function Home() {
 
             <Row className='py-5'>
                 <Col sm={2} >
-                    <h5>{t('filter')}</h5>
-
-					<a href="#" onClick={()=>setGeoFilterIsActive(!geoFilterStatus.active)} className={geoStatusToStyle()}>{isGeoFilterOperational() ? <RiCheckboxCircleLine /> : <RiMapPin2Line />}&nbsp;{t('usecurrentlocation')}{(geoFilterStatus.active && !geoFilterStatus.acquired) ? "..." : ""}</a>
-
-                    <div className='my-3 mx-3'>
-                        <h6>{t('category')}</h6>
-                        <FilterGroup filterData={catMaster} onFilterSelect={setFilterCriteriaCategory} currentSelectedFilter={filterCriteriaCategory} filterDisplayField="category_name" />
-                    </div>
-                    <div className='my-3 mx-3'>
-                        <h6>{t('location')}</h6>
-                        <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} filterDisplayField="location_name" />
-                    </div>
-                    {
-                    (!geoFilterStatus.active) && (<div className='my-3 mx-3'>
-                        <h6>{t('rating')}</h6>
-                        <FilterGroup filterData={ratingMaster} onFilterSelect={setFilterCriteriaStar} currentSelectedFilter={filterCriteriaStar} filterDisplayField="rating_name" filterByProp="value" addTextSuffix translatePrefix />
-                    </div>)
-                    }
-                    <div className='my-3 mx-3'>
-                        <h6>{t('language')}</h6>
-                        <FilterGroup filterData={langMaster} onFilterSelect={setFilterCriteriaLang} currentSelectedFilter={filterCriteriaLang} filterDisplayField="language_name" filterByProp="value" />
-                    </div>
+                    <Row sm={3} lg={1} md={1} xs={2} className="overflow-x">
+                        <Col>
+                        <h5>{t('filter')}</h5>
+                        <a href="#" onClick={()=>setGeoFilterIsActive(!geoFilterStatus.active)} className={geoStatusToStyle()}>{isGeoFilterOperational() ? <RiCheckboxCircleLine /> : <RiMapPin2Line />}&nbsp;{t('usecurrentlocation')}{(geoFilterStatus.active && !geoFilterStatus.acquired) ? "..." : ""}</a>
+                        <div className='my-3 mx-3'>
+                            <h6>{t('category')}</h6>
+                            <FilterGroup filterData={catMaster} onFilterSelect={setFilterCriteriaCategory} currentSelectedFilter={filterCriteriaCategory} filterDisplayField="category_name" />
+                        </div>
+                        </Col>
+                        <Col>
+                        <div className='my-3 mx-3'>
+                            <h6>{t('location')}</h6>
+                            <FilterGroup filterData={geoMaster} onFilterSelect={setFilterCriteriaGeo} currentSelectedFilter={filterCriteriaGeo} filterDisplayField="location_name" />
+                        </div>
+                        </Col>
+                        <Col>
+                        {
+                        (!geoFilterStatus.active) && (<div className='my-3 mx-3'>
+                            <h6>{t('rating')}</h6>
+                            <FilterGroup filterData={ratingMaster} onFilterSelect={setFilterCriteriaStar} currentSelectedFilter={filterCriteriaStar} filterDisplayField="rating_name" filterByProp="value" addTextSuffix translatePrefix />
+                        </div>)
+                        }
+                        </Col>
+                        <Col>
+                        <div className='my-3 mx-3'>
+                            <h6>{t('language')}</h6>
+                            <FilterGroup filterData={langMaster} onFilterSelect={setFilterCriteriaLang} currentSelectedFilter={filterCriteriaLang} filterDisplayField="language_name" filterByProp="value" />
+                        </div>
+                        </Col>
+                    </Row>
                 </Col>
 
                 <Col className="mx-3">

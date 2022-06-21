@@ -81,3 +81,6 @@
 .friend {
 	background: gray;
 }
+.navbar-nav .dropdown-menu{
+	position: absolute !important;
+}
