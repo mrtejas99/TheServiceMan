@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 function LoggedOut() {
     const {t} = useTranslation("common");
     return(
-        <Nav.Link className='ml-3 mr-3' href='/login' >{t('login')}</Nav.Link>
+        <Nav.Link className='ml-3' href='/login' >{t('login')}</Nav.Link>
     );
 }
 
