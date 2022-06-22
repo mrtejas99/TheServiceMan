@@ -52,7 +52,7 @@ function BoostrapTheme(props) {
 }
 
 BoostrapTheme.defaultProps = {
-	bootswatchCDN: 'https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/',
+	bootswatchCDN: '/themes/bootswatch/',
 	lightModeTheme: BootswatchTheme.DEFAULT
 };
 
