@@ -6,6 +6,7 @@ import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
+    confirmPasswordReset,
     signOut,
 } from "firebase/auth";
 
@@ -92,15 +93,13 @@ const registerWithEmailAndPassword = async (fname, lname, email, password) => {
     }
 };
 
-const sendPasswordReset = async (email) => {
-    try {
-        await sendPasswordResetEmail(auth, email);
-        alert("Password reset link sent!");
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    }
-};
+const sendPasswordReset = email => (
+    sendPasswordResetEmail(auth, email)
+);
+
+const verifyPasswordReset = (code, newpass) => (
+    confirmPasswordReset(auth, code, newpass)
+);
 
 const logout = () => signOut(auth);
 
@@ -151,6 +150,7 @@ export {
     logInWithEmailAndPassword,
     registerWithEmailAndPassword,
     sendPasswordReset,
+    verifyPasswordReset,
     logout,
     saveAdData,
 };
