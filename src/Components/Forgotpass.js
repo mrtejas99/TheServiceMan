@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Spinner } from "react-bootstrap";
+import { Form, Button, Spinner, Col } from "react-bootstrap";
 //translate
 import { useTranslation } from "react-i18next";
 
@@ -72,7 +72,7 @@ function Forgotpass(){
                 return (
                 <Form className="mx-auto my-3" onSubmit={performReset}>
                     <Form.Text className="mb-3">{t('Enter the Email address used for your account to send a verification code.')}</Form.Text>
-                    <Form.Group as={Form.Floating} className='mb-3'>
+                    <Form.Group as={Form.Floating} className='mb-2 mb-sm-3'>
                         <Form.Control required disabled={formIsDisabled} type="email" name="verifyUserEmail" placeholder="username@example.com" />
                         <Form.Label className="text-secondary">{t('email')}</Form.Label>
                     </Form.Group>
@@ -82,7 +82,7 @@ function Forgotpass(){
                             <Form.Text className="text-danger">{t('Please try again after some time.')}</Form.Text>
                         </>
                     )}
-                    <div className='text-center'>
+                    <div className='text-start text-sm-center'>
                         <Button disabled={formIsDisabled} type="submit" variant="primary">
                             {t('Send verification code')}
                             {isWaitingForEmail && (
@@ -102,15 +102,15 @@ function Forgotpass(){
                 return (
                     <Form className="mx-auto my-3" onSubmit={performVerify}>
                         <Form.Text className="mb-3 text-info">{t('Enter the verification code sent to your Email address.')}</Form.Text>
-                        <Form.Group as={Form.Floating} className='mb-3'>
+                        <Form.Group as={Form.Floating} className='mb-2 mb-sm-3'>
                             <Form.Control required disabled={formIsDisabled} type="password" name="verifyCode" placeholder="1234" />
                             <Form.Label className="text-secondary">{t('Verification Code')}</Form.Label>
                         </Form.Group>
-                        <Form.Group as={Form.Floating} className='mb-3'>
+                        <Form.Group as={Form.Floating} className='mb-2 mb-sm-3'>
                             <Form.Control required disabled={formIsDisabled} type="password" name="newUserPass" placeholder="password" />
                             <Form.Label className="text-secondary">{t('New password')}</Form.Label>
                         </Form.Group>
-                        <Form.Group as={Form.Floating} className='mb-3'>
+                        <Form.Group as={Form.Floating} className='mb-2 mb-sm-3'>
                             <Form.Control required disabled={formIsDisabled} type="password" name="newUserPassValidate" placeholder="password" />
                             <Form.Label className="text-secondary">{t('Re-enter password')}</Form.Label>
                         </Form.Group>
@@ -120,7 +120,7 @@ function Forgotpass(){
                                 <Form.Text className="text-danger">{t('Please make sure the code you entered is correct, and you have an active Internet connection.')}</Form.Text>
                             </>
                         )}
-                        <div className='text-center'>
+                        <div className='text-start text-sm-center'>
                             <Button disabled={formIsDisabled} type="submit" variant="primary">
                                 {t('reset')}
                                 {isWaitingForCode && (
@@ -134,7 +134,7 @@ function Forgotpass(){
                 );
             case FORM_STATES.changeDone:
                 return (
-                    <div className="text-center">
+                    <div className="text-start text-sm-center">
                         <div>
                             <span className="text-success">{t('Your password has been reset successfully!')}</span>
                         </div>
@@ -149,10 +149,10 @@ function Forgotpass(){
     }
 
     return (
-        <div className="w-50 mx-auto my-5">
-            <h2 className="text-center">{t('forgotpass')}</h2>
+        <Col className="col-sm-6 mx-sm-auto mx-1 my-5">
+            <h2 className="text-start text-sm-center fs-1 fs-sm-3">{t('forgotpass')}</h2>
             <PasswordResetForm />
-        </div>
+        </Col>
     );
 }
 export { Forgotpass };
