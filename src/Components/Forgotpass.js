@@ -12,7 +12,8 @@ function Forgotpass(){
         enterEmail: 0,
         waitEmailSend: 0.5,
         verifyCode: 1,
-        waitVerifyCode: 1.5
+        waitVerifyCode: 1.5,
+        changeDone: 2
     };
     const [formState, setFormState] = useState(FORM_STATES.enterEmail);
     const [verifyErrorMessage, setVerifyErrorMessage] = useState('');
@@ -25,7 +26,10 @@ function Forgotpass(){
         setVerifyErrorMessage('');
 
         sendPasswordReset(form.verifyUserEmail.value)
-        .then(() => setFormState(FORM_STATES.verifyCode))
+        .then(() => {
+            setVerifyErrorMessage('');
+            setFormState(FORM_STATES.verifyCode);
+        })
         .catch(err => {
             console.error(err);
             setVerifyErrorMessage(err.code);
@@ -45,9 +49,13 @@ function Forgotpass(){
         .then((data) => {
             console.log("Done");
             console.log(data);
+            setVerifyErrorMessage('');
+            setFormState(FORM_STATES.changeDone);
         })
         .catch(err => {
             console.error(err);
+            setVerifyErrorMessage(err.code);
+            setFormState(FORM_STATES.verifyCode);
         });
     };
 
@@ -86,7 +94,11 @@ function Forgotpass(){
                     </div>
                 </Form>
             );
+
+            //Email verification code
             case FORM_STATES.verifyCode:
+            // eslint-disable-next-line no-fallthrough
+            case FORM_STATES.waitVerifyCode:
                 return (
                     <Form className="mx-auto my-3" onSubmit={performVerify}>
                         <Form.Text className="mb-3 text-info">{t('Enter the verification code sent to your Email address.')}</Form.Text>
@@ -105,7 +117,7 @@ function Forgotpass(){
                         { (verifyErrorMessage.length > 0) && (
                             <>
                                 <Form.Text className="text-danger">{t('Failed to verify the code: ')}{verifyErrorMessage}</Form.Text>
-                                <Form.Text className="text-danger">{t('Please make sure the code you entered is correct.')}</Form.Text>
+                                <Form.Text className="text-danger">{t('Please make sure the code you entered is correct, and you have an active Internet connection.')}</Form.Text>
                             </>
                         )}
                         <div className='text-center'>
@@ -119,6 +131,18 @@ function Forgotpass(){
                             </Button>
                         </div>
                     </Form>
+                );
+            case FORM_STATES.changeDone:
+                return (
+                    <div className="text-center">
+                        <div>
+                            <span className="text-success">{t('Your password has been reset successfully!')}</span>
+                        </div>
+                        <div>
+                            <a href="/login">Click here</a>
+                            <span>{t(' to login again.')}</span>
+                        </div>
+                    </div>
                 );
             default: break;
         }
