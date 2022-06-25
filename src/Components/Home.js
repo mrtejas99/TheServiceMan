@@ -332,11 +332,13 @@ function Home() {
 
             <Row className='py-5'>
                 <Col md={2} size={12}>
-                    <Row className="d-flex flex-column flex-sm-row flex-md-column">
-                        <Col className="my-md-2">
+                    <Row className="mb-3">
+                        <Col>
                             <h4>{t('filter')}</h4>
                             <a href="#" onClick={() => setGeoFilterIsActive(!geoFilterStatus.active)} className={geoStatusToStyle()}>{isGeoFilterOperational() ? <RiCheckboxCircleLine /> : <RiMapPin2Line />}&nbsp;{t('usecurrentlocation')}{(geoFilterStatus.active && !geoFilterStatus.acquired) ? "..." : ""}</a>
                         </Col>
+                    </Row>
+                    <Row className="d-flex flex-row flex-md-column">
                         <Col className="my-md-2">
                             <h6>{t('category')}</h6>
                             <FilterGroup filterData={catMaster} onFilterSelect={setFilterCriteriaCategory} currentSelectedFilter={filterCriteriaCategory} filterDisplayField="category_name" />
