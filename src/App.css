@@ -1,6 +1,14 @@
-.zoomtext:hover>.card-body {
+.zoomtext > .card-body {
 	transition: transform 0.2s ease-in;
-	transform: scale(1.2) !important;
+	transform-origin: 10% 50%;
+}
+
+.zoomtext:hover>.card-body {
+	transform: scale(1.15) !important;
+}
+
+.zoomtext>.card-body {
+	pointer-events: none;
 }
 
 .highlight {

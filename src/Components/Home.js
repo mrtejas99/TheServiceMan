@@ -365,6 +365,7 @@ function Home() {
                 <Col md={10} size={12}>
                     {isGeoFilterOperational() && <span className="text-warning">{t('Note: Viewing nearby results only')}</span>}
                     {search_query !== '' && <h4>{t('Search Results for')} &quot;{search_query}&quot;</h4>}
+                    
                     <Dropdown className="my-3" onSelect={(e) => setSortCriteria(e)} value={sortCriteria}>
                         <Dropdown.Toggle variant="secondary" id="dropdown-basic" >{t('sort')}
                         </Dropdown.Toggle>
@@ -375,10 +376,12 @@ function Home() {
                             <Dropdown.Item eventKey='title'>{t('title')}</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Row xs={2} sm={3} md={4} lg={6} className="g-4">
+                    <Container>
+                        <Row xs={1} sm={2} md={2} lg={3} xl={4}>
                         {
                             info.map((data, idx) => (
-                                <Card className="highlight zoomtext me-3" role="button" key={idx} style={{ width: '15rem' }} onClick={() => {incrementPopularity(data.category); navigate(`/Adview/${data.posted_date}`)}}>
+                                <Col className="px-0 p-sm-2 my-2">
+                                <Card className="highlight zoomtext" role="button" key={idx} style={{ minWidth: '15rem' }} onClick={() => {incrementPopularity(data.category); navigate(`/Adview/${data.posted_date}`)}}>
                                     <Card.Img variant="top" src={data.banner_url} />
                                     <Card.Body>
                                         <Card.Title>{data.title}</Card.Title>
@@ -399,15 +402,16 @@ function Home() {
                                         <Card.Text>{t(data.location)}</Card.Text>
                                     </Card.Body>
                                 </Card>
+                                </Col>
                             ))
                         }
-                    </Row>
+                        </Row>
+                    </Container>
                     <div className="text-center">
                         {loading && <h1>⌛</h1>}
                         {!loading && !isEmpty && <Button className="my-3 w-50" onClick={fetchMore} variant="warning">{t("viewmore")}</Button>}
                         {!loading && (info.length === 0) && <span>{t("No results found")}</span>}
                     </div>
-
                 </Col>
             </Row>
 
