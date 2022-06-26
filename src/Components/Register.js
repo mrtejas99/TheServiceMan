@@ -7,7 +7,7 @@ import {
   signInWithGoogle,
 } from "../firebase";
 
-import { Form, Button } from "react-bootstrap";
+import { Col, Form, Button } from "react-bootstrap";
 //translate
 import { useTranslation } from "react-i18next";
 
@@ -34,34 +34,35 @@ function Register() {
     }, [user, loading]);
 
     return(
-        <Form className='w-50 mx-auto my-5 px-3'>
-            <h2 className="text-center">{t('register')} </h2>
-            <Form.Group className="mb-3" controlId="formBasicfname">
-                <Form.Label>{t('fname')}</Form.Label>
+        <Col className="col-sm-6 text-start text-sm-center mx-sm-auto mx-1 my-5">
+        <Form className='mx-auto my-3'>
+            <h2 className="text-start text-sm-center fs-1 fs-sm-3">{t('register')} </h2>
+            <Form.Group as={Form.Floating} className='mb-2 mb-sm-3' controlId="formBasicfname">
                 <Form.Control type="text" placeholder={t('fname')} onChange={(e)=>setFname(e.target.value)}  value={fname}/>
+                <Form.Label className="text-secondary">{t('fname')}</Form.Label>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasiclname">
-                <Form.Label>{t('lname')}</Form.Label>
+            <Form.Group as={Form.Floating} className='mb-2 mb-sm-3' controlId="formBasiclname">
                 <Form.Control type="text" placeholder={t('lname')} onChange={(e)=>setLname(e.target.value)}  value={lname}/>
+                <Form.Label className="text-secondary">{t('lname')}</Form.Label>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>{t('email')}</Form.Label>
+            <Form.Group as={Form.Floating} className='mb-2 mb-sm-3' controlId="formBasicEmail">
                 <Form.Control type="email" placeholder={t('email')} onChange={(e)=>setEmail(e.target.value)} autoComplete="username" value={email}/>
+                <Form.Label className="text-secondary">{t('email')}</Form.Label>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>{t('password')}</Form.Label>
+            <Form.Group as={Form.Floating} className='mb-2 mb-sm-3' controlId="formBasicPassword">
                 <Form.Control type="password" placeholder={t('password')} onChange={(e)=>setPassword(e.target.value)} autoComplete="current-password" value={password}/>
+                <Form.Label className="text-secondary">{t('password')}</Form.Label>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicConfirm">
-                <Form.Label>{t('confirmpass')}</Form.Label>
+            <Form.Group as={Form.Floating} className='mb-2 mb-sm-3' controlId="formBasicConfirm">
                 <Form.Control type="password" placeholder={t('confirmpass')} onChange={(e)=>setConfPassword(e.target.value)} autoComplete="new-password" value={confirmpassword}/>
+                <Form.Label className="text-secondary">{t('confirmpass')}</Form.Label>
             </Form.Group>
 
-            <div className='text-center'>
+            <div className='text-start text-sm-center'>
                 <Button variant="primary" onClick={register}>
                     {t('register')}
                 </Button>
@@ -72,6 +73,7 @@ function Register() {
                 </Button>
             </div>
         </Form>
+        </Col>
     );
 }
 

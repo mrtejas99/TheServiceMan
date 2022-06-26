@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { Container, Col, Row, Button, Form } from "react-bootstrap";
+import { Container, Col, Row, Button, Form, Placeholder } from "react-bootstrap";
 
 import { db, storage } from "../firebase";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
@@ -18,6 +18,12 @@ function Adedit() {
     const { adid } = useParams();
     const { state } = useLocation();
 
+    const [loadedStates, setLoadedStates] = useState({});
+    const updateLoadedState = (field, value) => setLoadedStates(prev => ({
+        ...prev,
+        [field]: value
+    }));
+    
     const [fieldData, setFieldData] = useState({});     //Store pre-filled values
     const updateFieldData = (field, value) => setFieldData(prev => ({
         ...prev,
@@ -41,9 +47,11 @@ function Adedit() {
             
             getFilterMasterData("adcategories", "category_name")
                 .then(categories => setCatMaster(categories))
+                .then(() => updateLoadedState('catMaster', true))
                 .catch(err => console.error(err));
             getFilterMasterData("locations", "location_name")
-                .then(locat => setGeoMaster(locat));
+                .then(locat => setGeoMaster(locat))
+                .then(() => updateLoadedState('geoMaster', true));
         }
     }, [userData]);
 
@@ -64,6 +72,7 @@ function Adedit() {
                 'category': state.ad.category,
                 'location': state.ad.location
             });
+            updateLoadedState('fieldData', true);
         } else if (!fieldData.hasOwnProperty('title')) {
             //We don't have state data, so try to fetch from database
             getDoc(doc(db, 'serviceads', fetchAdId))
@@ -79,6 +88,7 @@ function Adedit() {
                     'category': data.category,
                     'location': data.location
                 });
+                updateLoadedState('fieldData', true);
             })
             .catch(() => {
                 alert(`The ad with id ${fetchAdId} doesn't exist`);
@@ -114,72 +124,91 @@ function Adedit() {
         });
     }
 
-    return(
+    const PlaceholderAnim = (props) =>
+        <>
+            {loadedStates[props.stateName] === true ? props.children : (
+                <Placeholder as="p" animation="glow">
+                    <Placeholder xs={props.size || 12} />
+                </Placeholder>
+            )}
+        </>;
+
+    return (
         <Container className="py-3"> 
             <Form className='my-5 px-3' >    
-            <Row className='py-5'>
-                <h2 className="text-center">{t('updatead')} </h2>  
-                <Col>
+            <Row>
+                <h2 className="text-start text-md-center">{t('updatead')} </h2>  
+                <Col className="col-12 col-md-6 mx-md-auto mx-1">
                     <Form.Group className="mb-3" controlId="formBasicTitle">
                         <Form.Label>{t('title')}</Form.Label>
-                        <Form.Control type="text" placeholder="Title" defaultValue={fieldData.title} onChange={(e) => updateFieldData('title', e.target.value)}/>
+                        <PlaceholderAnim stateName="fieldData">
+                            <Form.Control type="text" placeholder="Title" defaultValue={fieldData.title} onChange={(e) => updateFieldData('title', e.target.value)}/>
+                        </PlaceholderAnim>
                     </Form.Group>
 
                     <Form.Group controlId="formImg" className="mb-3">
                         <Form.Label>{t('banner')}</Form.Label>
-                        <Form.Control type="file" accept=".png, .jpg, .jpeg" onChange={handleImageAsFile}/>
+                        <PlaceholderAnim stateName="fieldData">
+                            <Form.Control type="file" accept=".png, .jpg, .jpeg" onChange={handleImageAsFile}/>
+                        </PlaceholderAnim>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicDescription">
                         <Form.Label>{t('description')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={fieldData.description} onChange={(e) => updateFieldData('description', e.target.value)}/>
+                        <PlaceholderAnim stateName="fieldData">
+                            <Form.Control as="textarea" rows={3} defaultValue={fieldData.description} onChange={(e) => updateFieldData('description', e.target.value)}/>
+                        </PlaceholderAnim>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicExperience">
                         <Form.Label>{t('experience')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={fieldData.experience} onChange={(e) => updateFieldData('experience', e.target.value)}/>
+                        <PlaceholderAnim stateName="fieldData">
+                            <Form.Control as="textarea" rows={3} defaultValue={fieldData.experience} onChange={(e) => updateFieldData('experience', e.target.value)}/>
+                        </PlaceholderAnim>
                     </Form.Group>
                 </Col>
-                <Col>
+
+                <Col className="col-12 col-md-6 mx-md-auto mx-1">
                     <Form.Group className="mb-3" controlId="formBasicSkills">
                         <Form.Label>{t('skills')}</Form.Label>
-                        <Form.Control as="textarea" rows={3} defaultValue={fieldData.skills} onChange={(e) => updateFieldData('skills', e.target.value)}/>
+                        <PlaceholderAnim stateName="fieldData">
+                            <Form.Control as="textarea" rows={3} defaultValue={fieldData.skills} onChange={(e) => updateFieldData('skills', e.target.value)}/>
+                        </PlaceholderAnim>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicLocation">
                         <Form.Label>{t('location')}</Form.Label>
-                        <Form.Select className="my-3 w-50" defaultValue={fieldData.location} onChange={(e) => updateFieldData('location', e.target.value)}>
-                        {
-                            geoMaster.map((x)=><option value={x.location_name}>{t(x.location_name)}</option>)
-                        }
-                        </Form.Select>
+                        <PlaceholderAnim stateName="geoMaster" size={6}>
+                            <Form.Select className="w-50" defaultValue={fieldData.location} onChange={(e) => updateFieldData('location', e.target.value)}>
+                            {geoMaster.map((x)=><option value={x.location_name}>{t(x.location_name)}</option>)}
+                            </Form.Select>
+                        </PlaceholderAnim>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicLanguage">
                         <Form.Label>{t('language')}</Form.Label>
-                        <Form.Select className="my-3 w-50" defaultValue={fieldData.language} onChange={(e) =>updateFieldData('language', e.target.value)}>
-                        {
-                            LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)
-                        }
+                        <Form.Select className="w-50" defaultValue={fieldData.language} onChange={(e) =>updateFieldData('language', e.target.value)}>
+                        {LANGUAGE_MASTER.map((x)=><option value={x.value}>{x.language_name}</option>)}
                         </Form.Select>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicCategory">
                         <Form.Label>{t('category')}</Form.Label>
-                        <Form.Select className="my-3 w-50" defaultValue={fieldData.category} onChange={(e) =>updateFieldData('category', e.target.value)}>
-                        {
-                            catMaster.map((x)=><option value={x.category_name}>{t(x.category_name)}</option>)
-                        }
-                        </Form.Select>
+                        <PlaceholderAnim stateName="catMaster" size={6}>
+                            <Form.Select className="w-50" defaultValue={fieldData.category} onChange={(e) =>updateFieldData('category', e.target.value)}>
+                            {catMaster.map((x)=><option value={x.category_name}>{t(x.category_name)}</option>)}
+                            </Form.Select>
+                        </PlaceholderAnim>
                     </Form.Group>
-                    <div className='text-center'>
-                        <Button variant="primary" className="w-50 m-auto" onClick={createServiceAd}>{t('updatead')}</Button>
-                    </div>
+                </Col>
+            </Row>
+            <Row>
+                <Col className='text-start text-md-center'>
+                    <Button variant="primary" onClick={createServiceAd}>{t('updatead')}</Button>
                 </Col>
             </Row>
             </Form>
         </Container>
-
     );
 }
 
