@@ -17,28 +17,30 @@ function Sellerfeedback({user11,user22}){
     const [user1, setUid1]=useState("");
     const [user2, setUid2]=useState("");
     const [AdId , setAdId]=useState("");
-        const [user, loading, error] = useAuthState(auth);
+    const [posterFname, setPosterFname] = useState('');
+    const [posterLname, setPosterLname] = useState('');
+    const [user, loading, error] = useAuthState(auth);
 
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
+    const handleClose = () => { 
+        navigate("/");setShow(false);
+        }
     const handleShow = () => setShow(true);
       const Fetchdata = async ()=>{
-         try {
-            if(user.uid==location.state.posted_by){
-            return navigate("/");
-             }
-            setUid2(user22);
-            setUid1(user.uid);
-            setAdId(location.state.posted_date);
-            
+         try{
+              const q = query(collection(db, "users"),where("uid", "==",user22));
+            const doc = await getDocs(q);
+            const data = doc.docs[0].data();
+            setPosterFname(data.fname);
+            setPosterLname(data.lname);
         }
-             catch (err) {
+         catch (err) {
             console.error(err);
         }
     }
     useEffect(() => {
     
-      // Fetchdata();
+      Fetchdata();
         if (loading) return;
        // if (!user) return navigate("/Login");
       }, [user, loading]);
@@ -66,13 +68,13 @@ function Sellerfeedback({user11,user22}){
         </Button>
         <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Seller feedback</Modal.Title>
+          <Modal.Title>feedback</Modal.Title>
         </Modal.Header>
         <Modal.Body>
         <Form className='w-50 mx-auto my-5 '>
             <h6>{user2}{user1}</h6>
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>How was your experience with the customer?</Form.Label>
+                <Form.Label>How was your experience with the {posterFname} {posterLname}?</Form.Label>
                 <div>
                 <span>Rating </span>
                 {[...Array(5)].map((star, i)=>{
@@ -105,7 +107,7 @@ function Sellerfeedback({user11,user22}){
          </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            SKIP&gt;&gt;
           </Button>
         </Modal.Footer>
       </Modal>

@@ -60,7 +60,7 @@ function TheServiceManApp() {
 					<Route path="/Customers" element={<Customers />} />
 					<Route path="/fetch" element={<Fetch />} />
 					<Route path="/Logout" element={<Logout />} />
-					<Route path="/chat/:id" element={<Chat />} />
+					<Route path="/chat/:id1" element={<Chat />} />
 					<Route path="/chathome" element={<ChatHome />} />
 					<Route path="*" element={<Error/>} />
 				</Routes>
