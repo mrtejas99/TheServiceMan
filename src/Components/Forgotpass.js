@@ -28,7 +28,7 @@ function Forgotpass(){
         sendPasswordReset(form.verifyUserEmail.value)
         .then(() => {
             setVerifyErrorMessage('');
-            setFormState(FORM_STATES.verifyCode);
+            setFormState(FORM_STATES.changeDone);
         })
         .catch(err => {
             console.error(err);
@@ -136,7 +136,8 @@ function Forgotpass(){
                 return (
                     <div className="text-start text-sm-center">
                         <div>
-                            <span className="text-success">{t('Your password has been reset successfully!')}</span>
+                            <span className="text-success">{t('Password reset Email sent!')}</span>
+                            <p>{t('An Email is sent to the entered address. Please follow the link provided in the Email to change your password, then Log-in again.')}</p>
                         </div>
                         <div>
                             <a href="/login">Click here</a>
