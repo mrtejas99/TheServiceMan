@@ -17,7 +17,11 @@ import {
     getDocs,
     collection,
     where,
-    addDoc
+    addDoc,
+    updateDoc,
+    doc,
+    setDoc,
+    increment
 } from "firebase/firestore";
 
 // Import the functions you need from the SDKs you need
@@ -45,6 +49,8 @@ if (enableLocalEmulator) {
 }
 
 //const cachedb = new Firestore<ValidatedClass>({ db: db });
+
+const nowYMD = () => (new Date()).toISOString().split('T')[0];
 
 const googleProvider = new GoogleAuthProvider();
 const signInWithGoogle = async () => {
@@ -87,6 +93,20 @@ const registerWithEmailAndPassword = async (fname, lname, email, password) => {
             authProvider: "local",
             email,
         });
+
+        const today = nowYMD();
+
+        //Update user count statistic
+        await Promise.all([
+            //Number of total users
+            updateDoc(doc(db, "statistics", "site"), { user_count: increment(1) })
+            .catch(err => setDoc(doc(db, "statistics", "site"), { user_count: increment(1) }, { merge: true }))
+            .catch(err => console.error("Failed to update ad count:", err)),
+            //Users on present day
+            updateDoc(doc(db, "statistics", "site", "log", "user_count"), { [today]: increment(1) })
+            .catch(err => setDoc(doc(db, "statistics", "site", "log", "user_count"), { [today]: increment(1) }, { merge: true }))
+            .catch(err => console.error("Failed to update ad count:", err))
+        ]);
     } catch (err) {
         console.error(err);
         alert(err.message);
@@ -117,7 +137,7 @@ const saveAdData = async (
     language,
     category) => {
     try {
-        const docRef = await addDoc(collection(db, "serviceads"), {
+        await addDoc(collection(db, "serviceads"), {
             posted_by: user,
             title: title,
             banner_url: banner,
@@ -135,7 +155,20 @@ const saveAdData = async (
             feedback_count:0,
             average:0
         });
-        alert("Ad created successfully ");
+
+        const today = nowYMD();
+
+        //Update ad count statistic
+        await Promise.all([
+            //Number of total ads
+            updateDoc(doc(db, "statistics", "site"), { ad_count: increment(1) })
+            .catch(err => setDoc(doc(db, "statistics", "site"), { ad_count: increment(1) }, { merge: true }))
+            .catch(err => console.error("Failed to update ad count:", err)),
+            //Ads on present day
+            updateDoc(doc(db, "statistics", "site", "log", "ad_count"), { [today]: increment(1) })
+            .catch(err => setDoc(doc(db, "statistics", "site", "log", "ad_count"), { [today]: increment(1) }, { merge: true }))
+            .catch(err => console.error("Failed to update ad count:", err))
+        ]);
     } catch (e) {
         alert("Error adding document: ", e);
     }

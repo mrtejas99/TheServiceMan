@@ -1,36 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardContent, Grid, Typography, LinearProgress, CircularProgress } from '@mui/material';
+import { Card, CardContent, Grid, Typography, LinearProgress, Backdrop, CircularProgress } from '@mui/material';
 import CountUp from 'react-countup';
 
 function KPIChart(props) {
-    const { title, progress, query, difference, duration, ...rest } = props;
-    const fullValue = 40;
+    const { title, value, loading, progress, difference, duration, ...rest } = props;
 
     return (
-        <Card color="secondary" {...rest}>
+        <Card {...rest} style={{position: 'relative'}}>
             <CardContent>
                 <Grid container justify="space-between">
                     <Grid item>
-                        <Typography color="textSecondary" gutterBottom variant="body2">
-                            {title}
-                        </Typography>
+                        <Typography color="textSecondary" gutterBottom variant="body2">{title}</Typography>
                         <Typography variant="h3">
                             <CountUp
-                                end={fullValue}
+                                end={value}
                                 duration={duration}
                                 separator=","
                                 decimals={0}
+                                preserveValue={true}
                             />
                         </Typography>
                     </Grid>
                 </Grid>
                 {progress ? (
                     <LinearProgress
-                        value={fullValue}
+                        value={value}
                         variant="determinate"
                     />
                 ) : null}
+                <Backdrop open={loading || false} style={{position: 'absolute'}}>
+                    <CircularProgress color="secondary" />
+                </Backdrop>
             </CardContent>
         </Card>
     );

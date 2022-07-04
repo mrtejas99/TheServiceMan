@@ -27,7 +27,8 @@ function AdminPanel() {
 				dataProvider={dataProvider}
 				authProvider={authProvider}
 				loginPage={AdminLoginPage}
-				dashboard={AdminDashboard} >
+				dashboard={AdminDashboard}
+				disableTelemetry >
 			<Resource name="users" list={User.UserList} show={User.UserShow} edit={User.UserEdit} icon={UserIcon} />
 			<Resource name="serviceads" list={Ad.AdList} show={Ad.AdShow} edit={Ad.AdEdit} create={Ad.AdCreate} />
 			<Resource name="adcategories" list={Cat.CatList} show={Cat.CatShow} edit={Cat.CatEdit} create={Cat.CatCreate} icon={AdCategoriesIcon} />

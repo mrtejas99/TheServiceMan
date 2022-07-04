@@ -1,48 +1,46 @@
 
-import React from "react";
-import { Card, CardContent, CardHeader, Grid } from '@mui/material';
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 
 import KPIChart from './KPIChart';
 
-//import { authProvider } from './AdminProvider';
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
 
 function AdminDashboard() {
-    //console.log(authProvider.getAuthUser);
+    const statref = collection(db, "statistics");
 
-    const cards = [
-        {
-            title: 'ORDERS',
-            query: { measures: ['Orders.count'] },
-            difference: 'Orders',
-            duration: 1.25,
-        },
-        {
-            title: 'TOTAL USERS',
-            query: { measures: ['Users.count'] },
-            difference: 'Users',
-            duration: 1.5,
-        },
-        {
-            title: 'COMPLETED ORDERS',
-            query: { measures: ['Orders.percentOfCompletedOrders'] },
-            progress: true,
-            duration: 1.75,
-        },
-        {
-            title: 'TOTAL PROFIT',
-            query: { measures: ['LineItems.price'] },
-            duration: 2.25,
-        },
-    ];
+    const [cards, setCards] = useState({
+        ad_count: {title: "ADS", value: 0, duration: 1.25, loading: true},
+        user_count: {title: "USERS", value: 0, duration: 1.5, loading: true}
+    });
+
+    const updateCards = data => setCards(prev => {
+        //Update value and return same object
+        return Object.fromEntries(
+            Object.entries(prev).map(elem => {
+                if (data !== undefined && data[elem[0]] !== undefined) elem[1].value = data[elem[0]];
+                elem[1].loading = false;
+                return elem;
+            })
+        );
+    });
+
+    //Auto fetch statistics when changed
+    useEffect(() => onSnapshot(
+        doc(statref, "site"),
+        snapshot => { updateCards(snapshot.data()) }
+    ), []);
 
     return (
         <Card>
-            <CardHeader title={<span>Welcome to the <b>TheServiceMan</b> Admin page</span>} />
+            <CardHeader title={<span><b>TheServiceMan</b> Overview</span>} />
             <CardContent>
+                <Typography color="textSecondary" gutterBottom variant="body2">Note: Time in the data is in UTC</Typography>
                 <Grid
                     container
                     spacing={4} >
-                    {cards.map((item, index) => {
+                    {Object.values(cards).map((item, index) => {
                         return (
                             <Grid
                                 key={item.title + index}

@@ -21,6 +21,7 @@
     "react-admin": "^4.1.2",
     "react-admin-firebase": "^4.0.2",
     "react-bootstrap": "^2.4.0",
+    "react-chartjs-2": "^4.2.0",
     "react-countup": "^6.3.0",
     "react-dark-mode-toggle": "^0.2.0",
     "react-dom": "^18.1.0",
