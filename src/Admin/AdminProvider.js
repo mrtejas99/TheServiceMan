@@ -12,7 +12,7 @@ const dataOptions = {
 	//dontwatch: [],
 	persistence: adminConfig.auth_storage || 'local',
 	// disableMeta: true
-	//dontAddIdFieldToDoc: true,
+	dontAddIdFieldToDoc: true,
 	lazyLoading: {
 		enabled: true,
 	},
