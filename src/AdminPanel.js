@@ -25,7 +25,7 @@ function AdminPanel() {
 	return (
 		<Admin	basename="/admin"
 				dataProvider={dataProvider}
-				authProvider={authProvider}
+				authProvider={adminAuthProvider}
 				loginPage={AdminLoginPage}
 				dashboard={AdminDashboard}
 				disableTelemetry >
