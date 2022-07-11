@@ -59,7 +59,13 @@ function Userprofile() {
                 <div className='d-flex justify-content-between py-3'>
                     <h3>{t('welcome')}, {fname}</h3>
                 </div>
-                <br/>   
+				<Row> 
+                    <Col>
+                        <Button variant="info" onClick={() => navigate("/Adcreate")}>{t('advertise')}</Button><br />
+                        <Button variant="info" onClick={() => navigate(`/Sellers/${user.uid}`)} className='my-3'>{t('switch')}</Button>
+                    </Col>
+                </Row>
+                <br/>
                 <h4>{t('yourads')}</h4> 
                 <Row xs={2} sm={3} md={4} lg={6} className="g-4">          
                     {
