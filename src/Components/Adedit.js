@@ -117,8 +117,8 @@ function Adedit() {
         const storageRef = ref(storage, `files/${file.name}`);
          uploadBytes(storageRef, file).then((snapshot) => {
             getDownloadURL(snapshot.ref).then((downloadURL) => {
-                updateFieldData('banner', downloadURL);
-                console.log(fieldData.banner);
+                updateFieldData('banner_url', downloadURL);
+                console.log(fieldData.banner_url);
                 //saveurl(downloadURL);
             });
         });
