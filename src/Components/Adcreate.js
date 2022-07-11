@@ -19,7 +19,9 @@ function Adcreate() {
     const [description, setDescription] = useState('');
     const [experience, setExperience] = useState('');
     const [skills, setSkills] = useState('');
-    const [ad_location, setLocation] = useState(null);
+    const [ad_location, setLocation] = useState(
+        {"geohash":"tdu2pupc0", "latitude": 15.4909, "longitude":71.8278, "location_name":"Panaji" }
+    );
     const [lat, setLat] = useState(0);
     const [long, setLong] = useState(0);
     const [hash, setHash] = useState('');
