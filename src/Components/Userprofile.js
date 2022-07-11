@@ -59,24 +59,6 @@ function Userprofile() {
                 <div className='d-flex justify-content-between py-3'>
                     <h3>{t('welcome')}, {fname}</h3>
                 </div>
-                <Row> 
-                    <Col>
-                        <h5>{t('profile')}</h5>
-                        <Form className='d-flex py-1'>
-                            <Form.Control type="text" placeholder={t('contact')} className="mr-sm-2" />
-                            <Button variant="outline-success">&#128393;</Button>
-                        </Form>
-                            
-                        <Form className='d-flex py-1'>
-                            <Form.Control type="text" className="mr-sm-2" placeholder={t('password')} />
-                            <Button variant="outline-success">&#128393;</Button>
-                        </Form>
-                    </Col>
-                    <Col>
-                        <Button variant="info" onClick={() => navigate("/Adcreate")}>{t('advertise')}</Button><br />
-                        <Button variant="info" onClick={() => navigate(`/Sellers/${user.uid}`)} className='my-3'>{t('switch')}</Button>
-                    </Col>
-                </Row>
                 <br/>   
                 <h4>{t('yourads')}</h4> 
                 <Row xs={2} sm={3} md={4} lg={6} className="g-4">          
