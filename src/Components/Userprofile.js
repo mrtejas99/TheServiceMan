@@ -61,8 +61,8 @@ function Userprofile() {
                 </div>
 				<Row> 
                     <Col>
-                        <Button variant="info" onClick={() => navigate("/Adcreate")}>{t('advertise')}</Button><br />
-                        <Button variant="info" onClick={() => navigate(`/Sellers/${user.uid}`)} className='my-3'>{t('switch')}</Button>
+                        <Button variant="info" onClick={() => navigate("/Adcreate")}>{t('advertise')}</Button>
+                        <Button  className="float-right" variant="info" onClick={() => navigate(`/Sellers/${user.uid}`)} >{t('switch')}</Button>
                     </Col>
                 </Row>
                 <br/>
@@ -70,7 +70,7 @@ function Userprofile() {
                 <Row xs={2} sm={3} md={4} lg={6} className="g-4">          
                     {
                     info.map((data) => (
-                        <Card style={{ width: '15rem' }} className='me-3'>
+                        <Card style={{ width: '15rem' }} className='me-3 highlight zoomtext'>
                             <Card.Img variant="top" src={data.banner_url} />
                             <Card.Body>
                                 <Card.Title>{data.title}</Card.Title>
