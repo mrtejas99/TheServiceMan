@@ -69,23 +69,22 @@ function Userprofile() {
                 <h4>{t('yourads')}</h4> 
                 <Row xs={2} sm={3} md={4} lg={6} className="g-4">          
                     {
-                    info.map((data) => (
-                        <Card style={{ width: '15rem' }} className='me-3 highlight zoomtext'>
+                    info.map((data, idx) => (
+                        <Card className="highlight zoomtext me-3" role="button" key={idx} style={{ width: '15rem' }} onClick={() => navigate(`/Adview/${data.posted_date}`)}>
                             <Card.Img variant="top" src={data.banner_url} />
                             <Card.Body>
                                 <Card.Title>{data.title}</Card.Title>
                                 <Card.Text>
-                                    {[...Array(5)].map((x, i)=>{
-                                        const ratingValue=i+1;
-                                        return (
-                                            <label>
-                                            <FaStar className="star" color={ratingValue<= (data.rating/data.feedback_count) ?"#ffc107":"#e4e5e9"}size={15}/>
-                                            </label>
-                                        );
-                                    })}
-                                    </Card.Text>
+                                {[...Array(5)].map((x, i)=>{
+                                    const ratingValue=i+1;
+                                    return (
+                                        <label>
+                                        <FaStar className="star" color={ratingValue<= (data.rating) ?"#ffc107":"#e4e5e9"}size={15}/>
+                                        </label>
+                                    );
+                                })}
+                                </Card.Text>
                                 <Card.Text>{data.location}</Card.Text>
-                                <Button variant="primary" onClick={() => navigate(`/Adview/${data.posted_date}`, {state:{title:data.title, banner_url:data.banner_url, description: data.description, experience: data.experience, skills:data.skills, language: data.language, category: data.category, location: data.location, posted_by: data.posted_by}})}>{t('viewad')}</Button>
                             </Card.Body>
                         </Card>
                     ))
