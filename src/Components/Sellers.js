@@ -21,6 +21,7 @@ function Sellers() {
     const [fnames, setFnames] = useState([]);
     const [lnames, setLnames] = useState([]);
     const [feedbacks , setFeedbacks] = useState([]);
+    const [cumulative, setCumulative] = useState(0);
 
     let { id } = useParams(); //the user id
     console.log(id)
@@ -97,14 +98,17 @@ function Sellers() {
     },[info])
 
     useEffect(()=>{
-        FetchNames();   //find names of feedback givers
+        FetchNames();   //find names of feedback 
+        setCumulative(info.reduce((total, curr)=>total+curr.average,0)/info.length)
     },[feedbacks])
 
     return(
         <Container className="py-3">
             <h3>{t('welcome')}, {fname} {lname}</h3>
             
-            <p>{t('cumulativerating')} <span></span></p>
+            <p>{t('cumulativerating')} &nbsp;
+                <span className="font-weight-bold">{isNaN(cumulative)? 0:cumulative} </span>
+            </p>
             <Row> 
                 <Col className="w-75">
                     <h5>{t('postedads')}</h5>
