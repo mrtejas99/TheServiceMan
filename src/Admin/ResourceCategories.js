@@ -75,8 +75,8 @@ function CatCreate(props) {
 	return (
 		<Create {...props} >
 			<SimpleForm>
-				<TextField label="Category Name" source="category_name" />
-				<TextField label="Popularity" source="popularity" defaultValue={0.0} />
+				<TextInput label="Category Name" source="category_name" />
+				<TextInput label="Popularity" source="popularity" defaultValue={0.0} />
 			</SimpleForm>
 		</Create>
 	);
