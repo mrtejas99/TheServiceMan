@@ -4,7 +4,7 @@ import { Card, CardContent, Grid, Typography, LinearProgress, Backdrop, Circular
 import CountUp from 'react-countup';
 
 function KPIChart(props) {
-    const { title, value, loading, progress, difference, duration, ...rest } = props;
+    const { title, value, valToday, showValToday, valHist, loading, progress, difference, duration, ...rest } = props;
 
     return (
         <Card {...rest} style={{position: 'relative'}}>
@@ -20,6 +20,18 @@ function KPIChart(props) {
                                 decimals={0}
                                 preserveValue={true}
                             />
+                        </Typography>
+						<Typography variant="body2">
+						{ (showValToday && valToday !== undefined) && (
+							<CountUp
+								end={valToday}
+								duration={duration}
+								separator=","
+								decimals={0}
+								preserveValue={true}
+								suffix=" today"
+							/>
+						)}
                         </Typography>
                     </Grid>
                 </Grid>

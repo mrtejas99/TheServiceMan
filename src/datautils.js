@@ -18,4 +18,6 @@ const getGeohashRange = (position, distance) => {
     return { lower, upper };
 };
 
-export { getFilterMasterData, getGeohashRange };
+const nowYMD = () => (new Date()).toISOString().split('T')[0];
+
+export { getFilterMasterData, getGeohashRange, nowYMD };
