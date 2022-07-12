@@ -2,10 +2,10 @@
 /* Some constants to use in the application */
 
 //How many items to load at once on home page
-const RESULTS_PER_PAGE = 5;
+const RESULTS_PER_PAGE = 4;
 
 //Radius within which ads should be filtered, in Meters (50e3 is 50km)
-const GEOSEARCH_PROXIMITY_RANGE = 50e3;
+const GEOSEARCH_PROXIMITY_RANGE = 20e3;
 
 const RATING_MASTER = [
     {
