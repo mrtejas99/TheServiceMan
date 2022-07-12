@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Container, Button, Form, Col, Row, Card } from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
 
+import { useTranslation } from "react-i18next";
+
 import Message from './MessageForm'
 import Msg from "./Message";
 import User from "./User";
@@ -24,6 +26,7 @@ function ChatHome() {
     const [chat, setChat] = useState("");
     const [to, setTo] = useState([]);
     const [feedbacks, setFeedbacks] = useState([]);
+    const { t } = useTranslation("common");
 
     const [users, setUsers] = useState([]);
 
@@ -111,8 +114,8 @@ function ChatHome() {
 
     return (
 
-        <div>
-            <div><h4>chats</h4>
+        <div className="mx-3 mt-3">
+            <div><h4>{t('chats')}</h4>
                 {
                     users.map((data) => (
                         <User

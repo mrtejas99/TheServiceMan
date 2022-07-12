@@ -29,6 +29,14 @@ function AdminDashboard() {
         );
     });
 
+    const setCardProp = (item, field, value) => {
+        setCards(prev => {
+            let updated = Object.assign({}, prev);
+            updated[item][field] = value;
+            return updated;
+        });
+    };
+
     //Auto fetch statistics when changed
     useEffect(() => onSnapshot(
         doc(statref, "site"),
@@ -41,12 +49,14 @@ function AdminDashboard() {
         snapshot => {
 			const today = nowYMD();
 			snapshot.docs.map(doc => ({
-				[doc.id]: {
+                    name: doc.id,
 					valHist: doc.data(),
 					valToday: doc.data()[today] || 0
-				}
 				})
-			).map(elem => console.log(elem))
+			).map(elem => {
+                setCardProp(elem.name, 'valToday', elem.valToday);
+                setCardProp(elem.name, 'valHist', elem.valHist);
+            })
 		}
     ), []);
 

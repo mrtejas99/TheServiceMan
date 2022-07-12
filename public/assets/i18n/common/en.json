@@ -108,5 +108,9 @@
     "errselffeedback": "You cannot respond to your ad",
     "loginbeforefeedback": "You need to log in before you can respond",
     "errgeoloc": "An error occurred while querying geographic location",
-    "adupdatesuccess": "Ad successfully updated"
+    "adupdatesuccess": "Ad successfully updated",
+
+    "chats": "Chats",
+    "skip": "Skip",
+    "close": "Close"
 }

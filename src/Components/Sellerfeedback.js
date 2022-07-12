@@ -6,10 +6,14 @@ import { query, collection, getDocs, where,addDoc } from "firebase/firestore";
 import { Form, Button } from "react-bootstrap";
 import {FaStar} from "react-icons/fa";
 import Modal from 'react-bootstrap/Modal';
+
+import { useTranslation } from "react-i18next";
+
 function Sellerfeedback({user11,user22}){
     console.log(user22);
     const navigate = useNavigate();
-    const location = useLocation(); 
+    const location = useLocation();
+    const { t } = useTranslation("common");
 
     const [feedback , setfeedback]=useState(null);
     const[Rating, setRating]=useState(1);
@@ -64,7 +68,7 @@ function Sellerfeedback({user11,user22}){
     return(
         <>
         <Button variant="primary" onClick={handleShow}>
-        Close Chat
+        {t('close')}
         </Button>
         <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -74,7 +78,7 @@ function Sellerfeedback({user11,user22}){
         <Form className='w-50 mx-auto my-5 '>
             <h6>{user2}{user1}</h6>
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>How was your experience with the {posterFname} {posterLname}?</Form.Label>
+                <Form.Label>{t('How was your experience with the')} {posterFname} {posterLname}?</Form.Label>
                 <div>
                 <span>Rating </span>
                 {[...Array(5)].map((star, i)=>{
@@ -107,7 +111,7 @@ function Sellerfeedback({user11,user22}){
          </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            SKIP&gt;&gt;
+            {t('skip')}&gt;&gt;
           </Button>
         </Modal.Footer>
       </Modal>

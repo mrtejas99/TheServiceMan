@@ -6,6 +6,7 @@ import { query, collection, getDocs, where } from "firebase/firestore";
 import { Form, Button } from "react-bootstrap";
 import {FaStar} from "react-icons/fa";
 
+import { useTranslation } from "react-i18next";
 
 function Customerfeedback() {
     const [user, loading, error] = useAuthState(auth);
@@ -13,6 +14,8 @@ function Customerfeedback() {
     const [feedback , setfeedback]=useState(null);
     const[rating, setRating]=useState(null);
     const[hover, setHover]=useState(null);
+    const { t } = useTranslation("common");
+
     useEffect(() => {
         if (loading) return;
         if (!user) return navigate("/Login");
