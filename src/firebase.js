@@ -24,6 +24,8 @@ import {
     increment
 } from "firebase/firestore";
 
+import { nowYMD } from './datautils';
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
@@ -49,8 +51,6 @@ if (enableLocalEmulator) {
 }
 
 //const cachedb = new Firestore<ValidatedClass>({ db: db });
-
-const nowYMD = () => (new Date()).toISOString().split('T')[0];
 
 const googleProvider = new GoogleAuthProvider();
 const signInWithGoogle = async () => {
