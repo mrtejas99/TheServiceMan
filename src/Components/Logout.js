@@ -1,14 +1,11 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, logInWithEmailAndPassword, signInWithGoogle } from "../firebase";
-import { Form, Button } from "react-bootstrap";
+import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { db, logout } from "../firebase";
+import {  logout } from "../firebase";
 
 function Logout() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
     

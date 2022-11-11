@@ -12,9 +12,12 @@ import { IconContext } from "react-icons";
 import { useTranslation } from "react-i18next";
 import i18next from 'i18next';
 import { LANGUAGE_MASTER } from "../constants";
+import { useNavigate } from 'react-router-dom'
+
 
 function Navigation() {
     const [ isDarkMode ] = useDarkMode();
+    const navigate = useNavigate();
 
     const navVariant = isDarkMode ? 'dark' : 'light';
     
@@ -35,7 +38,7 @@ function Navigation() {
         <IconContext.Provider value={{ className: "shared-class", size: 21 }}>
 			<Navbar collapseOnSelect expand="md" bg={navVariant} variant={navVariant} className="sticky-top">
 			<Container fluid>
-			<Navbar.Brand href="/">{t('theserviceman')}</Navbar.Brand>
+			<Navbar.Brand onClick={() => navigate('/')}>{t('theserviceman')}</Navbar.Brand>
 			<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 			<Navbar.Collapse>
 				<Nav className="w-100 mx-auto me-auto d-flex align-items-center">

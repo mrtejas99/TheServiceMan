@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Nav } from "react-bootstrap";
+import React from "react";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db, logout } from "../firebase";
+import { auth} from "../firebase";
 import { LoggedIn } from './LoggedIn';
 import { LoggedOut } from './LoggedOut';
 

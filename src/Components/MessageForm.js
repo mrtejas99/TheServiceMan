@@ -1,7 +1,7 @@
 import React ,{useState} from 'react'
-import { Form, Button ,FormControl,InputGroup,Row,} from "react-bootstrap";
+import { Form, Button ,FormControl,InputGroup,} from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db, logout } from "../firebase";
+import { auth } from "../firebase";
 
 import Sellerfeedback from "./Sellerfeedback"
 

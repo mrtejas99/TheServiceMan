@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { Container, Button, Col, Row, Card, Breadcrumb, Table, Image, Badge } from "react-bootstrap";
-import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Container, Button, Col, Row, Card, Breadcrumb,  Image, Badge } from "react-bootstrap";
+import { Link, useNavigate,  useParams } from "react-router-dom";
 import logo from '../profile.png'
 import {FaStar} from "react-icons/fa";
 import { auth, db } from "../firebase";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate,useParams } from "react-router-dom";
-import { Container, Button, Form, Col, Row, Card,Badge } from "react-bootstrap";
+import {  useNavigate,useParams } from "react-router-dom";
+import { Container, Badge } from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import Message from './MessageForm'
@@ -10,14 +10,12 @@ import { FaUser } from "react-icons/fa";
 // Import Firestore database
 import { db, auth } from "../firebase";
 import {
-    query, setDoc, collection, getDocs, getDoc, where, addDoc, Timestamp, onSnapshot, orderBy, collectionGroup, update, updateDoc, arrayUnion, doc,
+    query, setDoc, collection, getDocs, getDoc, where, addDoc, Timestamp, onSnapshot, orderBy, updateDoc, arrayUnion, doc,
 } from "firebase/firestore";
 
 function Chat() {
     const navigate = useNavigate();
-    const [info, setInfo] = useState([]);
     const [text, setText] = useState("");
-    const [fnames, setFnames] = useState(['']);
     const [user, loading, error] = useAuthState(auth);
     const [user1, setUid1] = useState("");
     const [user2, setUid2] = useState("");

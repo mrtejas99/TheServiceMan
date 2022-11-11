@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Container, Button, Form, Col, Row, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { useTranslation } from "react-i18next";
 
-import Message from './MessageForm'
-import Msg from "./Message";
 import User from "./User";
 
 // Import Firestore database
 import { db, auth } from "../firebase";
 import {
-    query, setDoc, collection, getDocs, getDoc, where, addDoc,
-    Timestamp, onSnapshot, orderBy, collectionGroup, update, updateDoc, arrayUnion, doc,
+    query,  collection, getDocs, getDoc, where, 
+     onSnapshot, orderBy, updateDoc,  doc,
 } from "firebase/firestore";
 
 function ChatHome() {
@@ -21,11 +18,9 @@ function ChatHome() {
     const [user1, setUser1] = useState('');
     const [fname, setFname] = useState("");
     const [lname, setLname] = useState("");
-    const [text, setText] = useState("");
     const [msgs, setMsgs] = useState([]);
     const [chat, setChat] = useState("");
     const [to, setTo] = useState([]);
-    const [feedbacks, setFeedbacks] = useState([]);
     const { t } = useTranslation("common");
 
     const [users, setUsers] = useState([]);

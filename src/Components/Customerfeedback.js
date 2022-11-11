@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
-import { auth, db, logout } from "../firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { auth} from "../firebase";
 import { Form, Button } from "react-bootstrap";
 import {FaStar} from "react-icons/fa";
 
@@ -11,7 +10,6 @@ import { useTranslation } from "react-i18next";
 function Customerfeedback() {
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
-    const [feedback , setfeedback]=useState(null);
     const[rating, setRating]=useState(null);
     const[hover, setHover]=useState(null);
     const { t } = useTranslation("common");

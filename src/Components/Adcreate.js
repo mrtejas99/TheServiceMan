@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { auth, db, logout, saveAdData, storage  } from "../firebase";
-import { query, collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import {  useNavigate, useParams } from "react-router-dom";
+import { auth, db, saveAdData, storage  } from "../firebase";
+import { query, collection, getDocs } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { Container,  Col, Row, Button, Form, Dropdown } from "react-bootstrap";
+import { Container,  Col, Row, Button, Form } from "react-bootstrap";
 
 //translate
 import { useTranslation } from "react-i18next";
@@ -22,9 +22,7 @@ function Adcreate() {
     const [ad_location, setLocation] = useState(
         {"geohash":"tdu2pupc0", "latitude": 15.4909, "longitude":71.8278, "location_name":"Panaji" }
     );
-    const [lat, setLat] = useState(0);
-    const [long, setLong] = useState(0);
-    const [hash, setHash] = useState('');
+
 
     const [language, setLanguage] = useState('');
     const [category, setCategory] = useState('');

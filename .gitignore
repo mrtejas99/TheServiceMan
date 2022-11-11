@@ -43,7 +43,7 @@ yarn-error.log*
 *.db
 
 #firebase config
-src/config.js
+#src/config.js
 
 # firebase logs
 firebase-debug.log
@@ -52,3 +52,6 @@ ui-debug.log
 
 firebase-export-*/*
 src/claim.js
+
+# Local Netlify folder
+.netlify

@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Form, Button, Spinner, Col } from "react-bootstrap";
 //translate
 import { useTranslation } from "react-i18next";
+import { useNavigate } from 'react-router-dom'
+
 
 import { sendPasswordReset, verifyPasswordReset } from '../firebase';
 
 function Forgotpass(){
     const {t} = useTranslation("common");
+    const navigate = useNavigate();
 
     const FORM_STATES = {
         enterEmail: 0,
@@ -140,7 +143,7 @@ function Forgotpass(){
                             <p>{t('An Email is sent to the entered address. Please follow the link provided in the Email to change your password, then Log-in again.')}</p>
                         </div>
                         <div>
-                            <a href="/login">Click here</a>
+                            <a onClick={() => navigate('/login')}>Click here</a>
                             <span>{t(' to login again.')}</span>
                         </div>
                     </div>

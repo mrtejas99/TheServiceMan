@@ -9,6 +9,7 @@ import { BsFillChatFill } from "react-icons/bs";
 import { query, collection, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import { UserContext } from "./UserContext";
+import { useNavigate } from 'react-router-dom'
 
 function ChatBellIcon(props) {
 	const count = props.unreadCount || 0;
@@ -72,6 +73,7 @@ function NotificationBell() {
 function NotificationBell() {
 	const [recentUnread, setRecentUnread] = useState(0);
 	const { userData } = useContext(UserContext);
+    const navigate = useNavigate();
 
 	useEffect(() => {
 		if (userData && userData.loaded) {
@@ -89,7 +91,7 @@ function NotificationBell() {
 	}, [userData]);
 
     return (
-        <Nav.Link href="/chathome">
+        <Nav.Link onClick={() => navigate('/chathome')}>
 			<ChatBellIcon unreadCount={recentUnread} />
 		</Nav.Link>
     );
